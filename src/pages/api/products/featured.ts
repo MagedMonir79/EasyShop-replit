@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getProducts } from '@/utils/supabaseClient';
+import { db } from '../../../../server/db';
+import { products, categories } from '@/shared/schema';
+import { eq, and } from 'drizzle-orm';
 
-// بيانات تجريبية للمنتجات المميزة
+// Sample data for featured products
 const MOCK_FEATURED_PRODUCTS = [
   {
     id: 1,
@@ -72,15 +75,73 @@ export default async function handler(
   try {
     if (req.method === 'GET') {
       try {
-        // محاولة الحصول على المنتجات المميزة باستخدام الوظيفة getProducts
-        const featuredProducts = await getProducts({
-          featured: true,
-          limit: 6
-        });
-        return res.status(200).json({ products: featuredProducts });
+        console.log("Fetching featured products from database...");
+        
+        // First try to get products from our Drizzle DB connection
+        try {
+          // Get featured products directly using SQL
+          const dbProducts = await db.select()
+            .from(products)
+            .where(eq(products.is_featured, true))
+            .limit(6);
+          
+          // Get category information for the products
+          const productIds = dbProducts.map(product => product.id);
+          const categoryIds = dbProducts.map(product => product.category_id).filter(Boolean);
+          
+          // Get categories for these products
+          const categoryData = categoryIds.length > 0 
+            ? await db.select().from(categories).where(eq(categories.id, categoryIds[0]))
+            : [];
+            
+          // Create a map of category id to name
+          const categoryMap = new Map();
+          categoryData.forEach(cat => {
+            categoryMap.set(cat.id, cat.name);
+          });
+            
+          // Format products to match expected structure
+          const formattedProducts = dbProducts.map(product => ({
+            id: product.id,
+            name: product.name,
+            description: product.description,
+            price: parseFloat(product.price.toString()),
+            image_url: product.image_url,
+            category_id: product.category_id,
+            category: product.category_id && categoryMap.get(product.category_id) 
+              ? categoryMap.get(product.category_id) 
+              : "Uncategorized",
+            stock: product.stock,
+            is_featured: product.is_featured,
+            created_at: product.created_at
+          }));
+          
+          console.log(`Found ${formattedProducts.length} featured products in database`);
+          
+          if (formattedProducts.length > 0) {
+            return res.status(200).json({ products: formattedProducts });
+          }
+          
+          // If no products were found, fallback to Supabase
+          throw new Error("No featured products found in database");
+        } catch (dbError) {
+          console.log("Database error, trying Supabase:", dbError);
+          
+          // Fallback to Supabase client
+          const featuredProducts = await getProducts({
+            featured: true,
+            limit: 6
+          });
+          
+          if (featuredProducts && featuredProducts.length > 0) {
+            return res.status(200).json({ products: featuredProducts });
+          }
+          
+          throw new Error("No products found via Supabase either");
+        }
       } catch (error) {
-        console.log("استخدام البيانات المحلية للمنتجات المميزة:", error);
-        // في حالة فشل الاتصال، استخدم البيانات المحلية
+        console.log("Using mock products as fallback:", error);
+        // Use mock data as a last resort
         return res.status(200).json({ products: MOCK_FEATURED_PRODUCTS });
       }
     }
