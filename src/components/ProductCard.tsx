@@ -7,7 +7,7 @@ import { Button } from './ui/Button';
 import { cn } from '../utils/cn';
 
 interface ProductCardProps {
-  product: Product;
+  product: any;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
@@ -59,7 +59,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               onClick={handleAddToCart}
               className={cn("opacity-0 group-hover:opacity-100 transition-opacity", "bg-blue-600 hover:bg-blue-700 text-white")}
             >
-              Add to Cart
+              إضافة إلى السلة
             </Button>
           </div>
         </div>

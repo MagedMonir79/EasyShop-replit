@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Layout from '../../components/Layout';
@@ -7,9 +7,15 @@ import { useCartStore } from '../../store/cartStore';
 import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
 
-// تحميل المكونات بشكل ديناميكي لتجنب أخطاء Hydration
+// تحميل جميع المكونات التي تتطلب بيانات ديناميكية بشكل ديناميكي
 const FeaturedProducts = dynamic(
   () => import('../../components/FeaturedProducts'),
+  { ssr: false }
+);
+
+// مكون ديناميكي لتفاصيل المنتج
+const ProductDetails = dynamic(
+  () => import('../../components/ProductDetails'),
   { ssr: false }
 );
 
@@ -110,109 +116,14 @@ const ProductDetailPage: React.FC = () => {
           </div>
         ) : product ? (
           <>
-            <div className="mb-8">
-              <button
-                onClick={() => router.back()}
-                className="text-primary hover:text-primary/80 flex items-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="feather feather-arrow-left mr-1"
-                >
-                  <line x1="19" y1="12" x2="5" y2="12"></line>
-                  <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                Back to Products
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              <div className="relative h-96 bg-gray-100 rounded-lg overflow-hidden">
-                {product.image_url ? (
-                  <Image
-                    src={product.image_url}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                    <span className="text-gray-500">No image available</span>
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <span className="inline-block bg-blue-100 text-primary rounded-full px-3 py-1 text-sm mb-4">
-                  {product.category ? product.category.name : 'غير مصنف'}
-                </span>
-                <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-                <p className="text-2xl font-bold text-primary mb-4" suppressHydrationWarning>
-                  {formattedPrice}
-                </p>
-                <div className="mb-6">
-                  <h2 className="text-lg font-semibold mb-2">Description</h2>
-                  <p className="text-gray-700 leading-relaxed">
-                    {product.description}
-                  </p>
-                </div>
-
-                <div className="mb-6">
-                  <h2 className="text-lg font-semibold mb-2">Availability</h2>
-                  {product.stock > 0 ? (
-                    <p className="text-green-600">
-                      In Stock ({product.stock} available)
-                    </p>
-                  ) : (
-                    <p className="text-red-600">Out of Stock</p>
-                  )}
-                </div>
-
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={product.stock === 0}
-                  className="w-full"
-                  size="lg"
-                >
-                  {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
-                </Button>
-              </div>
-            </div>
-
-            {/* Product details/specifications */}
-            <div className="bg-gray-50 rounded-lg p-6 mb-12">
-              <h2 className="text-xl font-bold mb-4">Product Details</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h3 className="font-semibold text-gray-700">Category</h3>
-                  <p>{product.category ? product.category.name : 'غير مصنف'}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-700">SKU</h3>
-                  <p>SKU-{product.id.toString().padStart(6, '0')}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-700">Added On</h3>
-                  <p suppressHydrationWarning>{typeof product.created_at === 'string' ? new Date(product.created_at).toISOString().split('T')[0] : '---'}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-700">Stock</h3>
-                  <p>{product.stock} units</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Similar products section */}
-            <h2 className="text-2xl font-bold mb-6">You might also like</h2>
+            {/* استخدام المكون الديناميكي للمنتج */}
+            <ProductDetails 
+              product={product} 
+              onBack={() => router.back()} 
+            />
+            
+            {/* قسم المنتجات المشابهة */}
+            <h2 className="text-2xl font-bold mb-6">قد يعجبك أيضًا</h2>
             <FeaturedProducts />
           </>
         ) : null}

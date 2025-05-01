@@ -49,7 +49,7 @@ const FeaturedProducts: React.FC = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h2 className="section-title">Featured Products</h2>
+        <h2 className="section-title">المنتجات المميزة</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, index) => (
             <div key={index} className="bg-gray-100 rounded-lg h-80 animate-pulse"></div>
@@ -62,8 +62,8 @@ const FeaturedProducts: React.FC = () => {
   if (error || !products) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h2 className="section-title">Featured Products</h2>
-        <p className="text-red-500">Failed to load featured products. Please try again later.</p>
+        <h2 className="section-title">المنتجات المميزة</h2>
+        <p className="text-red-500">فشل في تحميل المنتجات المميزة. يرجى المحاولة مرة أخرى لاحقًا.</p>
       </div>
     );
   }
@@ -71,12 +71,12 @@ const FeaturedProducts: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-bold">Featured Products</h2>
+        <h2 className="text-2xl font-bold">المنتجات المميزة</h2>
         <Link
           href="/products"
           className="text-primary hover:text-primary/80 font-medium flex items-center"
         >
-          View All
+          عرض الكل
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
