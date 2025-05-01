@@ -129,26 +129,52 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     };
   }
+
+  try {
+    // محاولة جلب المنتج من واجهة API
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000'}/api/products/${productId}`
+    );
+    
+    if (!response.ok) {
+      throw new Error("فشل في استرداد المنتج من واجهة برمجة التطبيقات");
+    }
+    
+    const data = await response.json();
+    
+    if (data.product) {
+      return {
+        props: {
+          productId,
+          initialProductData: data.product
+        }
+      };
+    }
+    
+    throw new Error("لم يتم العثور على المنتج");
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    
+    // في حالة حدوث خطأ، نجرب استخدام البيانات المحلية كحل بديل
+    const mockProduct = MOCK_PRODUCTS.find(p => p.id === productId);
   
-  // البحث عن المنتج في البيانات المحلية أولاً للتأكد من تطابق الخادم والعميل
-  const mockProduct = MOCK_PRODUCTS.find(p => p.id === productId);
-  
-  if (mockProduct) {
+    if (mockProduct) {
+      return {
+        props: {
+          productId,
+          initialProductData: mockProduct
+        }
+      };
+    }
+    
+    // إذا لم نجد المنتج في أي مكان
     return {
       props: {
         productId,
-        initialProductData: mockProduct
+        error: "لم يتم العثور على المنتج"
       }
     };
   }
-  
-  // في حالة عدم وجود المنتج في البيانات المحلية
-  return {
-    props: {
-      productId,
-      error: "لم يتم العثور على المنتج"
-    }
-  };
 };
 
 export default ProductPage;

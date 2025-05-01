@@ -146,7 +146,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onBack }) => {
           {/* فئة المنتج */}
           <div className="mb-1">
             <span className="inline-block bg-blue-100 dark:bg-blue-900 text-primary dark:text-blue-200 rounded-full px-3 py-1 text-sm">
-              {product.category ? product.category.name : 'غير مصنف'}
+              {product.category ? 
+                (typeof product.category === 'string' ? product.category : product.category.name) 
+                : 'غير مصنف'}
             </span>
           </div>
           
@@ -284,7 +286,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onBack }) => {
           <div className="space-y-4">
             <div>
               <h3 className="font-semibold text-gray-700 dark:text-gray-300">الفئة</h3>
-              <p className="text-gray-900 dark:text-white">{product.category ? product.category.name : 'غير مصنف'}</p>
+              <p className="text-gray-900 dark:text-white">
+                {product.category ? 
+                  (typeof product.category === 'string' ? product.category : product.category.name) 
+                  : 'غير مصنف'}
+              </p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-700 dark:text-gray-300">رقم المنتج</h3>
