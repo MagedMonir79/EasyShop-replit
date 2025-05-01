@@ -9,6 +9,7 @@ import ListIcon from 'lucide-react/dist/esm/icons/list';
 import Grid3x3Icon from 'lucide-react/dist/esm/icons/grid';
 import SearchIcon from 'lucide-react/dist/esm/icons/search';
 import FilterIcon from 'lucide-react/dist/esm/icons/filter';
+import { getProductImageUrl } from '../../utils/imageUtils';
 
 // واجهة للمنتج الذي يتم تمريره للمكونات
 interface ProductListItemProps {
@@ -27,17 +28,17 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, handleAddToC
   return (
     <div className="product-list-item flex flex-col md:flex-row border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800">
       <div className="relative w-full md:w-1/4 aspect-square md:aspect-auto">
-        {product.image_url ? (
-          <img
-            src={product.image_url}
-            alt={product.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-            <span className="text-gray-400">لا توجد صورة</span>
-          </div>
-        )}
+        <img
+          src={getProductImageUrl(product.image_url, product.id)}
+          alt={product.name}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            // في حالة فشل تحميل الصورة، استخدم صورة بديلة
+            const imgElement = e.currentTarget as HTMLImageElement;
+            imgElement.onerror = null; // منع التكرار اللانهائي
+            imgElement.src = `https://picsum.photos/seed/${product.id || Math.random() * 1000}/800/800`;
+          }}
+        />
       </div>
       <div className="p-4 flex-1 flex flex-col">
         <div className="flex flex-wrap justify-between items-start mb-2">

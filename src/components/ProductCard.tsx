@@ -5,6 +5,7 @@ import type { Product } from '@/shared/schema';
 import { useCartStore } from '../store/cartStore';
 import { Button } from './ui/Button';
 import { cn } from '../utils/cn';
+import { getProductImageUrl } from '../utils/imageUtils';
 
 interface ProductCardProps {
   product: any;
@@ -25,27 +26,37 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     currency: 'USD',
   }).format(typeof product.price === 'string' ? parseFloat(product.price) : product.price);
 
+  // الحصول على رابط صورة آمن مع معالجة الروابط المكسورة
+  const safeImageUrl = getProductImageUrl(product.image_url, product.id);
+
   return (
     <div className="product-card group bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
       <Link href={`/products/${product.id}`} className="block h-full">
         <div className="relative aspect-square overflow-hidden">
-          {product.image_url ? (
-            <img
-              src={product.image_url}
-              alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-              <span className="text-gray-400 dark:text-gray-500">لا توجد صورة</span>
-            </div>
-          )}
+          <img
+            src={safeImageUrl}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            onError={(e) => {
+              // في حالة فشل تحميل الصورة، استخدم صورة بديلة
+              const imgElement = e.currentTarget as HTMLImageElement;
+              imgElement.onerror = null; // منع التكرار اللانهائي
+              imgElement.src = `https://picsum.photos/seed/${product.id || Math.random() * 1000}/800/800`;
+            }}
+          />
           
           {/* شارة الحالة - مميز أو جديد أو خصم */}
           {product.is_featured && (
             <span className="absolute top-2 start-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full">
               مميز
+            </span>
+          )}
+          
+          {/* شارة الخصم إذا وجدت */}
+          {product.discount_percentage > 0 && (
+            <span className="absolute top-2 end-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+              خصم {product.discount_percentage}%
             </span>
           )}
           
@@ -74,7 +85,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           
           {/* السعر وزر الإضافة إلى السلة */}
           <div className="flex items-center justify-between">
-            <span className="font-bold text-gray-900 dark:text-white">{formattedPrice}</span>
+            <div>
+              <span className="font-bold text-gray-900 dark:text-white">{formattedPrice}</span>
+              {product.original_price && product.original_price > product.price && (
+                <span className="text-sm text-gray-500 line-through ms-2">
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  }).format(product.original_price)}
+                </span>
+              )}
+            </div>
             <Button
               variant="default"
               size="sm"
