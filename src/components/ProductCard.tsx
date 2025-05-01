@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Product } from '../utils/types';
 import { useCartStore } from '../store/cartStore';
 import { Button } from './ui/Button';
+import { cn } from '../utils/cn';
 
 interface ProductCardProps {
   product: Product;
@@ -28,13 +29,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div className="product-card group">
       <Link href={`/products/${product.id}`} className="block h-full">
         <div className="relative aspect-square overflow-hidden">
-          <Image
-            src={product.image_url || 'https://via.placeholder.com/300'}
-            alt={product.name}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          {product.image_url ? (
+            <Image
+              src={product.image_url}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              <span className="text-gray-400">No image</span>
+            </div>
+          )}
         </div>
         <div className="p-4">
           <h3 className="font-medium text-gray-900 mb-1 truncate">{product.name}</h3>
@@ -42,10 +49,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="flex items-center justify-between">
             <span className="font-bold text-gray-900">{formattedPrice}</span>
             <Button
-              variant="primary"
+              variant="default"
               size="sm"
               onClick={handleAddToCart}
-              className="opacity-0 group-hover:opacity-100 transition-opacity"
+              className={cn("opacity-0 group-hover:opacity-100 transition-opacity", "bg-blue-600 hover:bg-blue-700 text-white")}
             >
               Add to Cart
             </Button>

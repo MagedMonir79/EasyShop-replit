@@ -54,13 +54,13 @@ const HomePage: React.FC = () => {
               <div className="relative h-64 rounded-lg overflow-hidden">
                 <Image
                   src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f"
-                  alt="Electronics"
+                  alt="الإلكترونيات"
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
-                  <h3 className="text-xl font-bold text-white">Electronics</h3>
+                  <h3 className="text-xl font-bold text-white">الإلكترونيات</h3>
                 </div>
               </div>
             </Link>
@@ -68,27 +68,27 @@ const HomePage: React.FC = () => {
               <div className="relative h-64 rounded-lg overflow-hidden">
                 <Image
                   src="https://images.unsplash.com/photo-1509695507497-903c140c43b0"
-                  alt="Clothing"
+                  alt="الملابس"
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
-                  <h3 className="text-xl font-bold text-white">Clothing</h3>
+                  <h3 className="text-xl font-bold text-white">الملابس</h3>
                 </div>
               </div>
             </Link>
-            <Link href="/products?category=home" className="block group">
+            <Link href="/products?category=home-garden" className="block group">
               <div className="relative h-64 rounded-lg overflow-hidden">
                 <Image
                   src="https://images.unsplash.com/photo-1525904097878-94fb15835963"
-                  alt="Home & Kitchen"
+                  alt="المنزل والحديقة"
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
-                  <h3 className="text-xl font-bold text-white">Home & Kitchen</h3>
+                  <h3 className="text-xl font-bold text-white">المنزل والحديقة</h3>
                 </div>
               </div>
             </Link>
