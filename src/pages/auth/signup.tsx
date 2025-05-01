@@ -77,23 +77,22 @@ const SignupPage: React.FC = () => {
 
       if (!result.success) {
         setError(result.error || 'Failed to create account');
+        setIsLoading(false);
         return;
       }
 
+      // تم تسجيل المستخدم بنجاح - سيتم توجيهه للصفحة الرئيسية تلقائياً
+      // بواسطة دالة signUp في useAuth.ts
       setIsSuccess(true);
-      setTimeout(() => {
-        router.push('/auth/login');
-      }, 3000);
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred');
-    } finally {
       setIsLoading(false);
     }
   };
 
   if (isSuccess) {
     return (
-      <Layout title="Sign Up Successful | EasyShop">
+      <Layout title="تم التسجيل بنجاح | إيزي شوب">
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-8 text-center">
             <svg
@@ -111,12 +110,12 @@ const SignupPage: React.FC = () => {
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
               <polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
-            <h1 className="text-2xl font-bold mb-4">Registration Successful!</h1>
+            <h1 className="text-2xl font-bold mb-4">تم التسجيل بنجاح!</h1>
             <p className="text-gray-600 mb-4">
-              Your account has been created successfully. You will be redirected to the login page shortly.
+              تم إنشاء حسابك بنجاح. سيتم توجيهك إلى الصفحة الرئيسية تلقائيًا.
             </p>
-            <Link href="/auth/login">
-              <Button>Go to Login</Button>
+            <Link href="/">
+              <Button>الذهاب للصفحة الرئيسية</Button>
             </Link>
           </div>
         </div>
@@ -135,7 +134,7 @@ const SignupPage: React.FC = () => {
   };
 
   return (
-    <Layout title="Sign Up | EasyShop">
+    <Layout title="إنشاء حساب جديد | إيزي شوب">
       <SignupForm {...props} />
     </Layout>
   );
