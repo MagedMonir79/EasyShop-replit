@@ -108,11 +108,20 @@ export const useAuth = () => {
   // تسجيل الدخول باستخدام حساب Google
   const signInWithGoogle = async () => {
     try {
-      // تسجيل الدخول باستخدام supabase وGoogle provider
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      // استخدام Supabase للمصادقة مع Google
+      // ملاحظة: هذه الوظيفة تقوم بإعادة توجيه المستخدم إلى صفحة تسجيل دخول Google
+      // سيتم إعادة توجيه المستخدم إلى التطبيق بعد التسجيل الناجح
+      
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: typeof window !== 'undefined' ? window.location.origin : undefined
+          redirectTo: typeof window !== 'undefined' 
+            ? `${window.location.origin}/auth/callback` 
+            : undefined,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         }
       });
       
@@ -120,22 +129,11 @@ export const useAuth = () => {
         throw error;
       }
       
-      // في حالة استخدام طريقة إعادة التوجيه، قد لا نحصل على بيانات المستخدم فورًا
-      // سنستخدم كود وهمي للتطوير
-      const mockGoogleUser: User = {
-        id: `user-google-${Date.now()}`,
-        email: 'google-user@example.com',
-        first_name: 'Google',
-        last_name: 'User',
-        avatar_url: 'https://randomuser.me/api/portraits/lego/2.jpg',
-      };
-      
-      setUser(mockGoogleUser);
+      // لن يتم الوصول إلى هذه النقطة في الحالة العادية لأن المستعرض 
+      // سيتم إعادة توجيهه قبل تنفيذ هذا الكود
       
       return { 
-        success: true, 
-        user: mockGoogleUser,
-        message: `مرحبًا ${mockGoogleUser.first_name}!` 
+        success: true,
       };
     } catch (error: any) {
       // معالجة الأخطاء
