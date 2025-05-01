@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 
 interface NoSSRProps {
   children: React.ReactNode;
+  fallback?: React.ReactNode;
 }
 
-const NoSSR: React.FC<NoSSRProps> = ({ children }) => {
+const NoSSR: React.FC<NoSSRProps> = ({ 
+  children, 
+  fallback = <div className="bg-gray-100 rounded-lg p-4">Loading...</div>
+}) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -12,7 +16,7 @@ const NoSSR: React.FC<NoSSRProps> = ({ children }) => {
   }, []);
 
   if (!isMounted) {
-    return <div className="bg-gray-100 rounded-lg p-4">جاري التحميل...</div>;
+    return <>{fallback}</>;
   }
 
   return <>{children}</>;

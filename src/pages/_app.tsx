@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { Toaster } from 'react-hot-toast';
+import Head from 'next/head';
 
 import '../styles/globals.css';
 import { Database } from '@/utils/types';
+import { initializeLanguageStore, useLanguageStore } from '@/store/languageStore';
+import NoSSR from '@/components/NoSSR';
 
 // استخدام الأسرار البيئية إذا كانت موجودة
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co';
@@ -25,6 +28,33 @@ const queryClient = new QueryClient({
   },
 });
 
+function AppContent({ Component, pageProps }: {
+  Component: AppProps['Component'];
+  pageProps: AppProps['pageProps'];
+}) {
+  // تهيئة مخزن اللغة بعد تحميل التطبيق في جانب العميل
+  useEffect(() => {
+    initializeLanguageStore();
+  }, []);
+
+  // الحصول على حالة اللغة الحالية
+  const { language, direction, isInitialized } = useLanguageStore();
+
+  // مؤقتًا عرض رسالة تحميل حتى تتم تهيئة مخزن اللغة
+  if (!isInitialized) {
+    return <div className="h-screen w-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  return (
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <Component {...pageProps} />
+    </>
+  );
+}
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
@@ -32,7 +62,13 @@ function MyApp({ Component, pageProps }: AppProps) {
         <QueryClientProvider client={queryClient}>
           <Toaster position="top-right" />
           <div suppressHydrationWarning>
-            <Component {...pageProps} />
+            <NoSSR fallback={
+              <div className="h-screen w-screen flex items-center justify-center">
+                Loading EasyShop...
+              </div>
+            }>
+              <AppContent Component={Component} pageProps={pageProps} />
+            </NoSSR>
           </div>
         </QueryClientProvider>
       </SessionContextProvider>
