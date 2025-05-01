@@ -10,8 +10,14 @@ import Grid3x3Icon from 'lucide-react/dist/esm/icons/grid';
 import SearchIcon from 'lucide-react/dist/esm/icons/search';
 import FilterIcon from 'lucide-react/dist/esm/icons/filter';
 
+// واجهة للمنتج الذي يتم تمريره للمكونات
+interface ProductListItemProps {
+  product: any;
+  handleAddToCart: (product: any) => void;
+}
+
 // مكون عرض المنتج في طريقة العرض القائمة
-const ProductListItem = ({ product, handleAddToCart }) => {
+const ProductListItem: React.FC<ProductListItemProps> = ({ product, handleAddToCart }) => {
   // تنسيق السعر برقمين عشريين
   const formattedPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -167,7 +173,7 @@ const ProductsPage: React.FC = () => {
   };
 
   // التعامل مع إضافة منتج إلى السلة
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product: any) => {
     try {
       const addToCart = require('../../store/cartStore').useCartStore.getState().addItem;
       addToCart(product);
