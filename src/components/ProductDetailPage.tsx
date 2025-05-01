@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
-import Layout from './Layout';
 import { Button } from './ui/Button';
 import { useCartStore } from '../store/cartStore';
 import toast from 'react-hot-toast';
 import ProductDetails from './ProductDetails';
 import FeaturedProducts from './FeaturedProducts';
-import NoSSR from './NoSSR';
+import { getProductById } from '../utils/supabaseClient';
 
-const ProductDetailPage: React.FC = () => {
+interface ProductDetailPageProps {
+  productId: number;
+  initialProductData?: any;
+  initialError?: string;
+}
+
+const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ 
+  productId, 
+  initialProductData, 
+  initialError 
+}) => {
   const router = useRouter();
-  const { id } = router.query;
   const { addItem } = useCartStore();
   
   // استخدام useState لتخزين المنتج بعد تحميله
@@ -20,9 +27,9 @@ const ProductDetailPage: React.FC = () => {
     isLoading: boolean;
     error: Error | null;
   }>({
-    product: null,
-    isLoading: true,
-    error: null
+    product: initialProductData || null,
+    isLoading: !initialProductData && !initialError,
+    error: initialError ? new Error(initialError) : null
   });
   
   // استخدام useEffect لضمان أننا نشغل هذا على جانب العميل فقط
@@ -31,23 +38,20 @@ const ProductDetailPage: React.FC = () => {
     setIsClient(true);
   }, []);
   
-  // استخدام useEffect لتحميل المنتج
+  // استخدام useEffect لتحميل المنتج إذا لم يكن لدينا بيانات أولية
   useEffect(() => {
-    // التأكد من وجود معرف المنتج قبل الاستعلام
-    if (!id) return;
+    // إذا كان لدينا بيانات أولية، لا حاجة للتحميل مرة أخرى
+    if (initialProductData || !productId) return;
     
     const fetchProduct = async () => {
       try {
         setProductData(prev => ({ ...prev, isLoading: true }));
-        const response = await fetch(`/api/products/${id}`);
         
-        if (!response.ok) {
-          throw new Error('المنتج غير موجود');
-        }
+        // استخدام الوظيفة المباشرة للحصول على المنتج
+        const product = await getProductById(productId);
         
-        const data = await response.json();
         setProductData({
-          product: data.product,
+          product,
           isLoading: false,
           error: null
         });
@@ -61,7 +65,7 @@ const ProductDetailPage: React.FC = () => {
     };
     
     fetchProduct();
-  }, [id]);
+  }, [productId, initialProductData]);
   
   const { product, isLoading, error } = productData;
 
@@ -91,7 +95,7 @@ const ProductDetailPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-6 rounded-lg">
           <h2 className="text-xl font-bold mb-2">خطأ في تحميل المنتج</h2>
-          <p>لم نتمكن من تحميل هذا المنتج. يرجى المحاولة مرة أخرى لاحقًا.</p>
+          <p>{error.message || 'لم نتمكن من تحميل هذا المنتج. يرجى المحاولة مرة أخرى لاحقًا.'}</p>
           <Button
             onClick={() => router.push('/products')}
             className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
