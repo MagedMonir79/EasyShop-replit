@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { db } from '@/server/db';
-import { products } from '@/shared/schema';
-import { eq } from 'drizzle-orm';
+import { getProductById } from '@/utils/supabaseClient';
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,19 +15,15 @@ export default async function handler(
     }
     
     if (req.method === 'GET') {
-      // الحصول على منتج واحد بناءً على المعرف مع معلومات الفئة
-      const [product] = await db.query.products.findMany({
-        where: eq(products.id, productId),
-        with: {
-          category: true
-        }
-      });
+      try {
+        // الحصول على منتج واحد بناءً على المعرف باستخدام وظيفة getProductById
+        const product = await getProductById(productId);
         
-      if (!product) {
+        return res.status(200).json({ product });
+      } catch (error) {
+        // إذا تم إلقاء خطأ من Supabase وكان السبب هو عدم وجود المنتج
         return res.status(404).json({ error: 'المنتج غير موجود' });
       }
-      
-      return res.status(200).json({ product });
     }
     
     return res.status(405).json({ error: 'Method not allowed' });

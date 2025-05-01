@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { db } from '@/server/db';
-import { products } from '@/shared/schema';
-import { eq } from 'drizzle-orm';
+import { getProducts } from '@/utils/supabaseClient';
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,12 +7,9 @@ export default async function handler(
 ) {
   try {
     if (req.method === 'GET') {
-      // الحصول على المنتجات المميزة مع معلومات الفئة
-      const featuredProducts = await db.query.products.findMany({
-        where: eq(products.is_featured, true),
-        with: {
-          category: true
-        },
+      // الحصول على المنتجات المميزة باستخدام الوظيفة getProducts
+      const featuredProducts = await getProducts({
+        featured: true,
         limit: 6
       });
         

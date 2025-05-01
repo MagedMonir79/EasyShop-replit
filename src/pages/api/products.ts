@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { db } from '@/server/db';
-import { products, categories } from '@/shared/schema';
-import { eq, like, and } from 'drizzle-orm';
+import { getProducts } from '@/utils/supabaseClient';
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,42 +7,34 @@ export default async function handler(
 ) {
   try {
     if (req.method === 'GET') {
-      const { category, search } = req.query;
+      const { category, search, limit } = req.query;
       
-      // أولاً، نحصل على معرف الفئة إذا تم تحديد فئة
-      let categoryId: number | undefined;
+      // ضبط خيارات البحث
+      const options: {
+        category?: string;
+        search?: string;
+        limit?: number;
+      } = {};
       
       if (category && typeof category === 'string') {
-        const [categoryData] = await db
-          .select()
-          .from(categories)
-          .where(eq(categories.slug, category));
-          
-        if (categoryData) {
-          categoryId = categoryData.id;
-        }
-      }
-      
-      // بناء شروط البحث
-      const whereConditions = [];
-      
-      if (categoryId) {
-        whereConditions.push(eq(products.category_id, categoryId));
+        options.category = category;
       }
       
       if (search && typeof search === 'string') {
-        whereConditions.push(like(products.name, `%${search}%`));
+        options.search = search;
       }
       
-      // استخدام db.query.products.findMany للحصول على المنتجات مع معلومات الفئة
-      const productsData = await db.query.products.findMany({
-        where: whereConditions.length > 0 ? and(...whereConditions) : undefined,
-        with: {
-          category: true
-        },
-        orderBy: products.created_at
-      });
-      return res.status(200).json({ products: productsData });
+      if (limit && typeof limit === 'string') {
+        const parsedLimit = parseInt(limit, 10);
+        if (!isNaN(parsedLimit) && parsedLimit > 0) {
+          options.limit = parsedLimit;
+        }
+      }
+      
+      // استخدام وظيفة getProducts للحصول على المنتجات من Supabase
+      const products = await getProducts(options);
+      
+      return res.status(200).json({ products });
     }
     
     return res.status(405).json({ error: 'Method not allowed' });
