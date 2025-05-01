@@ -27,7 +27,7 @@ const ProductDetailPage: React.FC = () => {
     ? new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
-      }).format(product.price)
+      }).format(typeof product.price === 'string' ? parseFloat(product.price) : product.price)
     : '';
 
   return (
@@ -88,18 +88,24 @@ const ProductDetailPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
               <div className="relative h-96 bg-gray-100 rounded-lg overflow-hidden">
-                <Image
-                  src={product.image_url}
-                  alt={product.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
+                {product.image_url ? (
+                  <Image
+                    src={product.image_url}
+                    alt={product.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                    <span className="text-gray-500">No image available</span>
+                  </div>
+                )}
               </div>
 
               <div>
                 <span className="inline-block bg-blue-100 text-primary rounded-full px-3 py-1 text-sm mb-4">
-                  {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+                  {product.category ? product.category.name : 'غير مصنف'}
                 </span>
                 <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
                 <p className="text-2xl font-bold text-primary mb-4">
@@ -140,7 +146,7 @@ const ProductDetailPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <h3 className="font-semibold text-gray-700">Category</h3>
-                  <p>{product.category.charAt(0).toUpperCase() + product.category.slice(1)}</p>
+                  <p>{product.category ? product.category.name : 'غير مصنف'}</p>
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-700">SKU</h3>

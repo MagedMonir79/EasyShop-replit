@@ -17,11 +17,13 @@ export default async function handler(
     }
     
     if (req.method === 'GET') {
-      // الحصول على منتج واحد بناءً على المعرف
-      const [product] = await db
-        .select()
-        .from(products)
-        .where(eq(products.id, productId));
+      // الحصول على منتج واحد بناءً على المعرف مع معلومات الفئة
+      const [product] = await db.query.products.findMany({
+        where: eq(products.id, productId),
+        with: {
+          category: true
+        }
+      });
         
       if (!product) {
         return res.status(404).json({ error: 'المنتج غير موجود' });
