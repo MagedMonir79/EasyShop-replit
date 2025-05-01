@@ -62,7 +62,7 @@ const HomePage: React.FC = () => {
             </div>
             <div className="hidden md:block relative h-[500px] animate-on-scroll opacity-0 transition-opacity duration-1000 delay-300">
               <Image
-                src="https://images.unsplash.com/photo-1571945227444-5856fa290ea5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+                src="https://images.unsplash.com/photo-1607082349566-187342175e2f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
                 alt="تسوق عبر الإنترنت"
                 fill
                 priority
@@ -435,18 +435,34 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-blue-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Start Shopping?</h2>
-          <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied customers who shop with EasyShop. Register today and get exclusive offers.
-          </p>
-          <Link href="/auth/signup">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
-              Create Your Account
-            </Button>
-          </Link>
+      {/* CTA Section - قسم الدعوة للتسجيل */}
+      <section className="py-16 bg-gradient-to-r from-blue-600 to-indigo-700 text-white relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-blue-900 opacity-50"></div>
+          <div className="absolute inset-0 bg-[url('/images/pattern-bg.svg')] opacity-5"></div>
+        </div>
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="max-w-3xl mx-auto animate-on-scroll opacity-0 transition-opacity duration-1000">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">هل أنت مستعد للتسوق؟</h2>
+            <p className="text-lg text-blue-100 mb-8 mx-auto">
+              انضم إلى آلاف العملاء الراضين الذين يتسوقون مع إيزي شوب. سجل اليوم واحصل على عروض حصرية.
+            </p>
+            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 justify-center">
+              <Link href="/auth/signup" className="sm:ml-4 rtl:sm:mr-4 rtl:sm:ml-0">
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 hover:shadow-glow transition-all duration-300 text-lg px-8 py-3 rounded-full">
+                  إنشاء حساب جديد
+                </Button>
+              </Link>
+              <Link href="/products">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/20 transition-all duration-300 text-lg px-8 py-3 rounded-full">
+                  تصفح المنتجات
+                </Button>
+              </Link>
+            </div>
+            <p className="mt-6 text-blue-200 text-sm">
+              بالفعل لديك حساب؟ <Link href="/auth/login" className="text-white hover:underline font-medium">تسجيل الدخول</Link>
+            </p>
+          </div>
         </div>
       </section>
     </Layout>

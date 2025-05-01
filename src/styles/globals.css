@@ -2,6 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Animation Classes */
+.animate-fade-in {
+  animation: fadeIn 0.8s ease forwards;
+  opacity: 1 !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hover\:shadow-glow:hover {
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+}
+
+/* RTL Support */
+[dir="rtl"] .space-x-reverse {
+  --tw-space-x-reverse: 1;
+}
+
+/* Dark Mode Styles */
+.dark body {
+  @apply bg-gray-900 text-white;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-indigo-500/50 rounded-full hover:bg-indigo-500;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
