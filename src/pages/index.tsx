@@ -1,5 +1,6 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
+import { Toaster } from 'react-hot-toast';
 
 // تحميل صفحة المنتجات الرئيسية بشكل ديناميكي وتعطيل SSR
 // لحل مشكلة hydration
@@ -18,5 +19,11 @@ const DynamicHomePage = dynamic(() => import('./homepage'), {
 });
 
 // تصدير المكون الديناميكي كمكون الصفحة الرئيسية
-const IndexPage = () => <DynamicHomePage />;
+const IndexPage = () => (
+  <div suppressHydrationWarning>
+    <DynamicHomePage />
+    <Toaster position="bottom-center" />
+  </div>
+);
+
 export default IndexPage;

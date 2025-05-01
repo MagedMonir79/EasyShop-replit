@@ -1,22 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1440" height="800" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="600" height="600" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g opacity="0.5">
-    <circle cx="110" cy="100" r="20" fill="white" fill-opacity="0.1"/>
-    <circle cx="220" cy="250" r="40" fill="white" fill-opacity="0.1"/>
-    <circle cx="370" cy="170" r="30" fill="white" fill-opacity="0.1"/>
-    <circle cx="530" cy="310" r="25" fill="white" fill-opacity="0.1"/>
-    <circle cx="690" cy="120" r="35" fill="white" fill-opacity="0.1"/>
-    <circle cx="830" cy="380" r="45" fill="white" fill-opacity="0.1"/>
-    <circle cx="980" cy="210" r="20" fill="white" fill-opacity="0.1"/>
-    <circle cx="1140" cy="300" r="30" fill="white" fill-opacity="0.1"/>
-    <circle cx="1300" cy="150" r="40" fill="white" fill-opacity="0.1"/>
-    <circle cx="210" cy="450" r="25" fill="white" fill-opacity="0.1"/>
-    <circle cx="370" cy="520" r="35" fill="white" fill-opacity="0.1"/>
-    <circle cx="560" cy="650" r="45" fill="white" fill-opacity="0.1"/>
-    <circle cx="730" cy="550" r="20" fill="white" fill-opacity="0.1"/>
-    <circle cx="890" cy="670" r="30" fill="white" fill-opacity="0.1"/>
-    <circle cx="1070" cy="490" r="40" fill="white" fill-opacity="0.1"/>
-    <circle cx="1230" cy="600" r="25" fill="white" fill-opacity="0.1"/>
-    <circle cx="1320" cy="480" r="35" fill="white" fill-opacity="0.1"/>
+    <path d="M30 60C30 43.4315 43.4315 30 60 30H120C136.569 30 150 43.4315 150 60V120C150 136.569 136.569 150 120 150H60C43.4315 150 30 136.569 30 120V60Z" stroke="white" stroke-width="2"/>
+    <path d="M210 60C210 43.4315 223.431 30 240 30H300C316.569 30 330 43.4315 330 60V120C330 136.569 316.569 150 300 150H240C223.431 150 210 136.569 210 120V60Z" stroke="white" stroke-width="2"/>
+    <path d="M390 60C390 43.4315 403.431 30 420 30H480C496.569 30 510 43.4315 510 60V120C510 136.569 496.569 150 480 150H420C403.431 150 390 136.569 390 120V60Z" stroke="white" stroke-width="2"/>
+    <path d="M30 240C30 223.431 43.4315 210 60 210H120C136.569 210 150 223.431 150 240V300C150 316.569 136.569 330 120 330H60C43.4315 330 30 316.569 30 300V240Z" stroke="white" stroke-width="2"/>
+    <path d="M210 240C210 223.431 223.431 210 240 210H300C316.569 210 330 223.431 330 240V300C330 316.569 316.569 330 300 330H240C223.431 330 210 316.569 210 300V240Z" stroke="white" stroke-width="2"/>
+    <path d="M390 240C390 223.431 403.431 210 420 210H480C496.569 210 510 223.431 510 240V300C510 316.569 496.569 330 480 330H420C403.431 330 390 316.569 390 300V240Z" stroke="white" stroke-width="2"/>
+    <path d="M30 420C30 403.431 43.4315 390 60 390H120C136.569 390 150 403.431 150 420V480C150 496.569 136.569 510 120 510H60C43.4315 510 30 496.569 30 480V420Z" stroke="white" stroke-width="2"/>
+    <path d="M210 420C210 403.431 223.431 390 240 390H300C316.569 390 330 403.431 330 420V480C330 496.569 316.569 510 300 510H240C223.431 510 210 496.569 210 480V420Z" stroke="white" stroke-width="2"/>
+    <path d="M390 420C390 403.431 403.431 390 420 390H480C496.569 390 510 403.431 510 420V480C510 496.569 496.569 510 480 510H420C403.431 510 390 496.569 390 480V420Z" stroke="white" stroke-width="2"/>
+    
+    <circle cx="60" cy="60" r="15" fill="white" fill-opacity="0.1"/>
+    <circle cx="240" cy="60" r="15" fill="white" fill-opacity="0.1"/>
+    <circle cx="420" cy="60" r="15" fill="white" fill-opacity="0.1"/>
+    <circle cx="60" cy="240" r="15" fill="white" fill-opacity="0.1"/>
+    <circle cx="240" cy="240" r="15" fill="white" fill-opacity="0.1"/>
+    <circle cx="420" cy="240" r="15" fill="white" fill-opacity="0.1"/>
+    <circle cx="60" cy="420" r="15" fill="white" fill-opacity="0.1"/>
+    <circle cx="240" cy="420" r="15" fill="white" fill-opacity="0.1"/>
+    <circle cx="420" cy="420" r="15" fill="white" fill-opacity="0.1"/>
+
+    <line x1="150" y1="60" x2="210" y2="60" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
+    <line x1="330" y1="60" x2="390" y2="60" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
+    <line x1="150" y1="240" x2="210" y2="240" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
+    <line x1="330" y1="240" x2="390" y2="240" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
+    <line x1="150" y1="420" x2="210" y2="420" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
+    <line x1="330" y1="420" x2="390" y2="420" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
+
+    <line x1="60" y1="150" x2="60" y2="210" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
+    <line x1="240" y1="150" x2="240" y2="210" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
+    <line x1="420" y1="150" x2="420" y2="210" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
+    <line x1="60" y1="330" x2="60" y2="390" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
+    <line x1="240" y1="330" x2="240" y2="390" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
+    <line x1="420" y1="330" x2="420" y2="390" stroke="white" stroke-width="2" stroke-dasharray="5 5"/>
   </g>
 </svg>
