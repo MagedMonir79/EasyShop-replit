@@ -3,11 +3,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../hooks/useAuth';
 import { useCartStore } from '../store/cartStore';
+import { useLanguageStore } from '../store/languageStore';
 import SearchBar from './SearchBar';
 
 const Navbar: React.FC = () => {
   const { user, signOut } = useAuth();
   const getTotalItems = useCartStore((state) => state.getTotalItems);
+  const { language, toggleLanguage } = useLanguageStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
@@ -41,7 +43,7 @@ const Navbar: React.FC = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <span className="text-2xl font-bold text-primary">إيزي شوب</span>
+            <span className="text-2xl font-bold text-primary">EasyShop</span>
           </Link>
 
           {/* Desktop Navigation */}

@@ -18,13 +18,31 @@ export const useAuth = () => {
   const { user, setUser, isLoading, setLoading } = useUserStore();
 
   useEffect(() => {
-    // محاكاة تأخير تحميل البيانات
-    const timer = setTimeout(() => {
-      // بشكل افتراضي، المستخدم غير مسجل الدخول
-      setUser(null);
-      setLoading(false);
-    }, 500);
+    // تحقق من حالة تسجيل الدخول عند بدء التشغيل
+    const checkUserSession = async () => {
+      try {
+        // محاولة استرداد معلومات المستخدم من التخزين المحلي
+        const storedUser = localStorage.getItem('user');
+        
+        if (storedUser) {
+          // إذا وجدنا معلومات المستخدم في التخزين المحلي، نستعيدها
+          setUser(JSON.parse(storedUser));
+        } else {
+          // إذا لم نجد معلومات المستخدم، نضبط الحالة على غير مسجل الدخول
+          setUser(null);
+        }
+      } catch (error) {
+        // في حالة وجود خطأ، نفترض أن المستخدم غير مسجل الدخول
+        console.error('خطأ في استرداد جلسة المستخدم:', error);
+        setUser(null);
+      } finally {
+        // في النهاية، نضبط حالة التحميل على false
+        setLoading(false);
+      }
+    };
 
+    // استدعاء الدالة مع تأخير قصير لضمان تحميل الصفحة
+    const timer = setTimeout(checkUserSession, 300);
     return () => clearTimeout(timer);
   }, []);
 
@@ -35,6 +53,8 @@ export const useAuth = () => {
       
       // التحقق البسيط من بيانات الاعتماد (للتطوير فقط)
       if (email === 'user@example.com' && password === 'password') {
+        // حفظ بيانات المستخدم في التخزين المحلي
+        localStorage.setItem('user', JSON.stringify(mockUser));
         setUser(mockUser);
         router.push('/');
         return { success: true };
@@ -65,6 +85,8 @@ export const useAuth = () => {
         avatar_url: 'https://randomuser.me/api/portraits/lego/1.jpg',
       };
       
+      // حفظ بيانات المستخدم في التخزين المحلي
+      localStorage.setItem('user', JSON.stringify(newUser));
       setUser(newUser);
       router.push('/');
       return { success: true };
@@ -78,6 +100,8 @@ export const useAuth = () => {
       // تأخير وهمي لمحاكاة طلب API
       await new Promise(resolve => setTimeout(resolve, 500));
       
+      // حذف بيانات المستخدم من التخزين المحلي
+      localStorage.removeItem('user');
       setUser(null);
       router.push('/');
     } catch (error: any) {
@@ -94,10 +118,14 @@ export const useAuth = () => {
       // تأخير وهمي لمحاكاة طلب API
       await new Promise(resolve => setTimeout(resolve, 800));
       
-      setUser({
+      const updatedUser = {
         ...user,
         ...updates,
-      });
+      };
+      
+      // تحديث بيانات المستخدم في التخزين المحلي
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
 
       return { success: true };
     } catch (error: any) {
