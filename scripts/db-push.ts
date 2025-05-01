@@ -1,23 +1,31 @@
 import { exec } from 'child_process';
 import dotenv from 'dotenv';
 
-// تحميل متغيرات البيئة
+// Load environment variables from .env files
 dotenv.config({ path: './.env.local' });
+dotenv.config({ path: './.env' });
 
-// التأكد من وجود متغير DATABASE_URL
+// Log environment variables for debugging (without exposing values)
+console.log('Environment variables:');
+console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Defined' : 'Not defined');
+console.log('PGDATABASE:', process.env.PGDATABASE ? 'Defined' : 'Not defined');
+console.log('PGHOST:', process.env.PGHOST ? 'Defined' : 'Not defined');
+console.log('PGPORT:', process.env.PGPORT ? 'Defined' : 'Not defined');
+
+// Check if DATABASE_URL is defined
 if (!process.env.DATABASE_URL) {
   console.error('DATABASE_URL environment variable is not defined');
   process.exit(1);
 }
 
-// تسجيل متغير البيئة للأمر
+// Set environment variables for the command
 const env = { ...process.env };
-const command = 'npx drizzle-kit push';
+const command = 'DATABASE_URL="' + process.env.DATABASE_URL + '" npx drizzle-kit push';
 
 console.log('Starting database schema push...');
 console.log(`Running command: ${command}`);
 
-// تنفيذ الأمر
+// Execute the command
 const child = exec(command, { env });
 
 child.stdout?.on('data', (data) => {

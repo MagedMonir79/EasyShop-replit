@@ -245,22 +245,11 @@ export const useAuth = () => {
         success: true,
       };
     } catch (error: any) {
-      // Get appropriate error message based on language
-      let customError = 'Error during Google sign-in';
-      
-      if (typeof window !== 'undefined') {
-        const storedLanguage = localStorage.getItem('language-storage');
-        if (storedLanguage) {
-          try {
-            const languageState = JSON.parse(storedLanguage);
-            if (languageState.state?.language === 'ar') {
-              customError = 'حدث خطأ أثناء تسجيل الدخول باستخدام Google';
-            }
-          } catch (e) {
-            // Use default English error if parsing fails
-          }
-        }
-      }
+      // Get localized error message
+      let customError = getLocalizedMessage(
+        'Error during Google sign-in',
+        'حدث خطأ أثناء تسجيل الدخول باستخدام Google'
+      );
       
       if (error.message) {
         customError = error.message;
