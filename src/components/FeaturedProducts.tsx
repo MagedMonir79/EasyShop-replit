@@ -1,11 +1,50 @@
 import React from 'react';
 import Link from 'next/link';
 import ProductCard from './ProductCard';
-import { useProducts } from '../hooks/useProducts';
+// استبدلنا useProducts بـ fetch مباشر
 
 const FeaturedProducts: React.FC = () => {
-  const { useFeaturedProductsQuery } = useProducts();
-  const { data: products, isLoading, error } = useFeaturedProductsQuery();
+  // استخدام useState و useEffect بدلاً من useQuery للتخفيف من مشاكل Hydration
+  const [productData, setProductData] = React.useState<{
+    products: any[] | null;
+    isLoading: boolean;
+    error: Error | null;
+  }>({
+    products: null,
+    isLoading: true,
+    error: null
+  });
+  
+  // استخدام useEffect للحصول على المنتجات المميزة
+  React.useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        setProductData(prev => ({ ...prev, isLoading: true }));
+        const response = await fetch('/api/products/featured');
+        
+        if (!response.ok) {
+          throw new Error('فشل في تحميل المنتجات المميزة');
+        }
+        
+        const data = await response.json();
+        setProductData({
+          products: data.products,
+          isLoading: false,
+          error: null
+        });
+      } catch (error) {
+        setProductData({
+          products: null,
+          isLoading: false,
+          error: error as Error
+        });
+      }
+    };
+    
+    fetchFeaturedProducts();
+  }, []);
+  
+  const { products, isLoading, error } = productData;
 
   if (isLoading) {
     return (

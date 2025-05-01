@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Layout from '../../components/Layout';
-import { useProducts } from '../../hooks/useProducts';
+// استبدلنا useProducts بـ fetch مباشر
 import { Button } from '../../components/ui/Button';
 import { useCartStore } from '../../store/cartStore';
 import toast from 'react-hot-toast';
@@ -11,14 +11,57 @@ import FeaturedProducts from '../../components/FeaturedProducts';
 const ProductDetailPage: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { useProductQuery } = useProducts();
-  const { data: product, isLoading, error } = useProductQuery(Number(id));
   const { addItem } = useCartStore();
+  
+  // استخدام useState لتخزين المنتج بعد تحميله
+  const [productData, setProductData] = React.useState<{
+    product: any | null;
+    isLoading: boolean;
+    error: Error | null;
+  }>({
+    product: null,
+    isLoading: true,
+    error: null
+  });
+  
+  // استخدام useEffect بدلاً من useQuery لتجنب مشاكل Hydration
+  React.useEffect(() => {
+    // التأكد من وجود معرف المنتج قبل الاستعلام
+    if (!id) return;
+    
+    const fetchProduct = async () => {
+      try {
+        setProductData(prev => ({ ...prev, isLoading: true }));
+        const response = await fetch(`/api/products/${id}`);
+        
+        if (!response.ok) {
+          throw new Error('المنتج غير موجود');
+        }
+        
+        const data = await response.json();
+        setProductData({
+          product: data.product,
+          isLoading: false,
+          error: null
+        });
+      } catch (error) {
+        setProductData({
+          product: null,
+          isLoading: false,
+          error: error as Error
+        });
+      }
+    };
+    
+    fetchProduct();
+  }, [id]);
+  
+  const { product, isLoading, error } = productData;
 
   const handleAddToCart = () => {
     if (product) {
       addItem(product);
-      toast.success('Added to cart');
+      toast.success('تمت الإضافة إلى السلة');
     }
   };
 
