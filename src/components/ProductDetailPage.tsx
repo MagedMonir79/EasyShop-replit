@@ -5,7 +5,6 @@ import { useCartStore } from '../store/cartStore';
 import toast from 'react-hot-toast';
 import ProductDetails from './ProductDetails';
 import FeaturedProducts from './FeaturedProducts';
-import { getProductById } from '../utils/supabaseClient';
 
 interface ProductDetailPageProps {
   productId: number;
@@ -21,7 +20,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const router = useRouter();
   const { addItem } = useCartStore();
   
-  // استخدام useState لتخزين المنتج بعد تحميله
+  // استخدام useState لتخزين حالة المنتج
   const [productData, setProductData] = useState<{
     product: any | null;
     isLoading: boolean;
@@ -37,35 +36,6 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
-  // استخدام useEffect لتحميل المنتج إذا لم يكن لدينا بيانات أولية
-  useEffect(() => {
-    // إذا كان لدينا بيانات أولية، لا حاجة للتحميل مرة أخرى
-    if (initialProductData || !productId) return;
-    
-    const fetchProduct = async () => {
-      try {
-        setProductData(prev => ({ ...prev, isLoading: true }));
-        
-        // استخدام الوظيفة المباشرة للحصول على المنتج
-        const product = await getProductById(productId);
-        
-        setProductData({
-          product,
-          isLoading: false,
-          error: null
-        });
-      } catch (error) {
-        setProductData({
-          product: null,
-          isLoading: false,
-          error: error as Error
-        });
-      }
-    };
-    
-    fetchProduct();
-  }, [productId, initialProductData]);
   
   const { product, isLoading, error } = productData;
 
