@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from './ui/Button';
 import { useCartStore } from '../store/cartStore';
@@ -37,6 +37,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onBack }) => {
   
   // مشاركة المنتج
   const handleShare = () => {
+    // التحقق من أننا على جانب العميل
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+      return;
+    }
+    
     // محاولة استخدام واجهة المشاركة الحديثة إذا كانت متوفرة
     if (navigator.share) {
       navigator.share({
@@ -48,11 +53,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onBack }) => {
         console.error('فشل في المشاركة:', error);
         toast.error('فشل في مشاركة المنتج');
       });
-    } else {
+    } else if (navigator.clipboard) {
       // نسخ الرابط إلى الحافظة كحل بديل
       navigator.clipboard.writeText(window.location.href)
         .then(() => toast.success('تم نسخ رابط المنتج'))
         .catch(() => toast.error('فشل في نسخ الرابط'));
+    } else {
+      // إذا لم تكن الميزات متاحة
+      toast.error('المشاركة غير متاحة في هذا المتصفح');
     }
   };
   

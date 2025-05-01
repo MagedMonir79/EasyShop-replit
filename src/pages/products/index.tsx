@@ -148,7 +148,7 @@ const ProductsPage: React.FC = () => {
     }, undefined, { shallow: true });
 
     // إغلاق قائمة الفلاتر على الشاشات الصغيرة بعد الاختيار
-    if (window.innerWidth < 1024) {
+    if (isClient && typeof window !== 'undefined' && window.innerWidth < 1024) {
       setShowFilters(false);
     }
   };
@@ -168,7 +168,7 @@ const ProductsPage: React.FC = () => {
     }, undefined, { shallow: true });
 
     // إغلاق قائمة الفلاتر على الشاشات الصغيرة بعد البحث
-    if (window.innerWidth < 1024) {
+    if (isClient && typeof window !== 'undefined' && window.innerWidth < 1024) {
       setShowFilters(false);
     }
   };
@@ -188,6 +188,12 @@ const ProductsPage: React.FC = () => {
   const toggleViewMode = () => {
     setViewMode(viewMode === 'grid' ? 'list' : 'grid');
   };
+
+  // استخدام useEffect لضمان أننا نشغل هذا على جانب العميل فقط
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // التبديل بين إظهار وإخفاء الفلاتر على الشاشات الصغيرة
   const toggleFilters = () => {
@@ -282,7 +288,7 @@ const ProductsPage: React.FC = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* الشريط الجانبي مع الفلاتر */}
-          <div className={`lg:col-span-1 ${showFilters || window.innerWidth >= 1024 ? 'block' : 'hidden'}`}>
+          <div className={`lg:col-span-1 ${showFilters || isClient ? 'block' : 'hidden'} lg:block`}>
             <div className="sticky top-24 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">الفلاتر</h2>
               

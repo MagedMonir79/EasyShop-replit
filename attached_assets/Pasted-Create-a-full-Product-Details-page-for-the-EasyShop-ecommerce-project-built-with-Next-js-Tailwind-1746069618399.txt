@@ -1,0 +1,46 @@
+Create a full "Product Details" page for the EasyShop ecommerce project built with Next.js, Tailwind CSS, and Supabase.
+
+The page should appear when clicking on a product from the Products page (`/products/[id]`).
+
+Here’s what I want the Product Details page to include:
+
+1. **Basic Product Data:**
+   - Fetch the selected product from Supabase using the `id` in the URL.
+   - Display: large product image, product name, price, category, description.
+
+2. **Design & Layout:**
+   - Place the product image on the left (or top on mobile).
+   - Product info on the right with prominent name and price.
+   - Use modern, clean layout that matches the homepage and products page.
+   - Must be responsive on all screen sizes (mobile first).
+
+3. **Action Button:**
+   - Add a button labeled "Add to Cart" (doesn't need to be functional yet).
+   - Style the button with a glowing green accent and hover animation.
+
+4. **Support for Arabic:**
+   - Support RTL layout based on browser or a language toggle.
+   - Adjust alignment, fonts, and spacing for both LTR and RTL.
+
+5. **Loading & Error Handling:**
+   - Show a loading spinner while fetching product.
+   - Display a friendly error or "Product Not Found" message if the ID is invalid.
+
+6. **Product Reviews:**
+   - Create a section under the product info titled "Customer Reviews".
+   - Fetch reviews from a `reviews` table in Supabase where `product_id` matches.
+   - Each review shows: reviewer name, rating (1 to 5 stars), comment, and date.
+   - Display average rating at the top (rounded to one decimal).
+   - If no reviews exist, show an empty state message like "No reviews yet".
+   - (Optional) Add a basic form to submit a new review (name, stars, comment) but keep it inactive for now.
+
+7. **Extras (optional but encouraged):**
+   - Display 3 to 4 suggested products below (from same category, random if none).
+   - Allow zoom on image (optional).
+   - Add subtle animations when the product info loads.
+
+8. **Routing & Structure:**
+   - The page should be dynamically routed using Next.js dynamic routes (`/products/[id]`).
+   - Use getServerSideProps or equivalent to fetch product data if needed.
+
+This page is focused on customer viewing only. No editing or admin actions should be shown. Make the experience feel premium and smooth.
