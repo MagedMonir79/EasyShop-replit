@@ -1,12 +1,15 @@
 export type Product = {
   id: number;
   name: string;
-  description: string;
-  price: number;
-  image_url: string;
-  category: string;
-  stock: number;
-  created_at: string;
+  description: string | null;
+  price: string | number;
+  image_url: string | null;
+  category_id?: number | null;
+  category?: string;
+  stock: number | null;
+  is_featured?: boolean | null;
+  created_at: string | Date | null;
+  updated_at?: string | Date | null;
 };
 
 export type CartItem = {

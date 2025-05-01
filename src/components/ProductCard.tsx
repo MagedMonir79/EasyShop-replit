@@ -22,14 +22,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const formattedPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-  }).format(product.price);
+  }).format(typeof product.price === 'string' ? parseFloat(product.price) : product.price);
 
   return (
     <div className="product-card group">
       <Link href={`/products/${product.id}`} className="block h-full">
         <div className="relative aspect-square overflow-hidden">
           <Image
-            src={product.image_url}
+            src={product.image_url || 'https://via.placeholder.com/300'}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

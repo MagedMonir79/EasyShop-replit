@@ -42,12 +42,12 @@ const ProductsPage: React.FC = () => {
     }
   }, [categoryParam, searchParam]);
 
-  const handleCategoryChange = (category?: string) => {
-    setSelectedCategory(category);
+  const handleCategoryChange = (categorySlug?: string) => {
+    setSelectedCategory(categorySlug);
     
     // Update URL
     const query: { category?: string; search?: string } = {};
-    if (category) query.category = category;
+    if (categorySlug) query.category = categorySlug;
     if (searchQuery) query.search = searchQuery;
     
     router.push({
@@ -122,15 +122,15 @@ const ProductsPage: React.FC = () => {
                     </button>
                     {categories?.map((category) => (
                       <button
-                        key={category}
-                        onClick={() => handleCategoryChange(category)}
+                        key={category.id}
+                        onClick={() => handleCategoryChange(category.slug)}
                         className={`block w-full text-left px-3 py-2 rounded-md ${
-                          selectedCategory === category
+                          selectedCategory === category.slug
                             ? 'bg-primary text-white'
                             : 'hover:bg-gray-100'
                         }`}
                       >
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                        {category.name}
                       </button>
                     ))}
                   </div>
@@ -163,7 +163,7 @@ const ProductsPage: React.FC = () => {
                 <div className="mb-6">
                   <h2 className="text-xl font-semibold">
                     {selectedCategory
-                      ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Products`
+                      ? `${selectedCategory} Products`
                       : 'All Products'}
                     {searchQuery && ` matching "${searchQuery}"`}
                   </h2>
