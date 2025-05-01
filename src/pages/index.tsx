@@ -2,9 +2,32 @@ import React, { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '../components/Layout';
-import FeaturedProducts from '../components/FeaturedProducts';
 import { Button } from '../components/ui/Button';
-import NoSSR from '../components/NoSSR';
+import dynamic from 'next/dynamic';
+
+// استيراد المكونات بشكل ديناميكي لتجنب مشاكل hydration
+const FeaturedProducts = dynamic(() => import('../components/FeaturedProducts'), {
+  ssr: false,
+  loading: () => (
+    <div className="py-16">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center mb-12">منتجات مميزة</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 animate-pulse">
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className="bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
+              <div className="h-64 bg-gray-300 dark:bg-gray-700"></div>
+              <div className="p-4 space-y-3">
+                <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div>
+                <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded w-1/3"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+});
 
 const HomePage: React.FC = () => {
   // إضافة تأثيرات حركية عند التمرير
@@ -186,10 +209,8 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Featured Products Section */}
-      <NoSSR>
-        <FeaturedProducts />
-      </NoSSR>
+      {/* Featured Products Section - قسم المنتجات المميزة */}
+      <FeaturedProducts />
       
       {/* Advertisement Banner - قسم الإعلانات */}
       <section className="py-12 bg-gradient-to-r from-indigo-600 to-purple-600 overflow-hidden relative">
