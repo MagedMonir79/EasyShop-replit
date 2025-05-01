@@ -41,7 +41,7 @@ const Navbar: React.FC = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <span className="text-2xl font-bold text-primary">EasyShop</span>
+            <span className="text-2xl font-bold text-primary">إيزي شوب</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -54,7 +54,7 @@ const Navbar: React.FC = () => {
                   : 'text-foreground hover:text-primary'
               }`}
             >
-              Products
+              المنتجات
             </Link>
             <div className="w-64">
               <SearchBar />
@@ -92,35 +92,46 @@ const Navbar: React.FC = () => {
 
             {user ? (
               <div className="relative group">
-                <button className="flex items-center space-x-1 text-sm font-medium focus:outline-none">
-                  <span>Hi, {user.first_name || 'User'}</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="feather feather-chevron-down"
-                  >
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
+                <button className="flex items-center space-x-1 rtl:space-x-reverse text-sm font-medium focus:outline-none">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 overflow-hidden">
+                      {user.avatar_url ? (
+                        <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-blue-500 text-white font-bold">
+                          {user.first_name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                        </div>
+                      )}
+                    </div>
+                    <span className="text-primary">مرحبًا، {user.first_name || 'المستخدم'}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="feather feather-chevron-down"
+                    >
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
                 </button>
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+                <div className="absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
                   <Link
                     href="/profile"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    Profile
+                    الملف الشخصي
                   </Link>
                   <button
                     onClick={handleSignOut}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="block w-full text-left rtl:text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    Sign Out
+                    تسجيل الخروج
                   </button>
                 </div>
               </div>
@@ -129,7 +140,7 @@ const Navbar: React.FC = () => {
                 href="/auth/login"
                 className="text-sm font-medium px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
               >
-                Login
+                تسجيل الدخول
               </Link>
             )}
           </div>
@@ -213,22 +224,35 @@ const Navbar: React.FC = () => {
             className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Products
+            المنتجات
           </Link>
           {user ? (
             <>
+              {/* عرض اسم المستخدم وصورته في القائمة المتنقلة */}
+              <div className="flex items-center gap-2 px-3 py-2 text-primary font-medium">
+                <div className="w-8 h-8 rounded-full bg-blue-100 overflow-hidden">
+                  {user.avatar_url ? (
+                    <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-blue-500 text-white font-bold">
+                      {user.first_name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                    </div>
+                  )}
+                </div>
+                <span>مرحبًا، {user.first_name || 'المستخدم'}</span>
+              </div>
               <Link
                 href="/profile"
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Profile
+                الملف الشخصي
               </Link>
               <button
                 onClick={handleSignOut}
-                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
+                className="block w-full text-right px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
               >
-                Sign Out
+                تسجيل الخروج
               </button>
             </>
           ) : (
@@ -237,7 +261,7 @@ const Navbar: React.FC = () => {
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Login
+              تسجيل الدخول
             </Link>
           )}
         </div>
