@@ -9,12 +9,14 @@ export default async function handler(
 ) {
   try {
     if (req.method === 'GET') {
-      // الحصول على المنتجات المميزة
-      const featuredProducts = await db
-        .select()
-        .from(products)
-        .where(eq(products.is_featured, true))
-        .limit(6);
+      // الحصول على المنتجات المميزة مع معلومات الفئة
+      const featuredProducts = await db.query.products.findMany({
+        where: eq(products.is_featured, true),
+        with: {
+          category: true
+        },
+        limit: 6
+      });
         
       return res.status(200).json({ products: featuredProducts });
     }

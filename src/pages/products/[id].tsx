@@ -154,7 +154,7 @@ const ProductDetailPage: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-700">Added On</h3>
-                  <p>{new Date(product.created_at).toLocaleDateString()}</p>
+                  <p>{typeof product.created_at === 'string' ? new Date(product.created_at).toISOString().split('T')[0] : '---'}</p>
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-700">Stock</h3>

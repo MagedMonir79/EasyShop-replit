@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Product } from '../utils/types';
+import type { Product } from '@/shared/schema';
 import { useCartStore } from '../store/cartStore';
 import { Button } from './ui/Button';
 import { cn } from '../utils/cn';
@@ -44,6 +44,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
         </div>
         <div className="p-4">
+          {product.category && (
+            <span className="inline-block bg-blue-100 text-primary rounded-full px-2 py-0.5 text-xs mb-2">
+              {product.category.name}
+            </span>
+          )}
           <h3 className="font-medium text-gray-900 mb-1 truncate">{product.name}</h3>
           <p className="text-sm text-gray-500 mb-3 line-clamp-2">{product.description}</p>
           <div className="flex items-center justify-between">
