@@ -2,13 +2,21 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['images.unsplash.com', 'localhost', '127.0.0.1'],
-    // Add your Supabase storage domain for avatar images
+    // تم استبدال domains بـ remotePatterns حسب توصية Next.js
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'randomuser.me',
+        pathname: '/api/portraits/**',
+      },
+      {
+        protocol: 'https',
         hostname: '**supabase.co',
-        port: '',
         pathname: '/storage/v1/object/public/**',
       },
     ],
