@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
                   : 'text-foreground hover:text-primary'
               }`}
             >
-              المنتجات
+              {language === 'en' ? 'Products' : 'المنتجات'}
             </Link>
             <div className="w-64">
               <SearchBar />
@@ -64,7 +64,16 @@ const Navbar: React.FC = () => {
           </nav>
 
           {/* Desktop Right Side */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4 rtl:space-x-reverse">
+            {/* Language Toggle Button */}
+            <button 
+              onClick={toggleLanguage}
+              className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-xs font-bold transition-colors"
+              aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
+            >
+              {language === 'en' ? 'AR' : 'EN'}
+            </button>
+            
             <Link
               href="/cart"
               className="relative p-2 text-gray-700 hover:text-primary"
@@ -105,7 +114,11 @@ const Navbar: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    <span className="text-primary">مرحبًا، {user.first_name || 'المستخدم'}</span>
+                    <span className="text-primary">
+                      {language === 'en' 
+                        ? `Hi, ${user.first_name || 'User'}` 
+                        : `مرحبًا، ${user.first_name || 'المستخدم'}`}
+                    </span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -127,13 +140,13 @@ const Navbar: React.FC = () => {
                     href="/profile"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    الملف الشخصي
+                    {language === 'en' ? 'Profile' : 'الملف الشخصي'}
                   </Link>
                   <button
                     onClick={handleSignOut}
                     className="block w-full text-left rtl:text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    تسجيل الخروج
+                    {language === 'en' ? 'Sign out' : 'تسجيل الخروج'}
                   </button>
                 </div>
               </div>
@@ -142,7 +155,7 @@ const Navbar: React.FC = () => {
                 href="/auth/login"
                 className="text-sm font-medium px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
               >
-                تسجيل الدخول
+                {language === 'en' ? 'Sign in' : 'تسجيل الدخول'}
               </Link>
             )}
           </div>
@@ -221,13 +234,24 @@ const Navbar: React.FC = () => {
           <div className="px-4 py-2">
             <SearchBar />
           </div>
-          <Link
-            href="/products"
-            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            المنتجات
-          </Link>
+          <div className="flex px-3 py-2 items-center justify-between">
+            <Link
+              href="/products"
+              className="text-base font-medium text-gray-700 hover:text-primary"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {language === 'en' ? 'Products' : 'المنتجات'}
+            </Link>
+            
+            {/* Language Toggle Button (Mobile) */}
+            <button 
+              onClick={toggleLanguage}
+              className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-xs font-bold transition-colors"
+              aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
+            >
+              {language === 'en' ? 'AR' : 'EN'}
+            </button>
+          </div>
           {user ? (
             <>
               {/* عرض اسم المستخدم وصورته في القائمة المتنقلة */}
@@ -241,20 +265,24 @@ const Navbar: React.FC = () => {
                     </div>
                   )}
                 </div>
-                <span>مرحبًا، {user.first_name || 'المستخدم'}</span>
+                <span>
+                  {language === 'en' 
+                    ? `Hi, ${user.first_name || 'User'}` 
+                    : `مرحبًا، ${user.first_name || 'المستخدم'}`}
+                </span>
               </div>
               <Link
                 href="/profile"
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                الملف الشخصي
+                {language === 'en' ? 'Profile' : 'الملف الشخصي'}
               </Link>
               <button
                 onClick={handleSignOut}
-                className="block w-full text-right px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
+                className={`block w-full ${language === 'en' ? 'text-left' : 'text-right'} px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50`}
               >
-                تسجيل الخروج
+                {language === 'en' ? 'Sign out' : 'تسجيل الخروج'}
               </button>
             </>
           ) : (
@@ -263,7 +291,7 @@ const Navbar: React.FC = () => {
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              تسجيل الدخول
+              {language === 'en' ? 'Sign in' : 'تسجيل الدخول'}
             </Link>
           )}
         </div>
