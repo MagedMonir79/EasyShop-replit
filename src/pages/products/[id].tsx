@@ -1,19 +1,16 @@
 import React from 'react';
-import dynamic from 'next/dynamic';
 import Layout from '../../components/Layout';
+import NoSSR from '../../components/NoSSR';
+import ProductDetailPage from '../../components/ProductDetailPage';
 
-// تحميل صفحة المنتج بالكامل على جانب العميل فقط (بدون تصيير على الخادم)
-const ProductDetailPageClient = dynamic(
-  () => import('../../components/ProductDetailPage'),
-  { ssr: false }
-);
-
-const ProductDetailPage: React.FC = () => {
+const ProductPage: React.FC = () => {
   return (
     <Layout title="تفاصيل المنتج | EasyShop" description="تفاصيل المنتج">
-      <ProductDetailPageClient />
+      <NoSSR>
+        <ProductDetailPage />
+      </NoSSR>
     </Layout>
   );
 };
 
-export default ProductDetailPage;
+export default ProductPage;

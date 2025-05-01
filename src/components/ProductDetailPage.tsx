@@ -7,6 +7,7 @@ import { useCartStore } from '../store/cartStore';
 import toast from 'react-hot-toast';
 import ProductDetails from './ProductDetails';
 import FeaturedProducts from './FeaturedProducts';
+import NoSSR from './NoSSR';
 
 const ProductDetailPage: React.FC = () => {
   const router = useRouter();
@@ -94,7 +95,9 @@ const ProductDetailPage: React.FC = () => {
           
           {/* قسم المنتجات المشابهة */}
           <h2 className="text-2xl font-bold mb-6">قد يعجبك أيضًا</h2>
-          <FeaturedProducts />
+          <NoSSR>
+            <FeaturedProducts />
+          </NoSSR>
         </>
       ) : null}
     </div>
