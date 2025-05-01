@@ -5,11 +5,89 @@ import ProductCard from '../../components/ProductCard';
 import { useProducts } from '../../hooks/useProducts';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+import ListIcon from 'lucide-react/dist/esm/icons/list';
+import Grid3x3Icon from 'lucide-react/dist/esm/icons/grid';
+import SearchIcon from 'lucide-react/dist/esm/icons/search';
+import FilterIcon from 'lucide-react/dist/esm/icons/filter';
+
+// مكون عرض المنتج في طريقة العرض القائمة
+const ProductListItem = ({ product, handleAddToCart }) => {
+  // تنسيق السعر برقمين عشريين
+  const formattedPrice = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(typeof product.price === 'string' ? parseFloat(product.price) : product.price);
+
+  return (
+    <div className="product-list-item flex flex-col md:flex-row border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800">
+      <div className="relative w-full md:w-1/4 aspect-square md:aspect-auto">
+        {product.image_url ? (
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+            <span className="text-gray-400">لا توجد صورة</span>
+          </div>
+        )}
+      </div>
+      <div className="p-4 flex-1 flex flex-col">
+        <div className="flex flex-wrap justify-between items-start mb-2">
+          <div>
+            {product.category && (
+              <span className="inline-block bg-blue-100 text-primary rounded-full px-2 py-0.5 text-xs mb-1 dark:bg-blue-900 dark:text-blue-100" suppressHydrationWarning>
+                {product.category.name}
+              </span>
+            )}
+            <h3 className="font-semibold text-gray-900 dark:text-white text-lg">{product.name}</h3>
+          </div>
+          <span className="font-bold text-lg text-gray-900 dark:text-white">{formattedPrice}</span>
+        </div>
+        
+        <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow">{product.description || 'لا يوجد وصف متاح لهذا المنتج.'}</p>
+        
+        <div className="flex items-center justify-between mt-auto">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            {product.stock > 0 ? (
+              <span className="text-green-600 dark:text-green-400">متوفر في المخزون ({product.stock})</span>
+            ) : (
+              <span className="text-red-600 dark:text-red-400">غير متوفر في المخزون</span>
+            )}
+          </div>
+          <div className="flex space-x-2 rtl:space-x-reverse">
+            <Button variant="outline" size="sm" onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              window.location.href = `/products/${product.id}`;
+            }}>
+              عرض التفاصيل
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleAddToCart(product);
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+            >
+              إضافة إلى السلة
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ProductsPage: React.FC = () => {
   const router = useRouter();
   const { category: categoryParam, search: searchParam } = router.query;
   
+  // حالات للفلترة والبحث
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
     typeof categoryParam === 'string' ? categoryParam : undefined
   );
@@ -17,6 +95,12 @@ const ProductsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>(
     typeof searchParam === 'string' ? searchParam : ''
   );
+
+  // حالة نمط العرض (شبكة أو قائمة)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  
+  // حالة لإظهار/إخفاء الفلاتر على الشاشات الصغيرة
+  const [showFilters, setShowFilters] = useState(false);
 
   const { useProductsQuery, useCategoriesQuery } = useProducts();
   
@@ -32,7 +116,7 @@ const ProductsPage: React.FC = () => {
     error: categoriesError 
   } = useCategoriesQuery();
 
-  // Update state when URL query params change
+  // تحديث الحالة عند تغيير معلمات URL
   useEffect(() => {
     if (typeof categoryParam === 'string') {
       setSelectedCategory(categoryParam);
@@ -42,10 +126,11 @@ const ProductsPage: React.FC = () => {
     }
   }, [categoryParam, searchParam]);
 
+  // التعامل مع تغيير الفئة
   const handleCategoryChange = (categorySlug?: string) => {
     setSelectedCategory(categorySlug);
     
-    // Update URL
+    // تحديث URL
     const query: { category?: string; search?: string } = {};
     if (categorySlug) query.category = categorySlug;
     if (searchQuery) query.search = searchQuery;
@@ -54,12 +139,18 @@ const ProductsPage: React.FC = () => {
       pathname: '/products',
       query,
     }, undefined, { shallow: true });
+
+    // إغلاق قائمة الفلاتر على الشاشات الصغيرة بعد الاختيار
+    if (window.innerWidth < 1024) {
+      setShowFilters(false);
+    }
   };
 
+  // التعامل مع البحث
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Update URL
+    // تحديث URL
     const query: { category?: string; search?: string } = {};
     if (selectedCategory) query.category = selectedCategory;
     if (searchQuery) query.search = searchQuery;
@@ -68,66 +159,179 @@ const ProductsPage: React.FC = () => {
       pathname: '/products',
       query,
     }, undefined, { shallow: true });
+
+    // إغلاق قائمة الفلاتر على الشاشات الصغيرة بعد البحث
+    if (window.innerWidth < 1024) {
+      setShowFilters(false);
+    }
   };
 
+  // التعامل مع إضافة منتج إلى السلة
+  const handleAddToCart = (product) => {
+    try {
+      const addToCart = require('../../store/cartStore').useCartStore.getState().addItem;
+      addToCart(product);
+      // يمكن إضافة إشعار هنا لتأكيد إضافة المنتج إلى السلة
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+    }
+  };
+
+  // التبديل بين عرض الشبكة والقائمة
+  const toggleViewMode = () => {
+    setViewMode(viewMode === 'grid' ? 'list' : 'grid');
+  };
+
+  // التبديل بين إظهار وإخفاء الفلاتر على الشاشات الصغيرة
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
+  };
+
+  // مكون للحالة الفارغة
+  const EmptyState = () => (
+    <div className="flex flex-col items-center justify-center p-8 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
+      <svg className="w-16 h-16 text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M12 17a6 6 0 100-12 6 6 0 000 12z"></path>
+      </svg>
+      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">لم يتم العثور على منتجات</h3>
+      <p className="text-gray-600 dark:text-gray-400 mb-4">جرب تغيير معايير البحث أو الفلاتر المطبقة.</p>
+      <Button 
+        onClick={() => {
+          setSelectedCategory(undefined);
+          setSearchQuery('');
+          router.push('/products', undefined, { shallow: true });
+        }}
+        className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+      >
+        عرض جميع المنتجات
+      </Button>
+    </div>
+  );
+
+  // مكون للتحميل
+  const LoadingState = () => (
+    <div className={viewMode === 'grid' 
+      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      : "space-y-6"
+    }>
+      {Array.from({ length: 6 }).map((_, index) => (
+        <div
+          key={index}
+          className={viewMode === 'grid'
+            ? "bg-gray-100 dark:bg-gray-700 rounded-lg h-80 animate-pulse"
+            : "bg-gray-100 dark:bg-gray-700 rounded-lg h-40 animate-pulse"
+          }
+        ></div>
+      ))}
+    </div>
+  );
+
   return (
-    <Layout title="Products | EasyShop" description="Browse and shop products at EasyShop">
+    <Layout title="المنتجات | إيزي شوب" description="تصفح وتسوق المنتجات في إيزي شوب">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Products</h1>
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 md:mb-0">المنتجات</h1>
+          
+          {/* أزرار للبحث وعرض الفلاتر وتبديل نمط العرض على الشاشات الصغيرة */}
+          <div className="flex items-center space-x-2 rtl:space-x-reverse">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleFilters}
+              className="md:hidden flex items-center"
+            >
+              <FilterIcon className="w-4 h-4 mr-1 rtl:ml-1 rtl:mr-0" />
+              {showFilters ? 'إخفاء الفلاتر' : 'عرض الفلاتر'}
+            </Button>
+            
+            <div className="flex bg-gray-100 dark:bg-gray-800 rounded-md p-1">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-2 rounded-md ${
+                  viewMode === 'grid'
+                    ? 'bg-white dark:bg-gray-700 shadow-sm'
+                    : 'text-gray-500 dark:text-gray-400'
+                }`}
+                aria-label="عرض شبكي"
+                title="عرض شبكي"
+              >
+                <Grid3x3Icon className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded-md ${
+                  viewMode === 'list'
+                    ? 'bg-white dark:bg-gray-700 shadow-sm'
+                    : 'text-gray-500 dark:text-gray-400'
+                }`}
+                aria-label="عرض قائمة"
+                title="عرض قائمة"
+              >
+                <ListIcon className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar with filters */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-xl font-bold mb-4">Filters</h2>
+          {/* الشريط الجانبي مع الفلاتر */}
+          <div className={`lg:col-span-1 ${showFilters || window.innerWidth >= 1024 ? 'block' : 'hidden'}`}>
+            <div className="sticky top-24 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">الفلاتر</h2>
               
-              {/* Search */}
+              {/* البحث */}
               <div className="mb-6">
-                <form onSubmit={handleSearch}>
+                <form onSubmit={handleSearch} className="relative">
                   <Input
                     type="text"
-                    placeholder="Search products..."
+                    placeholder="ابحث عن منتجات..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="mb-2"
+                    className="pr-10 rtl:pl-10 rtl:pr-4 mb-2"
                   />
-                  <Button type="submit" className="w-full">
-                    Search
+                  <button 
+                    type="submit" 
+                    className="absolute top-1/2 right-3 rtl:left-3 rtl:right-auto transform -translate-y-1/2 text-gray-400"
+                  >
+                    <SearchIcon className="w-5 h-5" />
+                  </button>
+                  <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800">
+                    بحث
                   </Button>
                 </form>
               </div>
               
-              {/* Categories */}
+              {/* الفئات */}
               <div>
-                <h3 className="font-semibold mb-2">Categories</h3>
+                <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">الفئات</h3>
                 {categoriesLoading ? (
                   <div className="animate-pulse">
                     {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="h-8 bg-gray-200 rounded my-2"></div>
+                      <div key={i} className="h-8 bg-gray-200 dark:bg-gray-700 rounded my-2"></div>
                     ))}
                   </div>
                 ) : categoriesError ? (
-                  <p className="text-red-500">Failed to load categories</p>
+                  <p className="text-red-500">فشل في تحميل الفئات</p>
                 ) : (
                   <div className="space-y-2">
                     <button
                       onClick={() => handleCategoryChange(undefined)}
-                      className={`block w-full text-left px-3 py-2 rounded-md ${
+                      className={`block w-full text-right rtl:text-right px-3 py-2 rounded-md ${
                         !selectedCategory
-                          ? 'bg-primary text-white'
-                          : 'hover:bg-gray-100'
+                          ? 'bg-blue-600 dark:bg-blue-700 text-white'
+                          : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200'
                       }`}
                     >
-                      All Products
+                      جميع المنتجات
                     </button>
                     {categories?.map((category) => (
                       <button
                         key={category.id}
                         onClick={() => handleCategoryChange(category.slug)}
-                        className={`block w-full text-left px-3 py-2 rounded-md ${
+                        className={`block w-full text-right rtl:text-right px-3 py-2 rounded-md ${
                           selectedCategory === category.slug
-                            ? 'bg-primary text-white'
-                            : 'hover:bg-gray-100'
+                            ? 'bg-blue-600 dark:bg-blue-700 text-white'
+                            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200'
                         }`}
                       >
                         {category.name}
@@ -139,41 +343,45 @@ const ProductsPage: React.FC = () => {
             </div>
           </div>
           
-          {/* Products grid */}
+          {/* شبكة المنتجات */}
           <div className="lg:col-span-3">
             {productsLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-100 rounded-lg h-80 animate-pulse"
-                  ></div>
-                ))}
-              </div>
+              <LoadingState />
             ) : productsError ? (
-              <div className="bg-red-50 text-red-500 p-4 rounded-md">
-                Failed to load products. Please try again later.
+              <div className="bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 p-4 rounded-md">
+                فشل في تحميل المنتجات. يرجى المحاولة مرة أخرى لاحقًا.
               </div>
             ) : products?.length === 0 ? (
-              <div className="bg-blue-50 text-blue-500 p-4 rounded-md">
-                No products found. Try changing your filters.
-              </div>
+              <EmptyState />
             ) : (
               <>
                 <div className="mb-6">
-                  <h2 className="text-xl font-semibold">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                     {selectedCategory
-                      ? `${selectedCategory} Products`
-                      : 'All Products'}
-                    {searchQuery && ` matching "${searchQuery}"`}
+                      ? `منتجات ${selectedCategory}`
+                      : 'جميع المنتجات'}
+                    {searchQuery && ` تطابق "${searchQuery}"`}
                   </h2>
-                  <p className="text-gray-500">{products?.length} products found</p>
+                  <p className="text-gray-500 dark:text-gray-400">تم العثور على {products?.length} منتج</p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {products?.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
+                
+                {viewMode === 'grid' ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {products?.map((product) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {products?.map((product) => (
+                      <ProductListItem 
+                        key={product.id} 
+                        product={product} 
+                        handleAddToCart={handleAddToCart}
+                      />
+                    ))}
+                  </div>
+                )}
               </>
             )}
           </div>
