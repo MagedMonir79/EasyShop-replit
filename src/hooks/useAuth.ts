@@ -1,75 +1,45 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { supabase } from '../utils/supabase';
 import { useUserStore } from '../store/userStore';
+import { User } from '../utils/types';
+
+// مستخدم وهمي للتطوير فقط
+const mockUser: User = {
+  id: 'user-123',
+  email: 'user@example.com',
+  first_name: 'محمد',
+  last_name: 'أحمد',
+  avatar_url: 'https://randomuser.me/api/portraits/men/32.jpg',
+};
 
 export const useAuth = () => {
   const router = useRouter();
   const { user, setUser, isLoading, setLoading } = useUserStore();
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session?.user) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-
-          setUser({
-            id: session.user.id,
-            email: session.user.email || '',
-            first_name: profile?.first_name || '',
-            last_name: profile?.last_name || '',
-            avatar_url: profile?.avatar_url || '',
-          });
-        } else {
-          setUser(null);
-        }
-        setLoading(false);
-      }
-    );
-
-    const initializeUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-
-        setUser({
-          id: session.user.id,
-          email: session.user.email || '',
-          first_name: profile?.first_name || '',
-          last_name: profile?.last_name || '',
-          avatar_url: profile?.avatar_url || '',
-        });
-      }
+    // محاكاة تأخير تحميل البيانات
+    const timer = setTimeout(() => {
+      // بشكل افتراضي، المستخدم غير مسجل الدخول
+      setUser(null);
       setLoading(false);
-    };
+    }, 500);
 
-    initializeUser();
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
+    return () => clearTimeout(timer);
   }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      // تأخير وهمي لمحاكاة طلب API
+      await new Promise(resolve => setTimeout(resolve, 800));
       
-      if (error) throw error;
+      // التحقق البسيط من بيانات الاعتماد (للتطوير فقط)
+      if (email === 'user@example.com' && password === 'password') {
+        setUser(mockUser);
+        router.push('/');
+        return { success: true };
+      }
       
-      router.push('/');
-      return { success: true };
+      throw new Error('بيانات الاعتماد غير صحيحة');
     } catch (error: any) {
       return { success: false, error: error.message };
     }
@@ -77,22 +47,25 @@ export const useAuth = () => {
 
   const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+      // تأخير وهمي لمحاكاة طلب API
+      await new Promise(resolve => setTimeout(resolve, 800));
       
-      if (error) throw error;
-      
-      if (data.user) {
-        await supabase.from('profiles').insert({
-          id: data.user.id,
-          email,
-          first_name: firstName,
-          last_name: lastName,
-        });
+      // تحقق بسيط من البريد الإلكتروني (للتطوير فقط)
+      if (email === 'user@example.com') {
+        throw new Error('البريد الإلكتروني مستخدم بالفعل');
       }
       
+      // إنشاء مستخدم وهمي جديد
+      const newUser: User = {
+        id: `user-${Date.now()}`,
+        email,
+        first_name: firstName,
+        last_name: lastName,
+        avatar_url: 'https://randomuser.me/api/portraits/lego/1.jpg',
+      };
+      
+      setUser(newUser);
+      router.push('/');
       return { success: true };
     } catch (error: any) {
       return { success: false, error: error.message };
@@ -101,10 +74,13 @@ export const useAuth = () => {
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      // تأخير وهمي لمحاكاة طلب API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setUser(null);
       router.push('/');
     } catch (error: any) {
-      console.error('Error signing out:', error.message);
+      console.error('خطأ في تسجيل الخروج:', error.message);
     }
   };
 
@@ -112,15 +88,11 @@ export const useAuth = () => {
     updates: { first_name?: string; last_name?: string; avatar_url?: string }
   ) => {
     try {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('المستخدم غير مصادق');
 
-      const { error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('id', user.id);
-
-      if (error) throw error;
-
+      // تأخير وهمي لمحاكاة طلب API
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
       setUser({
         ...user,
         ...updates,

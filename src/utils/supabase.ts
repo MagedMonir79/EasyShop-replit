@@ -1,9 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 import { Database } from './types';
 
-// نتأكد من أن عنوان URL صالح (يجب أن يبدأ بـ http:// أو https://)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
+// استخدام عنوان URL ثابت للتطوير فقط
+const supabaseUrl = 'https://example.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YW1wbGUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTYxMzA5ODI0MCwiZXhwIjoxOTM4MTU0MjQwfQ.S-MJF5spP6aRhVCUAzMSH9KK9gLyCaOBaYDA_bJyHm8';
 
-// عند استلام المفاتيح الصحيحة، سنحتاج إلى استبدال القيم المؤقتة
+// تهيئة Supabase بقيم ثابتة للتطوير فقط
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+
+// ملاحظة: هذه بيانات وهمية للتطوير فقط
+// سنحتاج إلى استبدالها بالبيانات الحقيقية عند التوفر

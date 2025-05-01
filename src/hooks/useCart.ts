@@ -1,6 +1,5 @@
 import { useCartStore } from '../store/cartStore';
 import { useAuth } from './useAuth';
-import { supabase } from '../utils/supabase';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -14,60 +13,33 @@ export const useCart = () => {
   const checkout = async () => {
     if (!user) {
       router.push('/auth/login?redirect=/cart');
-      return { success: false, error: 'Please login to checkout' };
+      return { success: false, error: 'الرجاء تسجيل الدخول لإتمام عملية الشراء' };
     }
 
     if (items.length === 0) {
-      return { success: false, error: 'Your cart is empty' };
+      return { success: false, error: 'سلة التسوق فارغة' };
     }
 
     setIsCheckingOut(true);
     setCheckoutError(null);
 
     try {
-      // Create a new order
-      const { data: order, error: orderError } = await supabase
-        .from('orders')
-        .insert({
-          user_id: user.id,
-          status: 'pending',
-          total: getTotalPrice(),
-        })
-        .select('id')
-        .single();
-
-      if (orderError) throw orderError;
-
-      // Add order items
-      const orderItems = items.map(item => ({
-        order_id: order.id,
-        product_id: item.product.id,
-        quantity: item.quantity,
-        price: item.product.price,
-      }));
-
-      const { error: itemsError } = await supabase
-        .from('order_items')
-        .insert(orderItems);
-
-      if (itemsError) throw itemsError;
-
-      // Update product stock levels
-      for (const item of items) {
-        const { error: stockError } = await supabase
-          .from('products')
-          .update({ 
-            stock: item.product.stock - item.quantity 
-          })
-          .eq('id', item.product.id);
-
-        if (stockError) throw stockError;
-      }
-
-      // Clear the cart after successful checkout
+      // محاكاة تأخير API
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // إنشاء رقم طلب وهمي للتطوير فقط
+      const mockOrderId = `order-${Date.now()}`;
+      
+      // في البيئة الحقيقية، هنا سيتم إنشاء طلب جديد في قاعدة البيانات
+      // وتحديث مستويات المخزون للمنتجات
+      
+      // تفريغ العربة بعد الانتهاء من عملية الشراء
       clearCart();
       
-      return { success: true, orderId: order.id };
+      // توجيه المستخدم إلى صفحة التأكيد
+      router.push(`/order-confirmation?id=${mockOrderId}`);
+      
+      return { success: true, orderId: mockOrderId };
     } catch (error: any) {
       setCheckoutError(error.message);
       return { success: false, error: error.message };
