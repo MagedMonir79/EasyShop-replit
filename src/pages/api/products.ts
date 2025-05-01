@@ -11,30 +11,39 @@ export default async function handler(
     if (req.method === 'GET') {
       const { category, search } = req.query;
       
-      // بناء الاستعلام بناءً على المعايير المقدمة
-      let query = db.select().from(products);
+      // أولاً، نحصل على معرف الفئة إذا تم تحديد فئة
+      let categoryId: number | undefined;
       
-      // تطبيق مرشح الفئة إذا تم تحديده
       if (category && typeof category === 'string') {
-        // أولاً، نحتاج إلى الحصول على معرف الفئة استنادًا إلى المعرف اللغوي (slug)
         const [categoryData] = await db
           .select()
           .from(categories)
           .where(eq(categories.slug, category));
           
         if (categoryData) {
-          // ثم نقوم بتصفية المنتجات بناءً على معرف الفئة
-          query = query.where(eq(products.category_id, categoryData.id));
+          categoryId = categoryData.id;
         }
       }
       
-      // تطبيق مرشح البحث إذا تم تحديده
-      if (search && typeof search === 'string') {
-        query = query.where(like(products.name, `%${search}%`));
+      // بناء شروط البحث
+      const whereConditions = [];
+      
+      if (categoryId) {
+        whereConditions.push(eq(products.category_id, categoryId));
       }
       
-      // تنفيذ الاستعلام النهائي
-      const productsData = await query.orderBy(products.created_at);
+      if (search && typeof search === 'string') {
+        whereConditions.push(like(products.name, `%${search}%`));
+      }
+      
+      // استخدام db.query.products.findMany للحصول على المنتجات مع معلومات الفئة
+      const productsData = await db.query.products.findMany({
+        where: whereConditions.length > 0 ? and(...whereConditions) : undefined,
+        with: {
+          category: true
+        },
+        orderBy: products.created_at
+      });
       return res.status(200).json({ products: productsData });
     }
     

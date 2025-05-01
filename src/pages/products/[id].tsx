@@ -2,11 +2,16 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Layout from '../../components/Layout';
-// استبدلنا useProducts بـ fetch مباشر
 import { Button } from '../../components/ui/Button';
 import { useCartStore } from '../../store/cartStore';
 import toast from 'react-hot-toast';
-import FeaturedProducts from '../../components/FeaturedProducts';
+import dynamic from 'next/dynamic';
+
+// تحميل المكونات بشكل ديناميكي لتجنب أخطاء Hydration
+const FeaturedProducts = dynamic(
+  () => import('../../components/FeaturedProducts'),
+  { ssr: false }
+);
 
 const ProductDetailPage: React.FC = () => {
   const router = useRouter();
@@ -151,7 +156,7 @@ const ProductDetailPage: React.FC = () => {
                   {product.category ? product.category.name : 'غير مصنف'}
                 </span>
                 <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-                <p className="text-2xl font-bold text-primary mb-4">
+                <p className="text-2xl font-bold text-primary mb-4" suppressHydrationWarning>
                   {formattedPrice}
                 </p>
                 <div className="mb-6">
@@ -197,7 +202,7 @@ const ProductDetailPage: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-700">Added On</h3>
-                  <p>{typeof product.created_at === 'string' ? new Date(product.created_at).toISOString().split('T')[0] : '---'}</p>
+                  <p suppressHydrationWarning>{typeof product.created_at === 'string' ? new Date(product.created_at).toISOString().split('T')[0] : '---'}</p>
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-700">Stock</h3>

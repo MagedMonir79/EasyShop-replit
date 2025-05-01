@@ -45,7 +45,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
         <div className="p-4">
           {product.category && (
-            <span className="inline-block bg-blue-100 text-primary rounded-full px-2 py-0.5 text-xs mb-2">
+            <span className="inline-block bg-blue-100 text-primary rounded-full px-2 py-0.5 text-xs mb-2" suppressHydrationWarning>
               {product.category.name}
             </span>
           )}
