@@ -8,7 +8,14 @@ import { Toaster } from 'react-hot-toast';
 import '../styles/globals.css';
 import { Database } from '@/utils/types';
 
-// Create a client
+// استخدام الأسرار البيئية إذا كانت موجودة
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YW1wbGUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTYxMzA5ODI0MCwiZXhwIjoxOTM4MTU0MjQwfQ.S-MJF5spP6aRhVCUAzMSH9KK9gLyCaOBaYDA_bJyHm8';
+
+// إنشاء عميل Supabase
+const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
+
+// إنشاء عميل React Query
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -18,21 +25,18 @@ const queryClient = new QueryClient({
   },
 });
 
-// استخدام عنوان URL ثابت للتطوير فقط
-const supabaseUrl = 'https://example.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YW1wbGUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTYxMzA5ODI0MCwiZXhwIjoxOTM4MTU0MjQwfQ.S-MJF5spP6aRhVCUAzMSH9KK9gLyCaOBaYDA_bJyHm8';
-
-// إنشاء عميل Supabase
-const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
-
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <SessionContextProvider supabaseClient={supabaseClient}>
-      <QueryClientProvider client={queryClient}>
-        <Toaster position="top-right" />
-        <Component {...pageProps} />
-      </QueryClientProvider>
-    </SessionContextProvider>
+    <>
+      <SessionContextProvider supabaseClient={supabaseClient}>
+        <QueryClientProvider client={queryClient}>
+          <Toaster position="top-right" />
+          <div suppressHydrationWarning>
+            <Component {...pageProps} />
+          </div>
+        </QueryClientProvider>
+      </SessionContextProvider>
+    </>
   );
 }
 
