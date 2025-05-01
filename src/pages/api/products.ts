@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '@/server/db';
-import { products } from '@/shared/schema';
+import { products, categories } from '@/shared/schema';
+import { eq, like, and } from 'drizzle-orm';
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,7 +9,32 @@ export default async function handler(
 ) {
   try {
     if (req.method === 'GET') {
-      const productsData = await db.select().from(products);
+      const { category, search } = req.query;
+      
+      // بناء الاستعلام بناءً على المعايير المقدمة
+      let query = db.select().from(products);
+      
+      // تطبيق مرشح الفئة إذا تم تحديده
+      if (category && typeof category === 'string') {
+        // أولاً، نحتاج إلى الحصول على معرف الفئة استنادًا إلى المعرف اللغوي (slug)
+        const [categoryData] = await db
+          .select()
+          .from(categories)
+          .where(eq(categories.slug, category));
+          
+        if (categoryData) {
+          // ثم نقوم بتصفية المنتجات بناءً على معرف الفئة
+          query = query.where(eq(products.category_id, categoryData.id));
+        }
+      }
+      
+      // تطبيق مرشح البحث إذا تم تحديده
+      if (search && typeof search === 'string') {
+        query = query.where(like(products.name, `%${search}%`));
+      }
+      
+      // تنفيذ الاستعلام النهائي
+      const productsData = await query.orderBy(products.created_at);
       return res.status(200).json({ products: productsData });
     }
     
