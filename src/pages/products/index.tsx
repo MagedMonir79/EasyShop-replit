@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
 import Layout from '../../components/Layout';
 import ProductCard from '../../components/ProductCard';
 import { useProducts } from '../../hooks/useProducts';
@@ -11,6 +12,131 @@ import SearchIcon from 'lucide-react/dist/esm/icons/search';
 import FilterIcon from 'lucide-react/dist/esm/icons/filter';
 import { getProductImageUrl } from '../../utils/imageUtils';
 
+// بيانات تجريبية ثابتة للمنتجات
+const MOCK_PRODUCTS = [
+  {
+    id: 1,
+    name: "هاتف ذكي متطور",
+    description: "هاتف ذكي بأحدث المواصفات التقنية وكاميرا متطورة",
+    price: 699.99,
+    image_url: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500",
+    category_id: 1,
+    category: {
+      id: 1,
+      name: "إلكترونيات",
+      slug: "electronics"
+    },
+    stock: 15,
+    is_featured: true,
+    created_at: "2023-01-01T00:00:00.000Z"
+  },
+  {
+    id: 2,
+    name: "حاسوب محمول للمحترفين",
+    description: "حاسوب محمول بمعالج قوي ومساحة تخزين كبيرة مناسب للأعمال والألعاب",
+    price: 1299.99,
+    image_url: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500",
+    category_id: 1,
+    category: {
+      id: 1,
+      name: "إلكترونيات",
+      slug: "electronics"
+    },
+    stock: 8,
+    is_featured: true,
+    created_at: "2023-01-02T00:00:00.000Z"
+  },
+  {
+    id: 3,
+    name: "سماعات رأس لاسلكية",
+    description: "سماعات رأس لاسلكية مع خاصية إلغاء الضوضاء وجودة صوت عالية",
+    price: 199.99,
+    image_url: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500",
+    category_id: 1,
+    category: {
+      id: 1,
+      name: "إلكترونيات",
+      slug: "electronics"
+    },
+    stock: 20,
+    is_featured: true,
+    created_at: "2023-01-03T00:00:00.000Z"
+  },
+  {
+    id: 4,
+    name: "كاميرا احترافية",
+    description: "كاميرا رقمية احترافية لالتقاط أفضل الصور واللحظات",
+    price: 899.99,
+    image_url: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500",
+    category_id: 1,
+    category: {
+      id: 1,
+      name: "إلكترونيات",
+      slug: "electronics"
+    },
+    stock: 5,
+    is_featured: true,
+    created_at: "2023-01-04T00:00:00.000Z"
+  },
+  {
+    id: 5,
+    name: "طاولة قهوة خشبية",
+    description: "طاولة قهوة أنيقة مصنوعة من الخشب الطبيعي بتصميم عصري",
+    price: 249.99,
+    image_url: "https://images.unsplash.com/photo-1499933374294-4584851497cc?w=500",
+    category_id: 2,
+    category: {
+      id: 2,
+      name: "أثاث",
+      slug: "furniture"
+    },
+    stock: 12,
+    is_featured: false,
+    created_at: "2023-01-05T00:00:00.000Z"
+  },
+  {
+    id: 6,
+    name: "ساعة ذكية متطورة",
+    description: "ساعة ذكية متعددة الاستخدامات لتتبع اللياقة البدنية والإشعارات",
+    price: 299.99,
+    image_url: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500",
+    category_id: 1,
+    category: {
+      id: 1,
+      name: "إلكترونيات",
+      slug: "electronics"
+    },
+    stock: 18,
+    is_featured: true,
+    created_at: "2023-01-06T00:00:00.000Z"
+  }
+];
+
+// بيانات تجريبية ثابتة للفئات
+const MOCK_CATEGORIES = [
+  {
+    id: 1,
+    name: "إلكترونيات",
+    slug: "electronics",
+    description: "أجهزة إلكترونية وتقنية حديثة",
+    created_at: "2023-01-01T00:00:00.000Z"
+  },
+  {
+    id: 2,
+    name: "أثاث",
+    slug: "furniture",
+    description: "أثاث منزلي بتصاميم عصرية",
+    created_at: "2023-01-01T00:00:00.000Z"
+  },
+  {
+    id: 3,
+    name: "ملابس",
+    slug: "clothing",
+    description: "ملابس عصرية للرجال والنساء",
+    created_at: "2023-01-01T00:00:00.000Z"
+  }
+];
+
 // واجهة للمنتج الذي يتم تمريره للمكونات
 interface ProductListItemProps {
   product: any;
@@ -20,24 +146,15 @@ interface ProductListItemProps {
 // مكون عرض المنتج في طريقة العرض القائمة
 const ProductListItem: React.FC<ProductListItemProps> = ({ product, handleAddToCart }) => {
   // تنسيق السعر برقمين عشريين
-  const formattedPrice = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(typeof product.price === 'string' ? parseFloat(product.price) : product.price);
+  const formattedPrice = "$" + (typeof product.price === 'string' ? parseFloat(product.price) : product.price).toFixed(2);
 
   return (
     <div className="product-list-item flex flex-col md:flex-row border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800">
       <div className="relative w-full md:w-1/4 aspect-square md:aspect-auto">
         <img
-          src={getProductImageUrl(product.image_url, product.id)}
+          src={product.image_url || `https://source.unsplash.com/random/300x300?product&sig=${product.id}`}
           alt={product.name}
           className="w-full h-full object-cover"
-          onError={(e) => {
-            // في حالة فشل تحميل الصورة، استخدم صورة بديلة
-            const imgElement = e.currentTarget as HTMLImageElement;
-            imgElement.onerror = null; // منع التكرار اللانهائي
-            imgElement.src = `https://picsum.photos/seed/${product.id || Math.random() * 1000}/800/800`;
-          }}
         />
       </div>
       <div className="p-4 flex-1 flex flex-col">
@@ -90,49 +207,49 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, handleAddToC
   );
 };
 
-const ProductsPage: React.FC = () => {
+// واجهة للبيانات الأولية
+interface ProductsPageProps {
+  initialProducts: any[];
+  initialCategories: any[];
+  initialSearchQuery: string;
+  initialCategory: string | null;
+}
+
+const ProductsPage: React.FC<ProductsPageProps> = ({
+  initialProducts,
+  initialCategories,
+  initialSearchQuery,
+  initialCategory
+}) => {
   const router = useRouter();
-  const { category: categoryParam, search: searchParam } = router.query;
+  
+  // استخدام React.useId لحل مشاكل الهايدريشن
+  const stableId = React.useId();
   
   // حالات للفلترة والبحث
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
-    typeof categoryParam === 'string' ? categoryParam : undefined
+    initialCategory || undefined
   );
   
-  const [searchQuery, setSearchQuery] = useState<string>(
-    typeof searchParam === 'string' ? searchParam : ''
-  );
-
+  const [searchQuery, setSearchQuery] = useState<string>(initialSearchQuery || '');
+  
   // حالة نمط العرض (شبكة أو قائمة)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   
   // حالة لإظهار/إخفاء الفلاتر على الشاشات الصغيرة
   const [showFilters, setShowFilters] = useState(false);
-
-  const { useProductsQuery, useCategoriesQuery } = useProducts();
   
-  const { 
-    data: products, 
-    isLoading: productsLoading, 
-    error: productsError 
-  } = useProductsQuery(selectedCategory, searchQuery);
+  // حالة المنتجات
+  const [products, setProducts] = useState<any[]>(initialProducts);
+  const [categories, setCategories] = useState<any[]>(initialCategories);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   
-  const { 
-    data: categories, 
-    isLoading: categoriesLoading, 
-    error: categoriesError 
-  } = useCategoriesQuery();
-
-  // تحديث الحالة عند تغيير معلمات URL
+  // استخدام useEffect لضمان أننا نشغل هذا على جانب العميل فقط
+  const [isClient, setIsClient] = useState(false);
   useEffect(() => {
-    if (typeof categoryParam === 'string') {
-      setSelectedCategory(categoryParam);
-    }
-    if (typeof searchParam === 'string') {
-      setSearchQuery(searchParam);
-    }
-  }, [categoryParam, searchParam]);
-
+    setIsClient(true);
+  }, []);
+  
   // التعامل مع تغيير الفئة
   const handleCategoryChange = (categorySlug?: string) => {
     setSelectedCategory(categorySlug);
@@ -146,13 +263,13 @@ const ProductsPage: React.FC = () => {
       pathname: '/products',
       query,
     }, undefined, { shallow: true });
-
+    
     // إغلاق قائمة الفلاتر على الشاشات الصغيرة بعد الاختيار
     if (isClient && typeof window !== 'undefined' && window.innerWidth < 1024) {
       setShowFilters(false);
     }
   };
-
+  
   // التعامل مع البحث
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,13 +283,13 @@ const ProductsPage: React.FC = () => {
       pathname: '/products',
       query,
     }, undefined, { shallow: true });
-
+    
     // إغلاق قائمة الفلاتر على الشاشات الصغيرة بعد البحث
     if (isClient && typeof window !== 'undefined' && window.innerWidth < 1024) {
       setShowFilters(false);
     }
   };
-
+  
   // التعامل مع إضافة منتج إلى السلة
   const handleAddToCart = (product: any) => {
     try {
@@ -183,23 +300,17 @@ const ProductsPage: React.FC = () => {
       console.error('Error adding product to cart:', error);
     }
   };
-
+  
   // التبديل بين عرض الشبكة والقائمة
   const toggleViewMode = () => {
     setViewMode(viewMode === 'grid' ? 'list' : 'grid');
   };
-
-  // استخدام useEffect لضمان أننا نشغل هذا على جانب العميل فقط
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
+  
   // التبديل بين إظهار وإخفاء الفلاتر على الشاشات الصغيرة
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
-
+  
   // مكون للحالة الفارغة
   const EmptyState = () => (
     <div className="flex flex-col items-center justify-center p-8 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
@@ -220,7 +331,7 @@ const ProductsPage: React.FC = () => {
       </Button>
     </div>
   );
-
+  
   // مكون للتحميل
   const LoadingState = () => (
     <div className={viewMode === 'grid' 
@@ -238,10 +349,10 @@ const ProductsPage: React.FC = () => {
       ))}
     </div>
   );
-
+  
   return (
     <Layout title="المنتجات | إيزي شوب" description="تصفح وتسوق المنتجات في إيزي شوب">
-      <div className="container mx-auto px-4 py-8">
+      <div key={stableId} suppressHydrationWarning className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 md:mb-0">المنتجات</h1>
           
@@ -317,14 +428,12 @@ const ProductsPage: React.FC = () => {
               {/* الفئات */}
               <div>
                 <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">الفئات</h3>
-                {categoriesLoading ? (
+                {isLoading ? (
                   <div className="animate-pulse">
                     {[1, 2, 3, 4].map((i) => (
                       <div key={i} className="h-8 bg-gray-200 dark:bg-gray-700 rounded my-2"></div>
                     ))}
                   </div>
-                ) : categoriesError ? (
-                  <p className="text-red-500">فشل في تحميل الفئات</p>
                 ) : (
                   <div className="space-y-2">
                     <button
@@ -358,20 +467,16 @@ const ProductsPage: React.FC = () => {
           
           {/* شبكة المنتجات */}
           <div className="lg:col-span-3">
-            {productsLoading ? (
+            {isLoading ? (
               <LoadingState />
-            ) : productsError ? (
-              <div className="bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 p-4 rounded-md">
-                فشل في تحميل المنتجات. يرجى المحاولة مرة أخرى لاحقًا.
-              </div>
-            ) : products?.length === 0 ? (
+            ) : products.length === 0 ? (
               <EmptyState />
             ) : (
               <>
                 <div className="mb-6">
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                     {selectedCategory
-                      ? `منتجات ${selectedCategory}`
+                      ? `منتجات ${categories.find(c => c.slug === selectedCategory)?.name || selectedCategory}`
                       : 'جميع المنتجات'}
                     {searchQuery && ` تطابق "${searchQuery}"`}
                   </h2>
@@ -402,6 +507,43 @@ const ProductsPage: React.FC = () => {
       </div>
     </Layout>
   );
+};
+
+// تحميل البيانات الأولية على الخادم
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { category, search } = context.query;
+  
+  let filteredProducts = [...MOCK_PRODUCTS];
+  
+  // تطبيق فلترة الفئة
+  if (category && typeof category === 'string') {
+    const categoryObj = MOCK_CATEGORIES.find(cat => cat.slug === category);
+    
+    if (categoryObj) {
+      filteredProducts = filteredProducts.filter(product => 
+        product.category_id === categoryObj.id || 
+        (product.category && product.category.slug === categoryObj.slug)
+      );
+    }
+  }
+  
+  // تطبيق فلترة البحث
+  if (search && typeof search === 'string') {
+    const searchTerm = search.toLowerCase();
+    filteredProducts = filteredProducts.filter(product => 
+      product.name.toLowerCase().includes(searchTerm) || 
+      (product.description && product.description.toLowerCase().includes(searchTerm))
+    );
+  }
+  
+  return {
+    props: {
+      initialProducts: filteredProducts,
+      initialCategories: MOCK_CATEGORIES,
+      initialSearchQuery: search || '',
+      initialCategory: category || null
+    }
+  };
 };
 
 export default ProductsPage;
