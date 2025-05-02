@@ -3,31 +3,23 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/Button';
-import dynamic from 'next/dynamic';
+import FeaturedProducts from '../components/FeaturedProducts';
 
-// استيراد المكونات بشكل ديناميكي لتجنب مشاكل hydration
-const FeaturedProducts = dynamic(() => import('../components/FeaturedProducts'), {
-  ssr: false,
-  loading: () => (
-    <div className="py-16">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">منتجات مميزة</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 animate-pulse">
-          {[...Array(4)].map((_, index) => (
-            <div key={index} className="bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
-              <div className="h-64 bg-gray-300 dark:bg-gray-700"></div>
-              <div className="p-4 space-y-3">
-                <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div>
-                <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded w-1/3"></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-});
+// CSS для анимации
+const animationStyles = `
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+
+  .bg-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+  }
+`;
 
 const HomePage = () => {
   // إضافة تأثيرات حركية عند التمرير
@@ -57,31 +49,32 @@ const HomePage = () => {
 
   return (
     <Layout>
+      <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
       <section className="relative bg-gradient-to-r from-blue-600 via-purple-500 to-indigo-700 text-white overflow-hidden">
-        {/* خلفية متحركة */}
+        {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/images/pattern-bg.svg')] opacity-10"></div>
+          <div className="absolute inset-0 bg-pattern opacity-10"></div>
         </div>
         
         <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="animate-on-scroll opacity-0 transition-opacity duration-1000">
               <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                تسوق بذكاء،<br/> تسوق بسهولة
-                <span className="block text-base md:text-xl mt-2 font-normal">Shop Smart, Shop Easy</span>
+                Shop Smart,<br/> Shop Easy
+                <span className="block text-base md:text-xl mt-2 font-normal">The smart way to shop online</span>
               </h1>
               <p className="text-lg md:text-xl mb-8 text-blue-100">
-                اكتشف منتجات مذهلة بأسعار تنافسية. تسوق براحة من منزلك مع إيزي شوب.
+                Discover amazing products at competitive prices. Shop comfortably from your home with EasyShop.
               </p>
-              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">
+              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 <Link href="/products">
                   <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 hover:shadow-glow transition-all duration-300 text-lg px-8 py-3 rounded-full">
-                    تسوق الآن
+                    Shop Now
                   </Button>
                 </Link>
                 <Link href="/auth/signup">
                   <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/20 transition-all duration-300 text-lg px-8 py-3 rounded-full">
-                    إنشاء حساب
+                    Create Account
                   </Button>
                 </Link>
               </div>
@@ -108,12 +101,12 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Categories Section - قسم التصنيفات */}
+      {/* Categories Section */}
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16 animate-on-scroll opacity-0 transition-opacity duration-1000">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 dark:text-white">تسوق حسب الفئة</h2>
-            <p className="text-gray-600 dark:text-gray-300 text-lg">اختر من بين مجموعة متنوعة من الفئات لتجد ما تبحث عنه بسهولة</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 dark:text-white">Shop by Category</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-lg">Choose from a variety of categories to find what you're looking for easily</p>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
@@ -181,17 +174,17 @@ const HomePage = () => {
           <div className="mt-12 text-center animate-on-scroll opacity-0 transition-opacity duration-1000 delay-400">
             <Link href="/products">
               <Button variant="default" size="lg" className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 transition-all duration-300 rounded-full py-2.5 px-6">
-                عرض جميع الفئات <span className="inline-block mr-2 rtl:ml-2 rtl:mr-0">→</span>
+                View All Categories <span className="inline-block ml-2">→</span>
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Featured Products Section - قسم المنتجات المميزة */}
+      {/* Featured Products Section */}
       <FeaturedProducts />
       
-      {/* Advertisement Banner - قسم الإعلانات */}
+      {/* Advertisement Banner */}
       <section className="py-12 bg-gradient-to-r from-indigo-600 to-purple-600 overflow-hidden relative">
         <div className="absolute inset-0 opacity-10 bg-pattern"></div>
         <div className="container mx-auto px-4 relative z-10">
@@ -221,7 +214,7 @@ const HomePage = () => {
         </div>
       </section>
       
-      {/* Testimonials - آراء العملاء */}
+      {/* Testimonials */}
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16 animate-on-scroll opacity-0 transition-opacity duration-1000">
@@ -307,8 +300,8 @@ const HomePage = () => {
                     </svg>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-gray-500 dark:text-gray-400 text-sm">منتجات موثوقة</span>
-                    <span className="font-bold text-gray-900 dark:text-white">+25,000 منتج</span>
+                    <span className="text-gray-500 dark:text-gray-400 text-sm">Trusted Products</span>
+                    <span className="font-bold text-gray-900 dark:text-white">+25,000 Products</span>
                   </div>
                 </div>
                 
@@ -319,8 +312,8 @@ const HomePage = () => {
                     </svg>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-gray-500 dark:text-gray-400 text-sm">عملاء سعداء</span>
-                    <span className="font-bold text-gray-900 dark:text-white">+100,000 عميل</span>
+                    <span className="text-gray-500 dark:text-gray-400 text-sm">Happy Customers</span>
+                    <span className="font-bold text-gray-900 dark:text-white">+100,000 Customers</span>
                   </div>
                 </div>
                 
@@ -331,8 +324,8 @@ const HomePage = () => {
                     </svg>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-gray-500 dark:text-gray-400 text-sm">مبيعات شهرية</span>
-                    <span className="font-bold text-gray-900 dark:text-white">+250,000 ريال</span>
+                    <span className="text-gray-500 dark:text-gray-400 text-sm">Monthly Sales</span>
+                    <span className="font-bold text-gray-900 dark:text-white">+$250,000</span>
                   </div>
                 </div>
               </div>
