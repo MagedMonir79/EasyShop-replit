@@ -86,16 +86,16 @@ const HomePage = () => {
                 </Link>
               </div>
             </div>
-            <div className="hidden md:block relative h-[500px] animate-on-scroll opacity-0 transition-opacity duration-1000 delay-300">
-              <Image
-                src="https://images.unsplash.com/photo-1607082349566-187342175e2f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
-                alt="تسوق عبر الإنترنت"
-                fill
-                priority
-                className="object-cover rounded-lg shadow-2xl"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-700/20 to-purple-600/20 rounded-lg"></div>
+            <div className="hidden md:block animate-on-scroll opacity-0 transition-opacity duration-1000 delay-300">
+              <div className="relative rounded-lg shadow-2xl h-[500px] overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center bg-indigo-600 rounded-lg">
+                  <div className="text-white text-center p-8">
+                    <div className="text-6xl font-bold mb-4">EasyShop</div>
+                    <div className="text-2xl">Smart Shopping Experience</div>
+                  </div>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-700/20 to-purple-600/20 rounded-lg"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -117,84 +117,60 @@ const HomePage = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {/* Electronics Category */}
             <Link href="/products?category=electronics" className="block group animate-on-scroll opacity-0 transition-opacity duration-1000">
-              <div className="relative h-72 rounded-2xl overflow-hidden shadow-lg">
-                <Image
-                  src="https://images.unsplash.com/photo-1593344484962-796055d4a3a4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                  alt="الإلكترونيات"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                />
+              <div className="relative h-72 rounded-2xl overflow-hidden shadow-lg bg-gradient-to-r from-blue-500 to-blue-700">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end p-6">
                   <div className="w-full">
-                    <h3 className="text-xl font-bold text-white mb-2 rtl:text-right">الإلكترونيات</h3>
+                    <h3 className="text-xl font-bold text-white mb-2">Electronics</h3>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-200">+1000 منتج</span>
-                      <span className="bg-white/20 backdrop-blur-sm text-white text-xs py-1 px-3 rounded-full">تخفيضات</span>
+                      <span className="text-sm text-gray-200">+1000 products</span>
+                      <span className="bg-white/20 backdrop-blur-sm text-white text-xs py-1 px-3 rounded-full">Deals</span>
                     </div>
                   </div>
                 </div>
               </div>
             </Link>
             
+            {/* Clothing Category */}
             <Link href="/products?category=clothing" className="block group animate-on-scroll opacity-0 transition-opacity duration-1000 delay-100">
-              <div className="relative h-72 rounded-2xl overflow-hidden shadow-lg">
-                <Image
-                  src="https://images.unsplash.com/photo-1523381294911-8d3cead13475?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                  alt="الملابس"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                />
+              <div className="relative h-72 rounded-2xl overflow-hidden shadow-lg bg-gradient-to-r from-pink-500 to-purple-600">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end p-6">
                   <div className="w-full">
-                    <h3 className="text-xl font-bold text-white mb-2 rtl:text-right">الملابس</h3>
+                    <h3 className="text-xl font-bold text-white mb-2">Clothing</h3>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-200">+500 منتج</span>
-                      <span className="bg-white/20 backdrop-blur-sm text-white text-xs py-1 px-3 rounded-full">جديد</span>
+                      <span className="text-sm text-gray-200">+500 products</span>
+                      <span className="bg-white/20 backdrop-blur-sm text-white text-xs py-1 px-3 rounded-full">New</span>
                     </div>
                   </div>
                 </div>
               </div>
             </Link>
             
+            {/* Home & Garden Category */}
             <Link href="/products?category=home-garden" className="block group animate-on-scroll opacity-0 transition-opacity duration-1000 delay-200">
-              <div className="relative h-72 rounded-2xl overflow-hidden shadow-lg">
-                <Image
-                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                  alt="المنزل والحديقة"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                />
+              <div className="relative h-72 rounded-2xl overflow-hidden shadow-lg bg-gradient-to-r from-green-500 to-teal-600">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end p-6">
                   <div className="w-full">
-                    <h3 className="text-xl font-bold text-white mb-2 rtl:text-right">المنزل والحديقة</h3>
+                    <h3 className="text-xl font-bold text-white mb-2">Home & Garden</h3>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-200">+350 منتج</span>
-                      <span className="bg-white/20 backdrop-blur-sm text-white text-xs py-1 px-3 rounded-full">موسمي</span>
+                      <span className="text-sm text-gray-200">+350 products</span>
+                      <span className="bg-white/20 backdrop-blur-sm text-white text-xs py-1 px-3 rounded-full">Seasonal</span>
                     </div>
                   </div>
                 </div>
               </div>
             </Link>
             
+            {/* Beauty Category */}
             <Link href="/products?category=beauty" className="block group animate-on-scroll opacity-0 transition-opacity duration-1000 delay-300">
-              <div className="relative h-72 rounded-2xl overflow-hidden shadow-lg">
-                <Image
-                  src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                  alt="الجمال والعناية"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                />
+              <div className="relative h-72 rounded-2xl overflow-hidden shadow-lg bg-gradient-to-r from-purple-500 to-indigo-700">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end p-6">
                   <div className="w-full">
-                    <h3 className="text-xl font-bold text-white mb-2 rtl:text-right">الجمال والعناية</h3>
+                    <h3 className="text-xl font-bold text-white mb-2">Beauty & Care</h3>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-200">+200 منتج</span>
-                      <span className="bg-white/20 backdrop-blur-sm text-white text-xs py-1 px-3 rounded-full">حصري</span>
+                      <span className="text-sm text-gray-200">+200 products</span>
+                      <span className="bg-white/20 backdrop-blur-sm text-white text-xs py-1 px-3 rounded-full">Exclusive</span>
                     </div>
                   </div>
                 </div>
@@ -217,39 +193,26 @@ const HomePage = () => {
       
       {/* Advertisement Banner - قسم الإعلانات */}
       <section className="py-12 bg-gradient-to-r from-indigo-600 to-purple-600 overflow-hidden relative">
-        <div className="absolute inset-0 opacity-10">
-          <Image 
-            src="/images/pattern-bg.svg"
-            alt="نمط خلفية" 
-            fill
-            className="object-cover" 
-          />
-        </div>
+        <div className="absolute inset-0 opacity-10 bg-pattern"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="w-full md:w-1/2 mb-8 md:mb-0 animate-on-scroll opacity-0 transition-opacity duration-1000">
-              <span className="bg-white/20 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 inline-block">عرض محدود</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">خصم 30% على جميع المنتجات الإلكترونية</h2>
-              <p className="text-blue-100 mb-6 text-lg">استمتع بأفضل العروض على أحدث المنتجات. العرض ساري حتى نهاية الشهر!</p>
+              <span className="bg-white/20 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 inline-block">Limited Offer</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">30% Off All Electronics</h2>
+              <p className="text-blue-100 mb-6 text-lg">Enjoy the best deals on latest products. Offer valid until the end of month!</p>
               <Link href="/products?category=electronics">
                 <Button size="lg" className="bg-white text-indigo-700 hover:bg-indigo-50 transition-all duration-300 rounded-full">
-                  تسوق الآن
+                  Shop Now
                 </Button>
               </Link>
             </div>
             <div className="w-full md:w-1/2 relative h-64 md:h-80 animate-on-scroll opacity-0 transition-opacity duration-1000 delay-200">
-              <Image
-                src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                alt="منتجات إلكترونية"
-                fill
-                className="object-cover rounded-lg"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-xl p-4 shadow-xl transform rotate-3">
+              <div className="absolute inset-0 bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-xl p-6 shadow-xl transform rotate-3">
                   <div className="text-center">
-                    <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">خصم 30%</p>
-                    <p className="text-gray-600 dark:text-gray-300">استخدم الكود: <span className="font-mono font-bold">SUMMER30</span></p>
+                    <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">30% OFF</div>
+                    <p className="text-gray-600 dark:text-gray-300">Use code: <span className="font-mono font-bold">SUMMER30</span></p>
+                    <div className="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-full inline-block">Limited Time</div>
                   </div>
                 </div>
               </div>
@@ -262,31 +225,25 @@ const HomePage = () => {
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16 animate-on-scroll opacity-0 transition-opacity duration-1000">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 dark:text-white">آراء عملائنا</h2>
-            <p className="text-gray-600 dark:text-gray-300 text-lg">اقرأ ما يقوله عملاؤنا عن تجربتهم مع إيزي شوب</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 dark:text-white">Customer Testimonials</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-lg">See what our customers are saying about their experience with EasyShop</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg transform transition-transform duration-300 hover:-translate-y-2 animate-on-scroll opacity-0 transition-opacity duration-1000">
               <div className="flex items-center mb-4">
-                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-100 dark:border-indigo-900 ml-4 rtl:mr-4 rtl:ml-0">
-                  <Image
-                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
-                    alt="عميل"
-                    fill
-                    className="object-cover"
-                    sizes="64px"
-                  />
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-100 dark:border-indigo-900 mr-4 bg-indigo-600 flex items-center justify-center">
+                  <span className="text-white text-xl font-bold">AM</span>
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-800 dark:text-white">أحمد محمود</h3>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">عميل منذ 2023</p>
+                  <h3 className="font-bold text-gray-800 dark:text-white">Ahmed Mahmoud</h3>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">Customer since 2023</p>
                 </div>
               </div>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
-                "استخدمت إيزي شوب لشراء الإلكترونيات والملابس عدة مرات. التوصيل سريع والمنتجات عالية الجودة. تجربة تسوق رائعة!"
+                "I've used EasyShop for buying electronics and clothing multiple times. Fast delivery and high-quality products. Great shopping experience!"
               </p>
-              <div className="flex text-yellow-400 space-x-1 rtl:space-x-reverse">
+              <div className="flex text-yellow-400 space-x-1">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
@@ -297,24 +254,18 @@ const HomePage = () => {
             
             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg transform transition-transform duration-300 hover:-translate-y-2 animate-on-scroll opacity-0 transition-opacity duration-1000 delay-100">
               <div className="flex items-center mb-4">
-                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-100 dark:border-indigo-900 ml-4 rtl:mr-4 rtl:ml-0">
-                  <Image
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
-                    alt="عميلة"
-                    fill
-                    className="object-cover"
-                    sizes="64px"
-                  />
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-100 dark:border-indigo-900 mr-4 bg-pink-600 flex items-center justify-center">
+                  <span className="text-white text-xl font-bold">SA</span>
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-800 dark:text-white">سارة أحمد</h3>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">عميلة منذ 2022</p>
+                  <h3 className="font-bold text-gray-800 dark:text-white">Sarah Ahmed</h3>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">Customer since 2022</p>
                 </div>
               </div>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
-                "سياسة الإرجاع مرنة وخدمة العملاء ممتازة. وجدت أفضل المنتجات بأسعار معقولة. سأستمر في الشراء من إيزي شوب بكل تأكيد."
+                "Return policy is flexible and customer service is excellent. Found the best products at reasonable prices. Will definitely continue shopping from EasyShop."
               </p>
-              <div className="flex text-yellow-400 space-x-1 rtl:space-x-reverse">
+              <div className="flex text-yellow-400 space-x-1">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
@@ -325,24 +276,18 @@ const HomePage = () => {
             
             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg transform transition-transform duration-300 hover:-translate-y-2 animate-on-scroll opacity-0 transition-opacity duration-1000 delay-200">
               <div className="flex items-center mb-4">
-                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-100 dark:border-indigo-900 ml-4 rtl:mr-4 rtl:ml-0">
-                  <Image
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
-                    alt="عميل"
-                    fill
-                    className="object-cover"
-                    sizes="64px"
-                  />
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-100 dark:border-indigo-900 mr-4 bg-green-600 flex items-center justify-center">
+                  <span className="text-white text-xl font-bold">MA</span>
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-800 dark:text-white">محمد علي</h3>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">عميل منذ 2024</p>
+                  <h3 className="font-bold text-gray-800 dark:text-white">Mohammed Ali</h3>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">Customer since 2024</p>
                 </div>
               </div>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
-                "منصة سهلة الاستخدام مع مجموعة واسعة من المنتجات. الدفع آمن وسريع. أوصي بإيزي شوب لجميع أصدقائي وعائلتي."
+                "Easy-to-use platform with a wide range of products. Payment is secure and fast. I recommend EasyShop to all my friends and family."
               </p>
-              <div className="flex text-yellow-400 space-x-1 rtl:space-x-reverse">
+              <div className="flex text-yellow-400 space-x-1">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
