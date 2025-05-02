@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="#4F46E5"/>
+  <path d="M75 70H125V130H75V70Z" fill="white"/>
+  <path d="M95 90H105V110H95V90Z" fill="#4F46E5"/>
+  <text x="100" y="150" font-family="Arial" font-size="16" text-anchor="middle" fill="white">المنتج</text>
+</svg>
