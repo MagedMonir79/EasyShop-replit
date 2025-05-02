@@ -94,6 +94,110 @@ const IndexPage = () => {
         </div>
       </section>
       
+      {/* Advertisements Slider Section */}
+      <section className="py-10 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="relative overflow-hidden rounded-xl shadow-lg">
+            {/* Slider Component */}
+            <div className="flex flex-nowrap overflow-hidden relative">
+              {/* First Ad Slide */}
+              <div className="min-w-full transition-transform duration-500">
+                <div className="relative h-80 md:h-96 w-full bg-gradient-to-r from-purple-600 to-indigo-700 rounded-xl overflow-hidden">
+                  <div className="absolute inset-0 z-0">
+                    <img 
+                      src="https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=2115&auto=format&fit=crop" 
+                      alt="Special Deals" 
+                      className="w-full h-full object-cover opacity-50"
+                    />
+                  </div>
+                  <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
+                    <div className="w-full md:w-1/2 p-8 md:p-12">
+                      <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
+                        <span className="inline-block bg-white/20 text-white px-3 py-1 text-xs rounded-full mb-3">العرض الأسبوعي</span>
+                        <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">خصم 30% على الإلكترونيات</h2>
+                        <p className="text-white/90 mb-6">استمتع بخصومات استثنائية على مجموعة متنوعة من المنتجات الإلكترونية هذا الأسبوع فقط!</p>
+                        <Link href="/products?category=electronics" className="inline-block bg-white text-indigo-700 py-2 px-6 rounded-full font-semibold hover:bg-gray-100 transition-colors">
+                          تسوق الآن
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Second Ad Slide (Hidden Initially) */}
+              <div className="min-w-full transition-transform duration-500 absolute top-0 left-full">
+                <div className="relative h-80 md:h-96 w-full bg-gradient-to-r from-pink-600 to-red-600 rounded-xl overflow-hidden">
+                  <div className="absolute inset-0 z-0">
+                    <img 
+                      src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop" 
+                      alt="Fashion Sale" 
+                      className="w-full h-full object-cover opacity-50"
+                    />
+                  </div>
+                  <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-end">
+                    <div className="w-full md:w-1/2 p-8 md:p-12">
+                      <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
+                        <span className="inline-block bg-white/20 text-white px-3 py-1 text-xs rounded-full mb-3">حصري</span>
+                        <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">تخفيضات الموسم</h2>
+                        <p className="text-white/90 mb-6">أحدث صيحات الموضة بأسعار مخفضة تصل إلى 50%. تألقي بأجمل الإطلالات هذا الموسم!</p>
+                        <Link href="/products?category=fashion" className="inline-block bg-white text-pink-700 py-2 px-6 rounded-full font-semibold hover:bg-gray-100 transition-colors">
+                          اكتشفي المجموعة
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Third Ad Slide (Hidden Initially) */}
+              <div className="min-w-full transition-transform duration-500 absolute top-0 left-[200%]">
+                <div className="relative h-80 md:h-96 w-full bg-gradient-to-r from-blue-600 to-cyan-500 rounded-xl overflow-hidden">
+                  <div className="absolute inset-0 z-0">
+                    <img 
+                      src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?q=80&w=1901&auto=format&fit=crop" 
+                      alt="Home Appliances" 
+                      className="w-full h-full object-cover opacity-50"
+                    />
+                  </div>
+                  <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
+                    <div className="w-full md:w-1/2 p-8 md:p-12">
+                      <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
+                        <span className="inline-block bg-white/20 text-white px-3 py-1 text-xs rounded-full mb-3">عروض محدودة</span>
+                        <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">الأجهزة المنزلية</h2>
+                        <p className="text-white/90 mb-6">جدد منزلك مع أحدث الأجهزة المنزلية بأسعار لا تقبل المنافسة. عروض حصرية لفترة محدودة!</p>
+                        <Link href="/products?category=home" className="inline-block bg-white text-blue-700 py-2 px-6 rounded-full font-semibold hover:bg-gray-100 transition-colors">
+                          اكتشف العروض
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Slider Controls */}
+            <div className="absolute bottom-5 left-0 right-0 flex justify-center space-x-3 rtl:space-x-reverse">
+              <button className="w-3 h-3 rounded-full bg-white opacity-100"></button>
+              <button className="w-3 h-3 rounded-full bg-white opacity-50"></button>
+              <button className="w-3 h-3 rounded-full bg-white opacity-50"></button>
+            </div>
+            
+            {/* Next/Prev Buttons */}
+            <button className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center hover:bg-white/50 transition-colors rtl:left-auto rtl:right-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center hover:bg-white/50 transition-colors rtl:right-auto rtl:left-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+      
       {/* Categories Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -210,8 +314,8 @@ const IndexPage = () => {
                 <p className="text-gray-500 text-sm mb-2">Premium noise-cancelling wireless headphones with long battery life</p>
                 <div className="flex justify-between items-center">
                   <div>
-                    <span className="text-lg font-bold">$149.99</span>
-                    <span className="text-gray-400 text-sm line-through ml-2">$189.99</span>
+                    <span className="text-lg font-bold">4,649 ج.م</span>
+                    <span className="text-gray-400 text-sm line-through ml-2">5,889 ج.م</span>
                   </div>
                   <button className="bg-blue-600 text-white py-1 px-4 rounded-full text-sm hover:bg-blue-700 transition-colors">
                     Add to Cart
@@ -233,7 +337,7 @@ const IndexPage = () => {
                 <h3 className="font-semibold mb-2">Smartphone Pro Max</h3>
                 <p className="text-gray-500 text-sm mb-2">Latest smartphone with high-resolution camera and fast processor</p>
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-bold">$999.99</span>
+                  <span className="text-lg font-bold">31,000 ج.م</span>
                   <button className="bg-blue-600 text-white py-1 px-4 rounded-full text-sm hover:bg-blue-700 transition-colors">
                     Add to Cart
                   </button>
@@ -367,6 +471,117 @@ const IndexPage = () => {
               </div>
               <div className="p-6 bg-white">
                 <p className="text-gray-600">Our dedicated customer service team is available 24/7 to assist you with any questions. We're committed to providing the best shopping experience.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Seller Registration Section */}
+      <section className="py-16 bg-gradient-to-r from-blue-900 to-indigo-800 text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
+            <circle cx="25" cy="25" r="20" className="fill-white" />
+            <circle cx="75" cy="75" r="20" className="fill-white" />
+            <circle cx="75" cy="25" r="10" className="fill-white" />
+            <circle cx="25" cy="75" r="10" className="fill-white" />
+          </svg>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="transform transition-all duration-500 hover:scale-105">
+              <div className="bg-white/10 backdrop-blur-sm p-8 rounded-2xl border border-white/20 shadow-xl">
+                <div className="mb-6">
+                  <span className="inline-block bg-white/20 text-white text-xs py-1 px-3 rounded-full mb-2">للتجار</span>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4">انضم إلينا كتاجر</h2>
+                  <p className="text-gray-100 mb-6">
+                    ابدأ رحلتك في بيع منتجاتك عبر منصتنا واصل إلى ملايين العملاء المحتملين. نوفر حلولًا متكاملة لإدارة متجرك بسهولة وفعالية.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span>رسوم تنافسية</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span>تسويق مجاني</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span>دعم على مدار الساعة</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span>أدوات تحليلية</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link href="/seller/register" className="px-6 py-3 bg-white text-indigo-700 rounded-lg font-bold hover:bg-gray-100 transition-colors text-center">
+                    سجل كتاجر
+                  </Link>
+                  <Link href="/seller/learn-more" className="px-6 py-3 bg-transparent border border-white text-white rounded-lg font-semibold hover:bg-white/10 transition-colors text-center">
+                    معرفة المزيد
+                  </Link>
+                </div>
+              </div>
+            </div>
+            
+            <div className="text-center md:text-left">
+              <h3 className="text-2xl font-bold mb-6">مميزات البيع معنا</h3>
+              <div className="space-y-6">
+                <div className="flex flex-col md:flex-row gap-4 items-center md:items-start">
+                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-semibold mb-2">زيادة المبيعات</h4>
+                    <p className="text-gray-200">الوصول إلى قاعدة واسعة من العملاء النشطين يبحثون عن منتجات مثل منتجاتك.</p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col md:flex-row gap-4 items-center md:items-start">
+                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-semibold mb-2">حماية البائع</h4>
+                    <p className="text-gray-200">نظام دفع آمن وسياسات حماية للبائعين تضمن حقوقك وتجعل عملية البيع سلسة وآمنة.</p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col md:flex-row gap-4 items-center md:items-start">
+                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-semibold mb-2">أدوات تسويقية متطورة</h4>
+                    <p className="text-gray-200">حملات ترويجية وإشعارات للعملاء وقسائم تخفيض لزيادة ظهور منتجاتك وتحسين المبيعات.</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
