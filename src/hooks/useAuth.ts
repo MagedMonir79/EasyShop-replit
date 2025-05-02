@@ -39,42 +39,43 @@ export const useAuth = () => {
   };
 
   useEffect(() => {
-    // Check login status on startup, with SSR safety
+    // Check login status on startup using Supabase session
     const checkUserSession = async () => {
       try {
-        // Only access localStorage on the client side
         if (typeof window !== 'undefined') {
-          // Try to retrieve user info from localStorage
-          const storedUser = localStorage.getItem('user');
+          // Get the current session from Supabase
+          const { data: { session }, error } = await supabase.auth.getSession();
           
-          if (storedUser) {
-            try {
-              // If we found user info in localStorage, restore it
-              const parsedUser = JSON.parse(storedUser);
-              // Validate user object has required fields
-              if (parsedUser?.id && parsedUser?.email) {
-                setUser(parsedUser);
-              } else {
-                console.warn('Invalid user data found in localStorage');
-                localStorage.removeItem('user');
-                setUser(null);
-              }
-            } catch (parseError) {
-              console.error('Error parsing stored user data:', parseError);
-              localStorage.removeItem('user');
-              setUser(null);
-            }
+          if (error) {
+            console.error('Error getting session:', error.message);
+            setUser(null);
+            return;
+          }
+          
+          if (session?.user) {
+            // We have a logged-in user
+            console.log('Found authenticated session for user:', session.user.id);
+            
+            // Create user object from Supabase user data
+            const userData: User = {
+              id: session.user.id,
+              email: session.user.email || '',
+              first_name: session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || '',
+              last_name: session.user.user_metadata?.last_name || '',
+              avatar_url: session.user.user_metadata?.avatar_url || '',
+            };
+            
+            // Update user state
+            setUser(userData);
           } else {
-            // If we didn't find user info, set state to not logged in
+            // No active session
+            console.log('No active session found');
             setUser(null);
           }
         }
       } catch (error) {
         // In case of an error, assume the user is not logged in
         console.error('Error retrieving user session:', error);
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('user');
-        }
         setUser(null);
       } finally {
         // Finally, set loading state to false
@@ -82,92 +83,182 @@ export const useAuth = () => {
       }
     };
 
-    // Call the function with a short delay to ensure the page is loaded
-    // Only set a timeout on the client side
-    if (typeof window !== 'undefined') {
-      const timer = setTimeout(checkUserSession, 300);
-      return () => clearTimeout(timer);
-    } else {
-      // For server-side rendering, just set loading to false
-      setLoading(false);
+    // Set up auth state listener for real-time updates
+    const setupAuthListener = () => {
+      if (typeof window !== 'undefined') {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          (_event, session) => {
+            if (session?.user) {
+              // Update user state when auth state changes
+              const userData: User = {
+                id: session.user.id,
+                email: session.user.email || '',
+                first_name: session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || '',
+                last_name: session.user.user_metadata?.last_name || '',
+                avatar_url: session.user.user_metadata?.avatar_url || '',
+              };
+              
+              setUser(userData);
+            } else {
+              setUser(null);
+            }
+            
+            setLoading(false);
+          }
+        );
+        
+        // Cleanup function to remove the listener
+        return () => {
+          subscription.unsubscribe();
+        };
+      }
+      
       return undefined;
-    }
+    };
+
+    const authCleanup = setupAuthListener();
+    
+    // Call the function immediately to check session
+    checkUserSession();
+    
+    return authCleanup;
   }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
-      // Mock delay to simulate API request
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Use Supabase for authentication
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
       
-      // Simple check of credentials (for development only)
-      if (email === 'user@example.com' && password === 'password') {
-        if (typeof window !== 'undefined') {
-          // Save user data to localStorage
-          localStorage.setItem('user', JSON.stringify(mockUser));
+      if (error) {
+        // Get localized error message based on error code
+        let errorMessage: string;
+        
+        switch (error.message) {
+          case 'Invalid login credentials':
+            errorMessage = getLocalizedMessage(
+              'Invalid credentials',
+              'بيانات الاعتماد غير صحيحة'
+            );
+            break;
+          case 'Email not confirmed':
+            errorMessage = getLocalizedMessage(
+              'Please confirm your email before logging in',
+              'يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول'
+            );
+            break;
+          default:
+            errorMessage = error.message;
         }
-        setUser(mockUser);
-        router.push('/');
-        return { success: true };
+        
+        throw new Error(errorMessage);
       }
       
-      // Get localized error message
-      const errorMessage = getLocalizedMessage(
-        'Invalid credentials', 
-        'بيانات الاعتماد غير صحيحة'
-      );
-      throw new Error(errorMessage);
+      // Handle successful login
+      if (data?.user) {
+        console.log('User logged in via Supabase:', data.user);
+        
+        // Format user data from Supabase user object
+        const loggedInUser: User = {
+          id: data.user.id,
+          email: data.user.email || '',
+          first_name: data.user.user_metadata?.first_name || data.user.email?.split('@')[0] || '',
+          last_name: data.user.user_metadata?.last_name || '',
+          avatar_url: data.user.user_metadata?.avatar_url || '',
+        };
+        
+        // Update state with the logged-in user
+        setUser(loggedInUser);
+        
+        // Redirect to home page
+        router.push('/');
+        return { success: true };
+      } else {
+        // This shouldn't happen if there's no error, but handle it just in case
+        throw new Error(getLocalizedMessage(
+          'Login successful but user data is missing',
+          'تم تسجيل الدخول بنجاح ولكن بيانات المستخدم مفقودة'
+        ));
+      }
     } catch (error: any) {
+      console.error('Login error:', error);
       return { success: false, error: error.message };
     }
   };
 
   const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
     try {
-      // Mock delay to simulate API request
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Use Supabase for user signup
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          // Store the user's first and last name as metadata
+          data: {
+            first_name: firstName,
+            last_name: lastName
+          },
+          // Use the callback route for email confirmation
+          emailRedirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
       
-      // Simple check of email (for development only)
-      if (email === 'user@example.com') {
+      if (error) {
+        throw error;
+      }
+      
+      // Check if the sign-up was successful
+      if (data?.user) {
+        console.log('User created in Supabase:', data.user);
+        
+        // Create a User object from the Supabase data
+        const newUser: User = {
+          id: data.user.id,
+          email: data.user.email || email,
+          first_name: firstName,
+          last_name: lastName,
+          avatar_url: data.user.user_metadata?.avatar_url || 'https://randomuser.me/api/portraits/lego/1.jpg',
+        };
+        
+        // Update local state with the new user
+        setUser(newUser);
+        
+        // Don't redirect here - let the auth callback handle it
+        // This fixes the issue where user appears in the UI but wasn't created in Supabase
+        
+        return { success: true };
+      } else {
         // Get localized error message
         const errorMessage = getLocalizedMessage(
-          'Email is already in use',
-          'البريد الإلكتروني مستخدم بالفعل'
+          'User creation failed',
+          'فشل إنشاء المستخدم'
         );
         throw new Error(errorMessage);
       }
-      
-      // Create a new mock user with stable ID (using email hash)
-      const userIdHash = email.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0).toString();
-      const newUser: User = {
-        id: `user-${userIdHash}`,
-        email,
-        first_name: firstName,
-        last_name: lastName,
-        avatar_url: 'https://randomuser.me/api/portraits/lego/1.jpg',
-      };
-      
-      // Save user data to localStorage on client side
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('user', JSON.stringify(newUser));
-      }
-      setUser(newUser);
-      router.push('/');
-      return { success: true };
     } catch (error: any) {
-      return { success: false, error: error.message };
+      console.error('Signup error:', error);
+      return { 
+        success: false, 
+        error: error.message || 'An error occurred during signup' 
+      };
     }
   };
 
   const signOut = async () => {
     try {
-      // Mock delay to simulate API request
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Sign out using Supabase
+      const { error } = await supabase.auth.signOut();
       
-      // Remove user data from localStorage on client side only
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('user');
+      if (error) {
+        throw error;
       }
+      
+      // Clear user state
       setUser(null);
+      
+      // Redirect to home page
       router.push('/');
     } catch (error: any) {
       // Get localized error message
@@ -193,22 +284,38 @@ export const useAuth = () => {
         throw new Error(errorMessage);
       }
 
-      // Mock delay to simulate API request
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Update user metadata in Supabase
+      const { data, error } = await supabase.auth.updateUser({
+        data: {
+          first_name: updates.first_name || user.first_name,
+          last_name: updates.last_name || user.last_name,
+          avatar_url: updates.avatar_url || user.avatar_url
+        }
+      });
       
-      const updatedUser = {
-        ...user,
-        ...updates,
-      };
-      
-      // Update user data in localStorage on client side only
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+      if (error) {
+        throw error;
       }
-      setUser(updatedUser);
-
-      return { success: true };
+      
+      if (data?.user) {
+        // Create updated user object
+        const updatedUser = {
+          ...user,
+          ...updates,
+        };
+        
+        // Update local state
+        setUser(updatedUser);
+        
+        return { success: true };
+      } else {
+        throw new Error(getLocalizedMessage(
+          'Profile update successful but data is missing',
+          'تم تحديث الملف الشخصي بنجاح ولكن البيانات مفقودة'
+        ));
+      }
     } catch (error: any) {
+      console.error('Profile update error:', error);
       return { success: false, error: error.message };
     }
   };
