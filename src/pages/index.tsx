@@ -1,11 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Toaster } from 'react-hot-toast';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/Button';
 
-// إنشاء صفحة رئيسية مبسطة لتجنب مشاكل تحميل الصور
+// إنشاء صفحة رئيسية مبسطة تستخدم الصور الثابتة بدلاً من مكون Image
 const IndexPage = () => {
   return (
     <Layout>
@@ -34,12 +33,11 @@ const IndexPage = () => {
                   </Link>
                 </div>
               </div>
-              <div className="hidden md:block relative h-[400px]">
-                <Image
-                  src="/images/default-product.svg"
-                  alt="تسوق عبر الإنترنت"
-                  fill
-                  className="object-contain rounded-lg"
+              <div className="hidden md:flex justify-center">
+                <img 
+                  src="/logo.svg" 
+                  alt="المتجر"
+                  className="w-64 h-64 object-contain"
                 />
               </div>
             </div>
@@ -52,13 +50,14 @@ const IndexPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden">
-                  <div className="relative h-64">
-                    <Image
-                      src="/images/default-product.svg"
-                      alt={`منتج ${i}`}
-                      fill
-                      className="object-cover"
-                    />
+                  <div className="flex justify-center p-4 bg-indigo-100">
+                    <div className="text-center py-8 w-full">
+                      <div className="flex justify-center">
+                        <div className="w-24 h-24 bg-indigo-600 rounded flex items-center justify-center">
+                          <span className="text-white text-2xl font-bold">منتج {i}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div className="p-4">
                     <h3 className="font-bold text-lg mb-2">منتج {i}</h3>
