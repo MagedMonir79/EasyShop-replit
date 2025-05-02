@@ -1,0 +1,123 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+
+/* Animation classes */
+.animate-fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 1s ease-out;
+}
+
+.animate-slide-right {
+  animation: slideInRight 1s ease-out;
+}
+
+.animate-bounce {
+  animation: bounce 2s;
+}
+
+.animate-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animate-delay-600 {
+  animation-delay: 600ms;
+}
+
+.animate-delay-900 {
+  animation-delay: 900ms;
+}
+
+/* For server-side rendering compatibility */
+.animate-when-visible {
+  opacity: 0;
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.animate-when-visible.visible {
+  opacity: 1;
+}
+
+.transform-on-scroll-up {
+  transform: translateY(40px);
+}
+
+.transform-on-scroll-up.visible {
+  transform: translateY(0);
+}
+
+.transform-on-scroll-left {
+  transform: translateX(-40px);
+}
+
+.transform-on-scroll-left.visible {
+  transform: translateX(0);
+}
+
+.transform-on-scroll-right {
+  transform: translateX(40px);
+}
+
+.transform-on-scroll-right.visible {
+  transform: translateX(0);
+}

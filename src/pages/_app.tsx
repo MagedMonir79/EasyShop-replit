@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import Head from 'next/head';
 
 import '../styles/globals.css';
+import '../styles/animations.css';
 import { Database } from '@/utils/types';
 import { initializeLanguageStore, useLanguageStore } from '@/store/languageStore';
 import NoSSR from '@/components/NoSSR';
