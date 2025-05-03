@@ -225,6 +225,33 @@ export const useAuth = () => {
         // Update local state with the new user
         setUser(newUser);
         
+        // Send welcome email
+        try {
+          // Only run on client-side
+          if (typeof window !== 'undefined') {
+            const response = await fetch('/api/welcome-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                email: newUser.email,
+                firstName: newUser.first_name
+              }),
+            });
+            
+            const emailResult = await response.json();
+            if (!emailResult.success) {
+              console.warn('Welcome email could not be sent:', emailResult.message);
+            } else {
+              console.log('Welcome email sent successfully');
+            }
+          }
+        } catch (emailError) {
+          // Don't fail registration if email sending fails
+          console.error('Error sending welcome email:', emailError);
+        }
+        
         // Don't redirect here - let the auth callback handle it
         // This fixes the issue where user appears in the UI but wasn't created in Supabase
         
