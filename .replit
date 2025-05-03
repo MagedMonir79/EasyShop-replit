@@ -27,6 +27,10 @@ args = "DrizzleDBGenerate"
 task = "workflow.run"
 args = "VercelBuild"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "PushDB"
+
 [[workflows.workflow]]
 name = "NextJsServer"
 author = "agent"
@@ -59,6 +63,14 @@ author = "agent"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "next build"
+
+[[workflows.workflow]]
+name = "PushDB"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "tsx scripts/push-db.ts"
 
 [deployment]
 run = ["sh", "-c", "npm install && npm run dev"]
