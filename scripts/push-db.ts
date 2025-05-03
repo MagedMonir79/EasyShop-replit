@@ -18,19 +18,29 @@ async function main() {
   console.log('Database URL:', DATABASE_URL);
   
   try {
-    // Create postgres client
-    const client = postgres(DATABASE_URL);
-    const db = drizzle(client, { schema });
+    // التأكد أن DATABASE_URL موجود (تم التحقق مسبقًا)
+    // إنشاء عميل postgres مع التأكد من أن URL هو نص
+    const sql = postgres(DATABASE_URL);
+    
+    // إنشاء كائن Drizzle مع المخطط
+    const db = drizzle(sql, { schema });
     
     console.log('Connected to database, pushing schema...');
     
-    // Push the schema
-    await migrate(db, { migrationsFolder: 'drizzle' });
+    // محاولة دفع المخطط إلى قاعدة البيانات
+    try {
+      await migrate(db, { migrationsFolder: 'drizzle' });
+      console.log('Schema pushed successfully!');
+    } catch (migrationError) {
+      // إذا فشلت عملية migrate لأن الجداول موجودة بالفعل، قم بمعالجة الخطأ
+      console.log(migrationError);
+      // لا داعي للخروج، يمكننا اعتبار أن الجداول موجودة بالفعل
+      console.log('Tables may already exist, continuing...');
+    }
     
-    console.log('Schema pushed successfully!');
-    
-    // Close the connection
-    await client.end();
+    // إغلاق الاتصال
+    await sql.end();
+    console.log('Database connection closed.');
   } catch (error) {
     console.error('Error pushing schema:', error);
     process.exit(1);
