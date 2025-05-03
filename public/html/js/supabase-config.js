@@ -1,0 +1,8 @@
+// تكوين Supabase
+const SUPABASE_URL = "https://rkxqcnyujnxjjpnanojp.supabase.co"; // عنوان URL الحقيقي لمشروعك
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJreHFjbnl1am54ampwbmFub2pwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQ5MTM5MDEsImV4cCI6MjAzMDQ4OTkwMX0.IZFUgsjZIyVcGZOH7D9KUw_QMWpYYQA0U-LwndTlkHw"; // المفتاح العام الحقيقي لمشروعك
+
+// إنشاء عميل Supabase
+const createSupabaseClient = () => {
+    return supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+};
