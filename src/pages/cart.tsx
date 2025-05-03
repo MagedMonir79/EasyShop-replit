@@ -3,13 +3,19 @@ import Layout from '../components/Layout';
 import { useCartStore } from '../store/cartStore';
 import { Button } from '../components/ui/Button';
 import Link from 'next/link';
+import { Product } from '../utils/types';
+
+interface CartItem {
+  product: Product;
+  quantity: number;
+}
 
 // We'll create a simple implementation that doesn't depend on CartItem
-const CartPage = () => {
+const CartPage: React.FC = () => {
   const { items, getTotalItems, getTotalPrice, clearCart } = useCartStore();
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
-  const formatPrice = (price) => {
+  const formatPrice = (price: number) => {
     return new Intl.NumberFormat('ar-EG', {
       style: 'currency',
       currency: 'EGP',
@@ -17,13 +23,13 @@ const CartPage = () => {
   };
 
   // Simple CartItem component directly in the page
-  const CartItemComponent = ({ item }) => (
+  const CartItemComponent = ({ item }: { item: CartItem }) => (
     <div className="flex items-center justify-between py-4">
       <div className="flex items-center">
         <div className="w-16 h-16 bg-gray-200 rounded-md overflow-hidden mr-4">
           {item.product.image_url ? (
             <img 
-              src={item.product.image_url} 
+              src={item.product.image_url.toString()} 
               alt={item.product.name}
               className="w-full h-full object-cover"
             />
@@ -36,13 +42,13 @@ const CartPage = () => {
         <div>
           <h3 className="font-medium text-gray-900">{item.product.name}</h3>
           <p className="text-sm text-gray-500">
-            {formatPrice(item.product.price)} × {item.quantity}
+            {formatPrice(Number(item.product.price))} × {item.quantity}
           </p>
         </div>
       </div>
       <div className="flex items-center">
         <p className="font-medium text-gray-900 mr-4">
-          {formatPrice(item.product.price * item.quantity)}
+          {formatPrice(Number(item.product.price) * item.quantity)}
         </p>
         <button
           onClick={() => useCartStore.getState().removeItem(item.product.id)}
