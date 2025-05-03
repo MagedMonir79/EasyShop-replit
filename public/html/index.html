@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyShop - تسوق بسهولة</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+        }
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .welcome-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #198754;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand text-primary" href="index.html">EasyShop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">المنتجات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">العروض</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">تواصل معنا</a>
+                    </li>
+                    <li class="nav-item" id="cart-link" style="display: none;">
+                        <a class="nav-link" href="cart.html">
+                            <i class="fas fa-shopping-cart"></i> السلة
+                        </a>
+                    </li>
+                    <li class="nav-item auth-button" id="login-link">
+                        <a class="nav-link btn btn-outline-primary ms-2" href="login.html">تسجيل الدخول</a>
+                    </li>
+                    <li class="nav-item auth-button" id="signup-link">
+                        <a class="nav-link btn btn-primary ms-2 text-white" href="signup.html">إنشاء حساب</a>
+                    </li>
+                    <li class="nav-item" id="user-info" style="display: none;">
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown">
+                                <span id="user-name">اسم المستخدم</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#">حسابي</a></li>
+                                <li><a class="dropdown-item" href="#">طلباتي</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="logout-button">تسجيل الخروج</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Welcome Message -->
+    <div class="welcome-message" id="welcome-message">
+        مرحبًا بك! تم تسجيل الدخول بنجاح.
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 mb-4">تسوق بسهولة مع EasyShop</h1>
+            <p class="lead mb-5">منصة تسوق متكاملة تقدم أفضل المنتجات بأسعار منافسة وخدمة عملاء ممتازة</p>
+            <a href="signup.html" class="btn btn-primary btn-lg px-4 me-3">ابدأ التسوق الآن</a>
+            <a href="#features" class="btn btn-outline-light btn-lg px-4">تعرف علينا</a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container py-5" id="features">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body p-4">
+                        <i class="fas fa-shipping-fast fa-3x text-primary mb-3"></i>
+                        <h4 class="card-title">توصيل سريع</h4>
+                        <p class="card-text">نضمن وصول طلبك في أسرع وقت ممكن مع خدمة تتبع الطلبات المباشرة.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body p-4">
+                        <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                        <h4 class="card-title">دفع آمن</h4>
+                        <p class="card-text">تعاملات مالية آمنة بالكامل مع دعم لجميع وسائل الدفع الإلكترونية المعروفة.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body p-4">
+                        <i class="fas fa-headset fa-3x text-primary mb-3"></i>
+                        <h4 class="card-title">دعم متواصل</h4>
+                        <p class="card-text">فريق دعم فني متاح على مدار الساعة للإجابة على استفساراتك ومساعدتك.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>EasyShop</h5>
+                    <p>منصة التسوق الأولى في المنطقة</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5>تواصل معنا</h5>
+                    <div class="d-flex justify-content-md-end">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">جميع الحقوق محفوظة &copy; 2025 - EasyShop</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // تهيئة Supabase
+        const supabaseUrl = 'https://example.supabase.co';
+        const supabaseAnonKey = 'your-anon-key';
+        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        // التحقق من حالة تسجيل الدخول عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', async () => {
+            // التحقق من جلسة المستخدم الحالية
+            const { data: { session }, error } = await supabase.auth.getSession();
+            
+            if (session) {
+                // المستخدم مسجل الدخول
+                await handleAuthenticatedUser(session.user);
+            }
+            
+            // إعداد مستمعي الأحداث
+            document.getElementById('logout-button').addEventListener('click', handleLogout);
+        });
+        
+        // تعامل مع المستخدم المصادق
+        async function handleAuthenticatedUser(user) {
+            // إخفاء أزرار تسجيل الدخول والتسجيل
+            document.querySelectorAll('.auth-button').forEach(button => {
+                button.style.display = 'none';
+            });
+            
+            // إظهار معلومات المستخدم وأيقونة سلة التسوق
+            document.getElementById('user-info').style.display = 'block';
+            document.getElementById('cart-link').style.display = 'block';
+            
+            // عرض اسم المستخدم أو البريد الإلكتروني
+            const userName = user.user_metadata?.first_name || user.email.split('@')[0];
+            document.getElementById('user-name').textContent = userName;
+            
+            // عرض رسالة ترحيب
+            showWelcomeMessage(userName);
+        }
+        
+        // عرض رسالة ترحيب
+        function showWelcomeMessage(name) {
+            const welcomeMessage = document.getElementById('welcome-message');
+            welcomeMessage.textContent = `مرحبًا بك ${name}!`;
+            welcomeMessage.style.display = 'block';
+            
+            // إخفاء الرسالة بعد 5 ثوان
+            setTimeout(() => {
+                welcomeMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        // تسجيل الخروج
+        async function handleLogout(e) {
+            e.preventDefault();
+            
+            try {
+                // تسجيل الخروج من Supabase
+                await supabase.auth.signOut();
+                
+                // إعادة تحميل الصفحة بعد تسجيل الخروج
+                window.location.reload();
+            } catch (error) {
+                console.error('خطأ في تسجيل الخروج:', error.message);
+                alert('حدث خطأ أثناء تسجيل الخروج. الرجاء المحاولة مرة أخرى.');
+            }
+        }
+    </script>
+</body>
+</html>
