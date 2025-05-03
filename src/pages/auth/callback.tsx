@@ -1,68 +1,48 @@
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { supabase } from '../../utils/supabase';
-import { useUserStore } from '../../store/userStore';
-import Layout from '../../components/Layout';
+import { useEffect } from 'react';
+import { supabase } from '@/utils/supabase';
 
-const AuthCallbackPage = () => {
+export default function AuthCallbackPage() {
   const router = useRouter();
-  const { setUser } = useUserStore();
 
   useEffect(() => {
-    // استدعاء وظيفة التحقق من جلسة المستخدم بعد إعادة التوجيه من Supabase
-    const checkSession = async () => {
+    const handleAuthCallback = async () => {
       try {
-        // التحقق من المعلومات الحالية للمستخدم
-        const { data: { session }, error } = await supabase.auth.getSession();
+        // التأكد من أن العنوان URL يحتوي على البيانات المطلوبة
+        const { hash, search } = window.location;
+        
+        if (!hash && !search) {
+          throw new Error('No hash or search parameters in URL');
+        }
+
+        // معالجة رد المصادقة من Supabase
+        const { data, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('خطأ في الحصول على معلومات الجلسة:', error.message);
-          router.push('/auth/login');
-          return;
+          throw error;
         }
-        
-        if (!session) {
-          // لا توجد جلسة نشطة
-          router.push('/auth/login');
-          return;
-        }
-        
-        // الحصول على معلومات المستخدم من Supabase
-        const user = session.user;
-        
-        if (user) {
-          // تعيين بيانات المستخدم في حالة التطبيق
-          setUser({
-            id: user.id,
-            email: user.email || '',
-            first_name: user.user_metadata?.first_name || user.email?.split('@')[0] || '',
-            last_name: user.user_metadata?.last_name || '',
-            avatar_url: user.user_metadata?.avatar_url || '',
-          });
-          
-          // إعادة التوجيه إلى الصفحة الرئيسية
-          router.push('/');
-        }
+
+        // في حالة النجاح، توجيه المستخدم إلى الصفحة الرئيسية
+        router.push('/');
       } catch (error) {
-        console.error('حدث خطأ غير متوقع:', error);
+        console.error('Error in auth callback:', error);
+        // في حالة الخطأ، توجيه المستخدم إلى صفحة تسجيل الدخول
         router.push('/auth/login');
       }
     };
 
-    checkSession();
-  }, [router, setUser]);
+    // معالجة الاستجابة عند تحميل الصفحة
+    handleAuthCallback();
+  }, [router]);
 
+  // عرض رسالة انتظار حتى يتم التوجيه
   return (
-    <Layout title="تسجيل الدخول | EasyShop">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-8 text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
-          <h1 className="text-2xl font-bold mb-2">جاري التحقق من تسجيل الدخول...</h1>
-          <p className="text-gray-600">يرجى الانتظار بينما نقوم بمعالجة المعلومات الخاصة بك.</p>
-        </div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="text-center p-8 bg-white rounded-lg shadow-md">
+        <h1 className="text-2xl font-semibold mb-4">جاري التحقق من المصادقة...</h1>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto"></div>
+        <p className="mt-4 text-gray-600">سيتم توجيهك خلال لحظات...</p>
       </div>
-    </Layout>
+    </div>
   );
-};
-
-export default AuthCallbackPage;
+}
