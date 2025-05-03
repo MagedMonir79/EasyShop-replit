@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب جديد - EasyShop</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .auth-container {
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .auth-card {
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .auth-image {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: white;
+            padding: 2rem;
+            min-height: 100%;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+
+        .btn-outline-primary {
+            color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        .social-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .google-btn {
+            background-color: white;
+            color: #757575;
+            border: 1px solid #ddd;
+        }
+
+        .google-btn:hover {
+            background-color: #f1f1f1;
+        }
+
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .alert {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand text-primary" href="index.html">EasyShop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">المنتجات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">العروض</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">تواصل معنا</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-primary ms-2" href="login.html">تسجيل الدخول</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary ms-2 text-white active" href="signup.html">إنشاء حساب</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Alert Messages -->
+    <div class="container mt-3">
+        <div class="alert alert-danger" id="error-alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span id="error-message"></span>
+        </div>
+        <div class="alert alert-success" id="success-alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span id="success-message">تم إنشاء الحساب بنجاح! جاري توجيهك للصفحة الرئيسية...</span>
+        </div>
+    </div>
+
+    <!-- Signup Form Section -->
+    <section class="auth-container">
+        <div class="container">
+            <div class="row auth-card mx-0">
+                <div class="col-md-6 p-5">
+                    <h2 class="text-center mb-4">إنشاء حساب جديد</h2>
+                    
+                    <!-- Signup Form -->
+                    <form id="signup-form">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">الاسم الكامل</label>
+                            <input type="text" class="form-control" id="fullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">البريد الإلكتروني</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">كلمة المرور</label>
+                            <input type="password" class="form-control" id="password" required>
+                            <div class="form-text">يجب أن تحتوي على 8 أحرف على الأقل</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">تأكيد كلمة المرور</label>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                        </div>
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="agree-terms" required>
+                                <label class="form-check-label" for="agree-terms">
+                                    أوافق على <a href="#">الشروط والأحكام</a> وسياسة الخصوصية
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3" id="signup-button">
+                            <span class="loader" id="signup-loader"></span>
+                            إنشاء حساب
+                        </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="d-flex align-items-center my-4">
+                        <hr class="flex-grow-1">
+                        <span class="mx-3 text-muted">أو</span>
+                        <hr class="flex-grow-1">
+                    </div>
+
+                    <!-- Social Login -->
+                    <div class="social-login text-center">
+                        <div class="social-btn google-btn w-100" id="google-signup">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" width="20">
+                            <span>تسجيل باستخدام Google</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <p>لديك حساب بالفعل؟ <a href="login.html" class="text-primary">تسجيل الدخول</a></p>
+                    </div>
+                </div>
+
+                <!-- Image Column -->
+                <div class="col-md-6 auth-image d-none d-md-flex">
+                    <h2 class="mb-4">مرحبًا بك في منصة EasyShop</h2>
+                    <p class="lead">انضم إلينا اليوم واستمتع بتجربة تسوق فريدة مع آلاف المنتجات المميزة وعروض حصرية.</p>
+                    <div class="mt-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-check-circle text-light me-3"></i>
+                            <span>توصيل سريع لجميع الطلبات</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-check-circle text-light me-3"></i>
+                            <span>ضمان الجودة على كافة المنتجات</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-light me-3"></i>
+                            <span>دعم فني على مدار الساعة</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">جميع الحقوق محفوظة &copy; 2025 - EasyShop</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // استيراد مفاتيح Supabase من متغيرات البيئة (سيتم استبدالها بالقيم الفعلية)
+        // تهيئة Supabase باستخدام المتغيرات البيئية الفعلية
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co';
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key';
+        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        // عناصر الواجهة
+        const signupForm = document.getElementById('signup-form');
+        const signupButton = document.getElementById('signup-button');
+        const signupLoader = document.getElementById('signup-loader');
+        const googleSignupButton = document.getElementById('google-signup');
+        const errorAlert = document.getElementById('error-alert');
+        const errorMessage = document.getElementById('error-message');
+        const successAlert = document.getElementById('success-alert');
+
+        // مستمع حدث تسجيل جديد
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // عرض حالة التحميل
+            signupButton.disabled = true;
+            signupLoader.style.display = 'inline-block';
+            
+            // إخفاء رسائل الخطأ والنجاح السابقة
+            errorAlert.style.display = 'none';
+            successAlert.style.display = 'none';
+            
+            // قراءة البيانات من النموذج
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // التحقق من صحة البيانات
+            if (password !== confirmPassword) {
+                showError('كلمات المرور غير متطابقة');
+                return;
+            }
+            
+            try {
+                // إنشاء مستخدم جديد في Supabase
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: fullName
+                        }
+                    }
+                });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                // التحقق من نجاح عملية التسجيل
+                if (data?.user) {
+                    console.log('User created successfully:', data.user);
+                    
+                    // عرض رسالة النجاح
+                    successAlert.style.display = 'block';
+                    
+                    // إعادة تعيين النموذج
+                    signupForm.reset();
+                    
+                    // توجيه المستخدم إلى الصفحة الرئيسية بعد فترة قصيرة
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 3000);
+                } else {
+                    showError('حدث خطأ أثناء إنشاء الحساب. الرجاء المحاولة مرة أخرى.');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                
+                // تخصيص رسالة الخطأ بناءً على نوعه
+                let customErrorMessage = 'حدث خطأ أثناء إنشاء الحساب. الرجاء المحاولة مرة أخرى.';
+                
+                if (error.message.includes('already registered')) {
+                    customErrorMessage = 'البريد الإلكتروني مسجل مسبقًا. الرجاء استخدام بريد إلكتروني آخر.';
+                } else if (error.message.includes('password')) {
+                    customErrorMessage = 'كلمة المرور ضعيفة جدًا. يجب أن تحتوي على 8 أحرف على الأقل.';
+                } else if (error.message.includes('email')) {
+                    customErrorMessage = 'البريد الإلكتروني غير صالح.';
+                }
+                
+                showError(customErrorMessage);
+            } finally {
+                // إعادة تفعيل زر التسجيل وإخفاء حالة التحميل
+                signupButton.disabled = false;
+                signupLoader.style.display = 'none';
+            }
+        });
+
+        // مستمع حدث تسجيل بواسطة Google
+        googleSignupButton.addEventListener('click', async () => {
+            try {
+                // تعطيل الزر وعرض حالة الانتظار
+                googleSignupButton.style.opacity = '0.7';
+                googleSignupButton.style.pointerEvents = 'none';
+                
+                // إخفاء الرسائل السابقة
+                errorAlert.style.display = 'none';
+                
+                // تسجيل الدخول باستخدام حساب Google
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + '/html/index.html'
+                    }
+                });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                // ملحوظة: سيتم توجيه المستخدم تلقائيًا إلى صفحة تسجيل الدخول بـ Google
+                // ثم العودة إلى التطبيق بعد النجاح
+                
+            } catch (error) {
+                console.error('Google signup error:', error);
+                
+                // عرض رسالة الخطأ
+                showError('حدث خطأ أثناء التسجيل بواسطة Google. الرجاء المحاولة مرة أخرى.');
+                
+                // إعادة تفعيل الزر
+                googleSignupButton.style.opacity = '1';
+                googleSignupButton.style.pointerEvents = 'auto';
+            }
+        });
+
+        // وظيفة لعرض رسالة خطأ
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorAlert.style.display = 'block';
+            
+            // التمرير إلى أعلى الصفحة للتأكد من رؤية الرسالة
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // إخفاء الرسالة بعد 5 ثوان
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>
