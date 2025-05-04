@@ -169,6 +169,10 @@
             <i class="fas fa-exclamation-circle me-2"></i>
             <span id="error-message"></span>
         </div>
+        <div class="alert alert-success" id="success-alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span id="success-message"></span>
+        </div>
     </div>
 
     <!-- Login Form Section -->
@@ -268,6 +272,8 @@
         const googleLoginButton = document.getElementById('google-login');
         const errorAlert = document.getElementById('error-alert');
         const errorMessage = document.getElementById('error-message');
+        const successAlert = document.getElementById('success-alert');
+        const successMessage = document.getElementById('success-message');
 
         // مستمع حدث تسجيل الدخول
         loginForm.addEventListener('submit', async (e) => {
@@ -299,8 +305,18 @@
                 if (data?.user) {
                     console.log('Login successful:', data.user);
                     
-                    // توجيه المستخدم إلى الصفحة الرئيسية
-                    window.location.href = '/html/index.html';
+                    // عرض رسالة نجاح تسجيل الدخول
+                    showSuccess(`تم تسجيل الدخول بنجاح! مرحبًا ${data.user.email}...`);
+                    
+                    // تعطيل نموذج تسجيل الدخول
+                    loginForm.querySelectorAll('input, button').forEach(el => {
+                        el.disabled = true;
+                    });
+                    
+                    // توجيه المستخدم إلى الصفحة الرئيسية بعد ثانيتين
+                    setTimeout(() => {
+                        window.location.href = '/html/index.html';
+                    }, 2000);
                 } else {
                     showError('حدث خطأ أثناء تسجيل الدخول. الرجاء المحاولة مرة أخرى.');
                 }
@@ -363,6 +379,10 @@
 
         // وظيفة لعرض رسالة خطأ
         function showError(message) {
+            // إخفاء رسالة النجاح إذا كانت ظاهرة
+            successAlert.style.display = 'none';
+            
+            // عرض رسالة الخطأ
             errorMessage.textContent = message;
             errorAlert.style.display = 'block';
             
@@ -373,6 +393,19 @@
             setTimeout(() => {
                 errorAlert.style.display = 'none';
             }, 5000);
+        }
+        
+        // وظيفة لعرض رسالة نجاح
+        function showSuccess(message) {
+            // إخفاء رسالة الخطأ إذا كانت ظاهرة
+            errorAlert.style.display = 'none';
+            
+            // عرض رسالة النجاح
+            successMessage.textContent = message;
+            successAlert.style.display = 'block';
+            
+            // التمرير إلى أعلى الصفحة للتأكد من رؤية الرسالة
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 </body>

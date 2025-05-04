@@ -111,6 +111,21 @@
 
         .alert {
             display: none;
+            border-right: 5px solid;
+            animation: fadeIn 0.5s;
+        }
+
+        .alert-success {
+            border-color: #0d6a3f;
+        }
+
+        .alert-danger {
+            border-color: #a71d2a;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -310,8 +325,18 @@
                 if (data?.user) {
                     console.log('User created successfully:', data.user);
                     
-                    // عرض رسالة النجاح
+                    // تعطيل كل عناصر النموذج
+                    signupForm.querySelectorAll('input, button').forEach(el => {
+                        el.disabled = true;
+                    });
+                    
+                    // إظهار رسالة النجاح المخصصة
+                    const successMessage = document.getElementById('success-message');
+                    successMessage.textContent = `تم إنشاء حساب باسم ${fullName} بنجاح! جاري توجيهك للصفحة الرئيسية...`;
                     successAlert.style.display = 'block';
+                    
+                    // التمرير إلى أعلى الصفحة للتأكد من رؤية الرسالة
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                     
                     // إعادة تعيين النموذج
                     signupForm.reset();
