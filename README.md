@@ -12,6 +12,26 @@ A cutting-edge multilingual e-commerce platform that delivers intelligent, perso
 - Comprehensive multilingual support with RTL design
 - Advanced product discovery and recommendation systems
 - Enhanced animations and UI interactions
+- Standalone HTML pages with direct Supabase integration
+
+## Standalone HTML Authentication Pages
+
+The project includes standalone HTML pages with direct Supabase integration for authentication:
+
+- `/public/html/login.html` - Login page with email/password and Google authentication
+- `/public/html/signup.html` - Registration page with email/password and Google authentication
+- `/public/html/index.html` - Home page with user session management
+- `/public/html/cart.html` - Cart page (protected, requires authentication)
+
+These pages use the Supabase JavaScript client directly without requiring a Next.js server.
+
+## Supabase Integration
+
+The project uses Supabase for:
+
+1. **Authentication** - Email/password and OAuth (Google) authentication
+2. **User Profiles** - Storing user profile information
+3. **Session Management** - Managing user sessions across the application
 
 ## Deployment Instructions for Vercel
 
