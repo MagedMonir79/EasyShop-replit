@@ -24,6 +24,16 @@
       "dest": "/api/$1"
     },
     {
+      "src": "/cart-basic",
+      "status": 302,
+      "headers": { "Location": "/" }
+    },
+    {
+      "src": "/cart",
+      "status": 302,
+      "headers": { "Location": "/" }
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1",
       "continue": true
