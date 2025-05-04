@@ -90,9 +90,38 @@ function addEslintToPackageJson() {
   }
 }
 
+// إصلاح ملف vercel.json
+function fixVercelJson() {
+  const vercelJsonPath = path.join(__dirname, '..', 'vercel.json');
+  
+  try {
+    if (fs.existsSync(vercelJsonPath)) {
+      let vercelJson = JSON.parse(fs.readFileSync(vercelJsonPath, 'utf8'));
+      
+      // التحقق مما إذا كان يحتوي على تكوين functions
+      if (vercelJson.functions) {
+        console.log('Fixing vercel.json - Removing functions configuration...');
+        
+        // إزالة تكوين functions
+        delete vercelJson.functions;
+        
+        fs.writeFileSync(vercelJsonPath, JSON.stringify(vercelJson, null, 2), 'utf8');
+        console.log('Updated vercel.json successfully.');
+      } else {
+        console.log('vercel.json already doesn\'t have functions configuration. No changes needed.');
+      }
+    } else {
+      console.log('vercel.json not found. No changes needed.');
+    }
+  } catch (error) {
+    console.error('Error updating vercel.json:', error.message);
+  }
+}
+
 // تنفيذ الإصلاحات
 console.log('Starting Vercel deployment fixes...');
 fixDrizzleConfig();
 updateVercelIgnore();
 addEslintToPackageJson();
+fixVercelJson();
 console.log('All fixes completed!');
