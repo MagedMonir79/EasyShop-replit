@@ -1,0 +1,50 @@
+[22:05:59.337] Running build in Washington, D.C., USA (East) – iad1
+[22:05:59.364] Cloning github.com/MagedMonir79/EasyShop (Branch: main, Commit: 2598928)
+[22:05:59.400] Skipping build cache, deployment was triggered without cache.
+[22:06:00.453] Cloning completed: 1.089s
+[22:06:01.587] Running "vercel build"
+[22:06:01.991] Vercel CLI 41.7.0
+[22:06:02.302] Installing dependencies...
+[22:06:06.777] npm warn deprecated @supabase/auth-helpers-react@0.5.0: This package is now deprecated - please use the @supabase/ssr package instead.
+[22:06:06.779] npm warn deprecated @supabase/auth-helpers-shared@0.7.0: This package is now deprecated - please use the @supabase/ssr package instead.
+[22:06:07.214] npm warn deprecated @supabase/auth-helpers-nextjs@0.10.0: This package is now deprecated - please use the @supabase/ssr package instead.
+[22:06:07.243] npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+[22:06:07.334] npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+[22:06:18.364] 
+[22:06:18.365] added 308 packages in 16s
+[22:06:18.366] 
+[22:06:18.366] 50 packages are looking for funding
+[22:06:18.366]   run `npm fund` for details
+[22:06:18.433] Detected Next.js version: 15.3.1
+[22:06:18.437] Running "npm run build"
+[22:06:18.550] 
+[22:06:18.550] > workspace@1.0.0 build
+[22:06:18.550] > next build
+[22:06:18.550] 
+[22:06:19.167] Attention: Next.js now collects completely anonymous telemetry regarding usage.
+[22:06:19.167] This information is used to shape Next.js' roadmap and prioritize features.
+[22:06:19.167] You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+[22:06:19.167] https://nextjs.org/telemetry
+[22:06:19.167] 
+[22:06:19.225]    ▲ Next.js 15.3.1
+[22:06:19.226] 
+[22:06:19.267]    Linting and checking validity of types ...
+[22:06:19.401]  ⨯ ESLint must be installed in order to run during builds: npm install --save-dev eslint
+[22:06:27.254] Failed to compile.
+[22:06:27.255] 
+[22:06:27.255] ./drizzle.config.ts:8:5
+[22:06:27.255] Type error: Type '{ schema: string; out: string; dialect: "postgresql"; dbCredentials: { connectionString: string; }; }' does not satisfy the expected type 'Config'.
+[22:06:27.255]   Types of property 'dbCredentials' are incompatible.
+[22:06:27.255]     Object literal may only specify known properties, and 'connectionString' does not exist in type '{ host: string; port?: number | undefined; user?: string | undefined; password?: string | undefined; database: string; ssl?: boolean | "require" | "allow" | "prefer" | "verify-full" | ConnectionOptions | undefined; } | { ...; } | { ...; } | { ...; }'.
+[22:06:27.255] 
+[22:06:27.255] [0m [90m  6 |[39m   dialect[33m:[39m [32m"postgresql"[39m[33m,[39m[0m
+[22:06:27.256] [0m [90m  7 |[39m   dbCredentials[33m:[39m {[0m
+[22:06:27.256] [0m[31m[1m>[22m[39m[90m  8 |[39m     connectionString[33m:[39m process[33m.[39menv[33m.[39m[33mDATABASE_URL[39m[33m![39m[33m,[39m[0m
+[22:06:27.256] [0m [90m    |[39m     [31m[1m^[22m[39m[0m
+[22:06:27.256] [0m [90m  9 |[39m   }[33m,[39m[0m
+[22:06:27.256] [0m [90m 10 |[39m } satisfies [33mConfig[39m[33m;[39m[0m
+[22:06:27.256] [0m [90m 11 |[39m[0m
+[22:06:27.284] Next.js build worker exited with code: 1 and signal: null
+[22:06:27.300] Error: Command "npm run build" exited with 1
+[22:06:27.687] 
+[22:06:30.764] Exiting build container

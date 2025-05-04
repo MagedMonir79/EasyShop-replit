@@ -2,17 +2,38 @@
 const nextConfig = {
   reactStrictMode: true,
   
-  // ESLint configuration to prevent build failures
+  // إعدادات لمنع فشل عملية البناء
   eslint: {
-    // Don't run ESLint during build to prevent errors
+    // تجاهل التحقق من ESLint أثناء البناء
     ignoreDuringBuilds: true,
   },
-  
-  // TypeScript error checking configuration
   typescript: {
-    // Ignore TypeScript errors during build to prevent failures
+    // تجاهل أخطاء TypeScript
     ignoreBuildErrors: true,
   },
+  
+  // تحسين إعدادات البناء لـ Vercel
+  experimental: {
+    // استخدام المزايا التجريبية لتحسين الأداء
+    optimizeCss: true
+  },
+  poweredByHeader: false,
+  
+  // ضبط إخراج البناء للتوافق مع Vercel
+  // Always use standalone without condition for more reliable builds
+  output: 'standalone',
+  
+  // إعدادات تحسين الأداء
+  compress: true,
+  generateEtags: true,
+  
+  // تعطيل إعادة التحويل التلقائي
+  trailingSlash: true,
+  // تعطيل تحليل الشفرة الثابت
+  productionBrowserSourceMaps: false,
+  
+  // Page configuration
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
   
   images: {
     // تم استبدال domains بـ remotePatterns حسب توصية Next.js

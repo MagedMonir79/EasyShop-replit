@@ -1,0 +1,19 @@
+# Ignore drizzle migration files
+drizzle/
+
+# Ignore test files
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Ignore development environment files
+.env.development
+.env.local
+
+# Ignore miscellaneous files
+README.md
+LICENSE
+.eslintrc.json
+.prettierrc
+tsconfig.json
