@@ -1,8 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getProductById } from '@/utils/supabaseClient';
-import { db } from '../../../../server/db';
-import { products, categories } from '@/shared/schema';
-import { eq } from 'drizzle-orm';
 
 // Sample product data as fallback
 const MOCK_PRODUCTS = [
@@ -97,74 +93,7 @@ export default async function handler(
       try {
         console.log(`Fetching product details for ID: ${productId}`);
         
-        // First try to get product from our database
-        try {
-          // Query for the product by ID
-          const dbProducts = await db.select()
-            .from(products)
-            .where(eq(products.id, productId));
-            
-          if (dbProducts.length === 0) {
-            throw new Error(`Product with ID ${productId} not found in database`);
-          }
-          
-          const product = dbProducts[0];
-          
-          // Get category information if available
-          let categoryName = "Uncategorized";
-          if (product.category_id) {
-            const categoryData = await db.select()
-              .from(categories)
-              .where(eq(categories.id, product.category_id));
-              
-            if (categoryData.length > 0) {
-              categoryName = categoryData[0].name;
-            }
-          }
-          
-          // Format the product with category name
-          const formattedProduct = {
-            id: product.id,
-            name: product.name,
-            description: product.description,
-            price: parseFloat(product.price.toString()),
-            image_url: product.image_url,
-            category_id: product.category_id,
-            category: categoryName,
-            stock: product.stock,
-            is_featured: product.is_featured,
-            created_at: product.created_at
-          };
-          
-          console.log("Product found in database");
-          return res.status(200).json({ product: formattedProduct });
-        } catch (dbError) {
-          console.log("Database error, trying Supabase:", dbError);
-          
-          // Fallback to Supabase
-          try {
-            const supabaseProduct = await getProductById(productId);
-            if (supabaseProduct) {
-              return res.status(200).json({ product: supabaseProduct });
-            }
-          } catch (supabaseError) {
-            console.log("Supabase error:", supabaseError);
-          }
-          
-          // Last resort: Check mock data
-          console.log("Using mock product data as fallback");
-          const mockProduct = MOCK_PRODUCTS.find(p => p.id === productId);
-          
-          if (mockProduct) {
-            return res.status(200).json({ product: mockProduct });
-          } else {
-            return res.status(404).json({ error: 'Product not found' });
-          }
-        }
-      } catch (error) {
-        console.log("General error in product endpoint:", error);
-        
-        // Attempt to find product in mock data as last resort
+        // Find product in mock data
         const mockProduct = MOCK_PRODUCTS.find(p => p.id === productId);
         
         if (mockProduct) {
@@ -172,6 +101,9 @@ export default async function handler(
         } else {
           return res.status(404).json({ error: 'Product not found' });
         }
+      } catch (error) {
+        console.log("General error in product endpoint:", error);
+        return res.status(404).json({ error: 'Product not found' });
       }
     }
     

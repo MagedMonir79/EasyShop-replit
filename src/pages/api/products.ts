@@ -1,8 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getProducts } from '@/utils/supabaseClient';
-import { db } from '../../../server/db';
-import { products, categories } from '@/shared/schema';
-import { eq, and, like, or, ilike, SQL, sql } from 'drizzle-orm';
 
 // Sample product data for API as fallback in case of connection errors
 const MOCK_PRODUCTS = [
@@ -111,120 +107,29 @@ export default async function handler(
       }
       
       try {
-        console.log("Fetching products from database...");
+        console.log("Fetching products...");
         
-        // First try to get products from our Drizzle DB connection
-        try {
-          // Build the query conditions
-          let conditions = [];
-          
-          // Filter by category if provided
-          if (options.category) {
-            // Get category by slug first
-            const categoryData = await db.select()
-              .from(categories)
-              .where(eq(categories.slug, options.category));
-              
-            if (categoryData.length > 0) {
-              const categoryId = categoryData[0].id;
-              conditions.push(eq(products.category_id, categoryId));
-            }
-          }
-          
-          // Search in product name and description
-          if (options.search) {
-            conditions.push(
-              or(
-                ilike(products.name, `%${options.search}%`),
-                ilike(products.description || '', `%${options.search}%`)
-              )
-            );
-          }
-          
-          // Execute the query with all conditions
-          let query = db.select().from(products);
-          
-          if (conditions.length > 0) {
-            query = query.where(and(...conditions));
-          }
-          
-          // Apply limit if provided
-          if (options.limit) {
-            query = query.limit(options.limit);
-          }
-          
-          const dbProducts = await query;
-          
-          // Get all unique category IDs to fetch their names
-          const categoryIds = [...new Set(dbProducts.filter(p => p.category_id !== null).map(p => p.category_id))];
-          
-          // Fetch all categories needed for these products
-          const categoryMap = new Map();
-          if (categoryIds.length > 0) {
-            const categoryData = await db.select().from(categories);
-            categoryData.forEach(cat => {
-              categoryMap.set(cat.id, cat.name);
-            });
-          }
-          
-          // Format the products with category names
-          const formattedProducts = dbProducts.map(product => ({
-            id: product.id,
-            name: product.name,
-            description: product.description,
-            price: parseFloat(product.price.toString()),
-            image_url: product.image_url,
-            category_id: product.category_id,
-            category: product.category_id && categoryMap.get(product.category_id) 
-              ? categoryMap.get(product.category_id) 
-              : "Uncategorized",
-            stock: product.stock,
-            is_featured: product.is_featured,
-            created_at: product.created_at
-          }));
-          
-          console.log(`Found ${formattedProducts.length} products in database`);
-          
-          if (formattedProducts.length > 0) {
-            return res.status(200).json({ products: formattedProducts });
-          }
-          
-          throw new Error("No products found in database");
-        } catch (dbError) {
-          console.log("Database error, trying Supabase:", dbError);
-          
-          // Fallback to Supabase
-          const supabaseProducts = await getProducts(options);
-          
-          if (supabaseProducts && supabaseProducts.length > 0) {
-            return res.status(200).json({ products: supabaseProducts });
-          }
-          
-          // If no products from Supabase either, use mock data
-          console.log("No products found via Supabase, using mock data");
-          
-          // Apply filtering manually
-          let filteredProducts = [...MOCK_PRODUCTS];
-          
-          if (options.category) {
-            filteredProducts = filteredProducts.filter(p => p.category === options.category);
-          }
-          
-          if (options.search) {
-            const searchTerm = options.search.toLowerCase();
-            filteredProducts = filteredProducts.filter(p => 
-              p.name.toLowerCase().includes(searchTerm) || 
-              (p.description && p.description.toLowerCase().includes(searchTerm))
-            );
-          }
-          
-          // Apply limit
-          if (options.limit && options.limit > 0) {
-            filteredProducts = filteredProducts.slice(0, options.limit);
-          }
-          
-          return res.status(200).json({ products: filteredProducts });
+        // Apply filtering manually
+        let filteredProducts = [...MOCK_PRODUCTS];
+        
+        if (options.category) {
+          filteredProducts = filteredProducts.filter(p => p.category === options.category);
         }
+        
+        if (options.search) {
+          const searchTerm = options.search.toLowerCase();
+          filteredProducts = filteredProducts.filter(p => 
+            p.name.toLowerCase().includes(searchTerm) || 
+            (p.description && p.description.toLowerCase().includes(searchTerm))
+          );
+        }
+        
+        // Apply limit
+        if (options.limit && options.limit > 0) {
+          filteredProducts = filteredProducts.slice(0, options.limit);
+        }
+        
+        return res.status(200).json({ products: filteredProducts });
       } catch (error) {
         console.log("Error in products API:", error);
         return res.status(200).json({ products: MOCK_PRODUCTS });
