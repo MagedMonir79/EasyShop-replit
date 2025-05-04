@@ -111,6 +111,21 @@
 
         .alert {
             display: none;
+            border-right: 5px solid;
+            animation: fadeIn 0.5s;
+        }
+
+        .alert-success {
+            border-color: #0d6a3f;
+        }
+
+        .alert-danger {
+            border-color: #a71d2a;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
