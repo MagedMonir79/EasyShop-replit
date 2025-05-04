@@ -9,5 +9,5 @@ export default function LoginPage() {
     router.replace('/');
   }, [router]);
   
-  return <div>Redirecting...</div>;
+  return <div>Redirecting to homepage...</div>;
 }
