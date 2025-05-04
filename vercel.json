@@ -28,6 +28,16 @@
       "headers": { "Location": "/" }
     },
     {
+      "src": "/auth/signup",
+      "status": 302,
+      "headers": { "Location": "/" }
+    },
+    {
+      "src": "/auth/login",
+      "status": 302,
+      "headers": { "Location": "/" }
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1",
       "continue": true
