@@ -1,16 +1,13 @@
-import React from 'react';
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-// سيتم إعادة توجيه المستخدم إلى الصفحة الرئيسية
-const CartPage: React.FC = () => {
+// This is a placeholder component that redirects to home page
+export default function CartPage() {
   const router = useRouter();
   
   useEffect(() => {
-    router.push('/');
+    router.replace('/');
   }, [router]);
   
   return <div>Redirecting...</div>;
-};
-
-export default CartPage;
+}

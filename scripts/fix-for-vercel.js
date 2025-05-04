@@ -32,7 +32,7 @@ function fixDrizzleConfig() {
   }
 }
 
-// إنشاء أو تحديث ملف .vercelignore
+// تحديث ملف .vercelignore
 function updateVercelIgnore() {
   const vercelIgnorePath = path.join(__dirname, '..', '.vercelignore');
   
@@ -44,50 +44,22 @@ function updateVercelIgnore() {
       content = fs.readFileSync(vercelIgnorePath, 'utf8');
     }
     
-    const needsCartPages = !content.includes('src/pages/cart-basic.tsx') || !content.includes('src/pages/cart.tsx');
-    const needsAuthPages = !content.includes('src/pages/auth/signup.tsx') || !content.includes('src/pages/auth/login.tsx');
-    const needsSignupForm = !content.includes('src/components/SignupForm.tsx');
-    
-    if (needsCartPages || needsAuthPages || needsSignupForm) {
-      console.log('Updating .vercelignore - Adding problematic pages...');
+    // تحقق مما إذا كانت الصفحات المشكلة معلقة (بدلاً من حذفها)
+    if (!content.includes('# These are now placeholders')) {
+      console.log('Updating .vercelignore - Commenting out problematic pages...');
       
-      // تأكد من وجود الأقسام الرئيسية
-      if (!content.includes('# Ignore pages with build issues')) {
-        content += `
-# Ignore pages with build issues
-`;
-      }
-      
-      // تحقق وأضف الصفحات المفقودة
-      if (!content.includes('src/pages/cart-basic.tsx')) {
-        content += `src/pages/cart-basic.tsx
-`;
-      }
-      
-      if (!content.includes('src/pages/cart.tsx')) {
-        content += `src/pages/cart.tsx
-`;
-      }
-      
-      if (!content.includes('src/pages/auth/signup.tsx')) {
-        content += `src/pages/auth/signup.tsx
-`;
-      }
-      
-      if (!content.includes('src/pages/auth/login.tsx')) {
-        content += `src/pages/auth/login.tsx
-`;
-      }
-      
-      if (!content.includes('src/components/SignupForm.tsx')) {
-        content += `src/components/SignupForm.tsx
-`;
-      }
+      // تحديث المحتوى لتعليق استبعاد الصفحات
+      content = content.replace(/# Ignore pages with build issues/g, '# These are now placeholders, no need to ignore');
+      content = content.replace(/src\/pages\/cart-basic\.tsx/g, '# src/pages/cart-basic.tsx');
+      content = content.replace(/src\/pages\/cart\.tsx/g, '# src/pages/cart.tsx');
+      content = content.replace(/src\/pages\/auth\/signup\.tsx/g, '# src/pages/auth/signup.tsx');
+      content = content.replace(/src\/pages\/auth\/login\.tsx/g, '# src/pages/auth/login.tsx');
+      content = content.replace(/src\/components\/SignupForm\.tsx/g, '# src/components/SignupForm.tsx');
       
       fs.writeFileSync(vercelIgnorePath, content, 'utf8');
       console.log('Updated .vercelignore successfully.');
     } else {
-      console.log('.vercelignore already excludes all problematic pages. No changes needed.');
+      console.log('.vercelignore already has commented placeholders. No changes needed.');
     }
   } catch (error) {
     console.error('Error updating .vercelignore:', error.message);

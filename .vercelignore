@@ -11,12 +11,12 @@ drizzle/
 .env.development
 .env.local
 
-# Ignore pages with build issues
-src/pages/cart-basic.tsx
-src/pages/cart.tsx
-src/pages/auth/signup.tsx
-src/pages/auth/login.tsx
-src/components/SignupForm.tsx
+# These are now placeholders, no need to ignore
+# src/pages/cart-basic.tsx
+# src/pages/cart.tsx
+# src/pages/auth/signup.tsx
+# src/pages/auth/login.tsx
+# src/components/SignupForm.tsx
 
 # Ignore miscellaneous files
 README.md
