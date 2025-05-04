@@ -44,21 +44,50 @@ function updateVercelIgnore() {
       content = fs.readFileSync(vercelIgnorePath, 'utf8');
     }
     
-    // تحقق مما إذا كانت صفحات cart مستبعدة بالفعل
-    if (!content.includes('src/pages/cart-basic.tsx') && !content.includes('src/pages/cart.tsx')) {
-      console.log('Updating .vercelignore - Adding cart pages...');
+    const needsCartPages = !content.includes('src/pages/cart-basic.tsx') || !content.includes('src/pages/cart.tsx');
+    const needsAuthPages = !content.includes('src/pages/auth/signup.tsx') || !content.includes('src/pages/auth/login.tsx');
+    const needsSignupForm = !content.includes('src/components/SignupForm.tsx');
+    
+    if (needsCartPages || needsAuthPages || needsSignupForm) {
+      console.log('Updating .vercelignore - Adding problematic pages...');
       
-      // إضافة صفحات cart للاستبعاد
-      content += `
+      // تأكد من وجود الأقسام الرئيسية
+      if (!content.includes('# Ignore pages with build issues')) {
+        content += `
 # Ignore pages with build issues
-src/pages/cart-basic.tsx
-src/pages/cart.tsx
 `;
+      }
+      
+      // تحقق وأضف الصفحات المفقودة
+      if (!content.includes('src/pages/cart-basic.tsx')) {
+        content += `src/pages/cart-basic.tsx
+`;
+      }
+      
+      if (!content.includes('src/pages/cart.tsx')) {
+        content += `src/pages/cart.tsx
+`;
+      }
+      
+      if (!content.includes('src/pages/auth/signup.tsx')) {
+        content += `src/pages/auth/signup.tsx
+`;
+      }
+      
+      if (!content.includes('src/pages/auth/login.tsx')) {
+        content += `src/pages/auth/login.tsx
+`;
+      }
+      
+      if (!content.includes('src/components/SignupForm.tsx')) {
+        content += `src/components/SignupForm.tsx
+`;
+      }
       
       fs.writeFileSync(vercelIgnorePath, content, 'utf8');
       console.log('Updated .vercelignore successfully.');
     } else {
-      console.log('.vercelignore already excludes cart pages. No changes needed.');
+      console.log('.vercelignore already excludes all problematic pages. No changes needed.');
     }
   } catch (error) {
     console.error('Error updating .vercelignore:', error.message);
@@ -104,17 +133,130 @@ function fixVercelJson() {
         
         // إزالة تكوين functions
         delete vercelJson.functions;
-        
-        fs.writeFileSync(vercelJsonPath, JSON.stringify(vercelJson, null, 2), 'utf8');
-        console.log('Updated vercel.json successfully.');
-      } else {
-        console.log('vercel.json already doesn\'t have functions configuration. No changes needed.');
       }
+      
+      // إضافة أو تحديث قواعد التحويل للصفحات المسببة للمشاكل
+      console.log('Updating vercel.json - Adding redirects for problematic pages...');
+      
+      vercelJson.routes = vercelJson.routes || [];
+      
+      // التحقق من وجود تحويلات للصفحات المشكلة
+      const hasCartBasicRedirect = vercelJson.routes.some(route => route.src === '/cart-basic');
+      const hasCartRedirect = vercelJson.routes.some(route => route.src === '/cart');
+      const hasAuthSignupRedirect = vercelJson.routes.some(route => route.src === '/auth/signup');
+      const hasAuthLoginRedirect = vercelJson.routes.some(route => route.src === '/auth/login');
+      
+      // إضافة التحويلات المفقودة
+      if (!hasCartBasicRedirect) {
+        vercelJson.routes.push({
+          src: "/cart-basic",
+          status: 302,
+          headers: { Location: "/" }
+        });
+      }
+      
+      if (!hasCartRedirect) {
+        vercelJson.routes.push({
+          src: "/cart",
+          status: 302,
+          headers: { Location: "/" }
+        });
+      }
+      
+      if (!hasAuthSignupRedirect) {
+        vercelJson.routes.push({
+          src: "/auth/signup",
+          status: 302,
+          headers: { Location: "/" }
+        });
+      }
+      
+      if (!hasAuthLoginRedirect) {
+        vercelJson.routes.push({
+          src: "/auth/login",
+          status: 302,
+          headers: { Location: "/" }
+        });
+      }
+      
+      // إضافة القاعدة العامة في النهاية إذا لم تكن موجودة
+      const hasDefaultRoute = vercelJson.routes.some(route => route.src === '/(.*)' && route.continue === true);
+      
+      if (!hasDefaultRoute) {
+        vercelJson.routes.push({
+          src: "/(.*)",
+          dest: "/$1",
+          continue: true
+        });
+      }
+      
+      fs.writeFileSync(vercelJsonPath, JSON.stringify(vercelJson, null, 2), 'utf8');
+      console.log('Updated vercel.json successfully.');
     } else {
       console.log('vercel.json not found. No changes needed.');
     }
   } catch (error) {
     console.error('Error updating vercel.json:', error.message);
+  }
+}
+
+// إصلاح ملف next.config.js
+function fixNextConfig() {
+  const nextConfigPath = path.join(__dirname, '..', 'next.config.js');
+  
+  try {
+    if (fs.existsSync(nextConfigPath)) {
+      let configContent = fs.readFileSync(nextConfigPath, 'utf8');
+      
+      // تحقق مما إذا كان الملف يحتوي بالفعل على webpack إلى plugin لاستبعاد الصفحات
+      if (!configContent.includes('pageExtensions:') || !configContent.includes('webpack:')) {
+        console.log('Updating next.config.js - Adding webpack config for ignoring problematic pages...');
+        
+        // استخراج التكوين الحالي
+        let currentConfig = configContent;
+        
+        // حذف النقطة-فاصلة الأخيرة إن وجدت
+        if (currentConfig.trim().endsWith(';')) {
+          currentConfig = currentConfig.trim().slice(0, -1);
+        }
+        
+        // استخراج الكائن الداخلي من التكوين الحالي
+        const moduleMatch = currentConfig.match(/module\.exports\s*=\s*({[\s\S]*})/);
+        if (moduleMatch) {
+          let configObj = moduleMatch[1];
+          
+          // إزالة القوس الأخير
+          configObj = configObj.trim().slice(0, -1);
+          
+          // إضافة تكوين webpack
+          const newConfig = `module.exports = ${configObj},
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
+  // Exclude problematic pages from the build
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Exclude specific pages from the build
+    if (isServer) {
+      if (!config.plugins) config.plugins = [];
+      config.plugins.push(new webpack.IgnorePlugin({
+        resourceRegExp: /\\/(cart-basic|cart|auth\\/signup|auth\\/login)\\.tsx?$/,
+      }));
+    }
+    return config;
+  },
+};`;
+          
+          fs.writeFileSync(nextConfigPath, newConfig, 'utf8');
+          console.log('Updated next.config.js successfully.');
+        } else {
+          console.log('Could not parse next.config.js format. No changes made.');
+        }
+      } else {
+        console.log('next.config.js already has webpack config for ignoring pages. No changes needed.');
+      }
+    } else {
+      console.log('next.config.js not found. No changes needed.');
+    }
+  } catch (error) {
+    console.error('Error updating next.config.js:', error.message);
   }
 }
 
@@ -124,4 +266,5 @@ fixDrizzleConfig();
 updateVercelIgnore();
 addEslintToPackageJson();
 fixVercelJson();
+fixNextConfig();
 console.log('All fixes completed!');
