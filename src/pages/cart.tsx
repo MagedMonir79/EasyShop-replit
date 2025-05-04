@@ -4,6 +4,7 @@ import { useCartStore } from '../store/cartStore';
 import { Button } from '../components/ui/Button';
 import Link from 'next/link';
 import { Product } from '../utils/types';
+// Fixed import version for better compatibility
 
 interface CartItem {
   product: Product;

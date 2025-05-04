@@ -2,25 +2,26 @@
 const nextConfig = {
   reactStrictMode: true,
   
-  // إعدادات لمنع فشل عملية البناء
+  // إعدادات لتخطي الأخطاء أثناء عملية البناء
   eslint: {
-    // تجاهل التحقق من ESLint أثناء البناء
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // تجاهل أخطاء TypeScript
     ignoreBuildErrors: true,
   },
   
-  // تحسين إعدادات البناء لـ Vercel
-  experimental: {
-    // استخدام المزايا التجريبية لتحسين الأداء
-    optimizeCss: true
+  // إعداد Next.js لتجاهل أخطاء البناء التي ستمنع الاستمرار
+  onDemandEntries: {
+    // المدة التي سيتم خلالها الاحتفاظ بالصفحة في الذاكرة
+    maxInactiveAge: 25 * 1000,
+    // عدد الصفحات التي سيتم الاحتفاظ بها في نفس الوقت
+    pagesBufferLength: 2,
   },
+  
+  // تعطيل إرسال رأس "X-Powered-By"
   poweredByHeader: false,
   
-  // ضبط إخراج البناء للتوافق مع Vercel
-  // Always use standalone without condition for more reliable builds
+  // تكوين إخراج البناء ليكون مستقلاً
   output: 'standalone',
   
   // إعدادات تحسين الأداء

@@ -76,13 +76,38 @@ npx tsx scripts/handle-db-push.ts
 1. صحة عنوان الاتصال في متغير البيئة `DATABASE_URL`
 2. إذا كنت تستخدم Neon، تأكد من تفعيل خيار "Pooled connection" 
 3. تأكد من أن IP الخاص بخادم Vercel مسموح به في إعدادات الأمان لقاعدة البيانات
+4. قم بتشغيل `scripts/fix-db-constraints.ts` لإصلاح مشاكل القيود في قاعدة البيانات
 
 ### خطأ في تحميل الصفحات
 إذا ظهرت صفحة 404 أو 500 بعد النشر:
 
 1. تأكد من تعيين متغير `NODE_ENV` إلى `production`
-2. تأكد من صحة إعداد `output` في `next.config.js`
+2. تأكد من صحة إعداد `output` في `next.config.js` (يجب أن يكون `standalone`)
 3. افحص سجلات الخطأ في لوحة تحكم Vercel
+4. تحقق من وجود جميع ملفات الصفحات في مجلد `src/pages`
+
+### خطأ في تجميع الصفحات
+إذا فشلت عملية البناء بسبب "Cannot find module for page":
+
+1. راجع هذه الإعدادات في ملف `next.config.js`:
+   ```javascript
+   eslint: {
+     ignoreDuringBuilds: true,
+   },
+   typescript: {
+     ignoreBuildErrors: true,
+   },
+   onDemandEntries: {
+     maxInactiveAge: 25 * 1000,
+     pagesBufferLength: 2,
+   },
+   output: 'standalone',
+   ```
+
+2. قم بتشغيل الأمر التالي قبل البناء:
+   ```bash
+   tsx scripts/pre-build.ts
+   ```
 
 ## إعداد Supabase
 
