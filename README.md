@@ -33,6 +33,58 @@ The project uses Supabase for:
 2. **User Profiles** - Storing user profile information
 3. **Session Management** - Managing user sessions across the application
 
+## Deploying to GitHub
+
+1. **Create a new GitHub repository**:
+   - Go to [GitHub](https://github.com) and sign in
+   - Click on the "+" icon in the top right corner and select "New repository"
+   - Name your repository (e.g., "easyshop-ecommerce")
+   - Choose visibility (public or private)
+   - Click "Create repository"
+
+2. **Push your code to GitHub**:
+   ```bash
+   # Initialize git repository if not already initialized
+   git init
+
+   # Add all files to git
+   git add .
+
+   # Commit your changes
+   git commit -m "Initial commit"
+
+   # Add your GitHub repository as remote
+   git remote add origin https://github.com/yourusername/easyshop-ecommerce.git
+
+   # Push to GitHub
+   git push -u origin master # or 'main' depending on your default branch
+   ```
+
+## Hosting on Supabase
+
+1. **Create a Supabase Project**:
+   - Go to [Supabase](https://supabase.com) and sign in
+   - Click "New Project"
+   - Enter your project details and select a region
+   - Wait for your project to be created
+
+2. **Set up Supabase Authentication**:
+   - Go to Authentication → Settings
+   - Configure Email Auth
+   - Set up OAuth providers if needed (Google, etc.)
+   - Set up redirect URLs for authentication
+
+3. **Create Supabase Storage Buckets**:
+   - Go to Storage and create buckets for product images and user avatars
+   - Configure the appropriate access policies
+
+4. **Create Database Tables**:
+   - Use the SQL Editor or Table Editor to create the necessary tables
+   - Alternatively, use the Drizzle migrations to push the schema to Supabase
+
+5. **Update Environment Variables**:
+   - Update your `.env.local` and `.env` files with your Supabase project URL and anon key
+
 ## Deployment Instructions for Vercel
 
 1. **Fork or Push to a Git Repository**
