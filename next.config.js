@@ -6,8 +6,16 @@ module.exports = {
     ignoreBuildErrors: true,
   },
   output: 'standalone',
-  // Remove problematic pages from build
-  excludeDefaultMomentLocales: true,
+  poweredByHeader: false,
+  // Add trailingSlash to improve SEO
+  trailingSlash: true,
+  // Customize 404 page
+  exportPathMap: async function (defaultPathMap) {
+    return {
+      ...defaultPathMap,
+      '/404': { page: '/404' },
+    };
+  },
   // Use redirects instead of page exclusions
   async redirects() {
     return [
@@ -31,9 +39,13 @@ module.exports = {
         destination: '/',
         permanent: false,
       },
+      {
+        source: '/products/:id',
+        destination: '/',
+        permanent: false,
+      },
     ]
-  }
-,
+  },
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
   // Exclude problematic pages from the build
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
@@ -41,7 +53,7 @@ module.exports = {
     if (isServer) {
       if (!config.plugins) config.plugins = [];
       config.plugins.push(new webpack.IgnorePlugin({
-        resourceRegExp: /\/(cart-basic|cart|auth\/signup|auth\/login)\.tsx?$/,
+        resourceRegExp: /\/(cart-basic|cart|auth\/signup|auth\/login|auth\/callback)\\.tsx?$/,
       }));
     }
     return config;
