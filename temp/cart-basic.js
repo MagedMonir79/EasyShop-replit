@@ -1,12 +1,4 @@
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-
+// Temporary placeholder to prevent build errors
 export default function CartBasicPage() {
-  const router = useRouter();
-  
-  useEffect(() => {
-    router.replace('/');
-  }, [router]);
-  
-  return <div>Redirecting...</div>;
+  return null;
 }

@@ -1,3 +1,14 @@
+# Completely ignore problematic files
+temp
+temp/cart-basic.js
+temp/cart.js
+
+# Prevent these files from being included
+src/pages/cart-basic.*
+src/pages/auth/callback.*
+src/pages/auth/signup.*
+src/pages/auth/login.*
+
 # Ignore drizzle migration files
 drizzle/
 
@@ -10,23 +21,6 @@ drizzle/
 # Ignore development environment files
 .env.development
 .env.local
-
-# Already created minimal placeholder files, don't ignore them
-# Leave them commented out
-
-# src/pages/cart-basic.js
-# src/pages/cart.js
-# src/pages/auth/callback.js
-# src/pages/auth/signup.js
-# src/pages/auth/login.js
-
-# Instead exclude problematic TypeScript versions or any older files
-# src/pages/cart-basic.tsx
-# src/pages/cart.tsx
-src/pages/auth/callback.tsx
-# src/pages/auth/signup.tsx
-# src/pages/auth/login.tsx
-# src/components/SignupForm.tsx
 
 # Ignore miscellaneous files
 README.md
