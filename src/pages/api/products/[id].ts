@@ -1,4 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getProductById } from '@/utils/supabaseClient';
+import { db } from '@/server/db';
+import { products as productsTable } from '@/shared/schema';
+import { eq } from 'drizzle-orm';
 
 // Sample product data as fallback
 const MOCK_PRODUCTS = [
@@ -93,7 +97,32 @@ export default async function handler(
       try {
         console.log(`Fetching product details for ID: ${productId}`);
         
-        // Find product in mock data
+        // Try to get the product from the database first
+        try {
+          const [product] = await db
+            .select()
+            .from(productsTable)
+            .where(eq(productsTable.id, productId))
+            .limit(1);
+          
+          if (product) {
+            return res.status(200).json({ product });
+          }
+        } catch (dbError) {
+          console.error("Database error:", dbError);
+        }
+        
+        // If database query fails, try Supabase
+        try {
+          const supabaseProduct = await getProductById(productId);
+          if (supabaseProduct) {
+            return res.status(200).json({ product: supabaseProduct });
+          }
+        } catch (supabaseError) {
+          console.error("Supabase error:", supabaseError);
+        }
+        
+        // Fallback to mock data if both database and Supabase fail
         const mockProduct = MOCK_PRODUCTS.find(p => p.id === productId);
         
         if (mockProduct) {

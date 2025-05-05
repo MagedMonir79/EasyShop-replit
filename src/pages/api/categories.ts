@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { db } from '@/server/db';
+import { categories } from '@/shared/schema';
 
 // وهمية مؤقتة لمنع أخطاء البناء
 const categoriesData = [
@@ -13,7 +15,13 @@ export default async function handler(
 ) {
   try {
     if (req.method === 'GET') {
-      return res.status(200).json({ categories: categoriesData });
+      try {
+        const dbCategories = await db.select().from(categories);
+        return res.status(200).json({ categories: dbCategories.length > 0 ? dbCategories : categoriesData });
+      } catch (dbError) {
+        console.error('Database error:', dbError);
+        return res.status(200).json({ categories: categoriesData });
+      }
     }
     
     return res.status(405).json({ error: 'Method not allowed' });

@@ -1,4 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getProducts } from '@/utils/supabaseClient';
+import { db } from '@/server/db';
+import { products as productsTable } from '@/shared/schema';
+import { ilike, eq, and, or } from 'drizzle-orm';
 
 // Sample product data for API as fallback in case of connection errors
 const MOCK_PRODUCTS = [
@@ -109,6 +113,57 @@ export default async function handler(
       try {
         console.log("Fetching products...");
         
+        // Try to get products from the database first
+        try {
+          let query = db.select().from(productsTable);
+          
+          // Add where clauses based on options
+          const whereConditions = [];
+          
+          if (options.category) {
+            // This assumes you're joining with categories or have a category field
+            // Adjust as needed based on your schema
+            whereConditions.push(eq(productsTable.category_id, parseInt(options.category, 10)));
+          }
+          
+          if (options.search) {
+            whereConditions.push(
+              or(
+                ilike(productsTable.name, `%${options.search}%`),
+                ilike(productsTable.description, `%${options.search}%`)
+              )
+            );
+          }
+          
+          if (whereConditions.length > 0) {
+            query = query.where(and(...whereConditions));
+          }
+          
+          // Apply limit if specified
+          if (options.limit) {
+            query = query.limit(options.limit);
+          }
+          
+          const dbProducts = await query;
+          
+          if (dbProducts && dbProducts.length > 0) {
+            return res.status(200).json({ products: dbProducts });
+          }
+        } catch (dbError) {
+          console.error("Database error:", dbError);
+        }
+        
+        // If database query fails or returns empty results, try Supabase
+        try {
+          const supabaseProducts = await getProducts(options);
+          if (supabaseProducts && supabaseProducts.length > 0) {
+            return res.status(200).json({ products: supabaseProducts });
+          }
+        } catch (supabaseError) {
+          console.error("Supabase error:", supabaseError);
+        }
+        
+        // Fallback to mock data if both database and Supabase fail
         // Apply filtering manually
         let filteredProducts = [...MOCK_PRODUCTS];
         
