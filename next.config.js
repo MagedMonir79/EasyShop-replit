@@ -1,3 +1,4 @@
+
 /** @type {import('next').NextConfig} */
 const path = require('path');
 
@@ -37,14 +38,16 @@ const nextConfig = {
     ];
   },
 
-  // Very simple config for better compatibility
-  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
-  distDir: '.next',
-  
   webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': path.resolve(__dirname, './src')
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve.alias,
+        '@': path.join(__dirname, './src'),
+        '@/server': path.join(__dirname, './src/server'),
+        '@/shared': path.join(__dirname, './src/shared'),
+        '@/utils': path.join(__dirname, './src/utils'),
+      }
     };
     return config;
   }
