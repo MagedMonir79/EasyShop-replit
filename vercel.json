@@ -30,6 +30,10 @@
     {
       "source": "/auth/login",
       "destination": "/"
+    },
+    {
+      "source": "/profile",
+      "destination": "/"
     }
   ],
   "rewrites": [

@@ -28,6 +28,11 @@ const nextConfig = {
         source: '/auth/:path*',
         destination: '/',
         permanent: false,
+      },
+      {
+        source: '/profile',
+        destination: '/',
+        permanent: false,
       }
     ];
   },

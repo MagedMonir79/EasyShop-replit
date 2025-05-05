@@ -8,6 +8,8 @@ src/pages/cart-basic.*
 src/pages/auth/callback.*
 src/pages/auth/signup.*
 src/pages/auth/login.*
+src/pages/profile
+src/pages/profile.*
 
 # Ignore drizzle migration files
 drizzle/
