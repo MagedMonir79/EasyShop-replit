@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import { useCartStore } from '../store/cartStore';
 import { useLanguageStore } from '../store/languageStore';
-import Layout from '../components/Layout';
+import Layout from '@/components/Layout';
 
 const CartPage: NextPage = () => {
   const { language } = useLanguageStore();
@@ -62,7 +62,7 @@ const CartPage: NextPage = () => {
             </h2>
             <p className="text-gray-500 mb-6">
               {language === 'en' 
-                ? 'Looks like you haven't added anything to your cart yet.' 
+                ? "Looks like you haven't added anything to your cart yet." 
                 : 'يبدو أنك لم تضف أي شيء إلى سلة التسوق الخاصة بك حتى الآن.'}
             </p>
             <Link
