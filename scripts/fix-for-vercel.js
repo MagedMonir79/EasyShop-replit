@@ -96,77 +96,30 @@ function fixVercelJson() {
   const vercelJsonPath = path.join(__dirname, '..', 'vercel.json');
   
   try {
-    if (fs.existsSync(vercelJsonPath)) {
-      let vercelJson = JSON.parse(fs.readFileSync(vercelJsonPath, 'utf8'));
-      
-      // التحقق مما إذا كان يحتوي على تكوين functions
-      if (vercelJson.functions) {
-        console.log('Fixing vercel.json - Removing functions configuration...');
-        
-        // إزالة تكوين functions
-        delete vercelJson.functions;
-      }
-      
-      // إضافة أو تحديث قواعد التحويل للصفحات المسببة للمشاكل
-      console.log('Updating vercel.json - Adding redirects for problematic pages...');
-      
-      vercelJson.routes = vercelJson.routes || [];
-      
-      // التحقق من وجود تحويلات للصفحات المشكلة
-      const hasCartBasicRedirect = vercelJson.routes.some(route => route.src === '/cart-basic');
-      const hasCartRedirect = vercelJson.routes.some(route => route.src === '/cart');
-      const hasAuthSignupRedirect = vercelJson.routes.some(route => route.src === '/auth/signup');
-      const hasAuthLoginRedirect = vercelJson.routes.some(route => route.src === '/auth/login');
-      
-      // إضافة التحويلات المفقودة
-      if (!hasCartBasicRedirect) {
-        vercelJson.routes.push({
-          src: "/cart-basic",
-          status: 302,
-          headers: { Location: "/" }
-        });
-      }
-      
-      if (!hasCartRedirect) {
-        vercelJson.routes.push({
-          src: "/cart",
-          status: 302,
-          headers: { Location: "/" }
-        });
-      }
-      
-      if (!hasAuthSignupRedirect) {
-        vercelJson.routes.push({
-          src: "/auth/signup",
-          status: 302,
-          headers: { Location: "/" }
-        });
-      }
-      
-      if (!hasAuthLoginRedirect) {
-        vercelJson.routes.push({
-          src: "/auth/login",
-          status: 302,
-          headers: { Location: "/" }
-        });
-      }
-      
-      // إضافة القاعدة العامة في النهاية إذا لم تكن موجودة
-      const hasDefaultRoute = vercelJson.routes.some(route => route.src === '/(.*)' && route.continue === true);
-      
-      if (!hasDefaultRoute) {
-        vercelJson.routes.push({
-          src: "/(.*)",
-          dest: "/$1",
-          continue: true
-        });
-      }
-      
-      fs.writeFileSync(vercelJsonPath, JSON.stringify(vercelJson, null, 2), 'utf8');
-      console.log('Updated vercel.json successfully.');
-    } else {
-      console.log('vercel.json not found. No changes needed.');
-    }
+    // Create a new simplified vercel.json
+    const newVercelJson = {
+      "version": 2,
+      "buildCommand": "npm run build",
+      "devCommand": "npm run dev",
+      "installCommand": "npm install",
+      "framework": "nextjs",
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "outputDirectory": ".next",
+      "cleanUrls": true,
+      "trailingSlash": false,
+      "redirects": [
+        { "source": "/cart-basic", "destination": "/" },
+        { "source": "/cart", "destination": "/" },
+        { "source": "/auth/signup", "destination": "/" },
+        { "source": "/auth/login", "destination": "/" }
+      ]
+    };
+    
+    console.log('Updating vercel.json - Adding redirects for problematic pages...');
+    fs.writeFileSync(vercelJsonPath, JSON.stringify(newVercelJson, null, 2), 'utf8');
+    console.log('Updated vercel.json successfully.');
   } catch (error) {
     console.error('Error updating vercel.json:', error.message);
   }

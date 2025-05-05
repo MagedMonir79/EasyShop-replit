@@ -1,22 +1,15 @@
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  output: 'standalone',
+
   poweredByHeader: false,
-  // Add trailingSlash to improve SEO
-  trailingSlash: true,
-  // Customize 404 page
-  exportPathMap: async function (defaultPathMap) {
-    return {
-      ...defaultPathMap,
-      '/404': { page: '/404' },
-    };
-  },
-  // Use redirects instead of page exclusions
+  reactStrictMode: true,
+  // Use redirects for problematic pages
   async redirects() {
     return [
       {
@@ -46,13 +39,9 @@ module.exports = {
       },
     ]
   },
+  // Simplified configuration for better Vercel compatibility
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
-  // Exclude problematic pages from the build
-  // Remove problematic webpack configuration that might be causing issues
-  experimental: {
-    // Increase stability during build
-    optimizeCss: true,
-  },
-  // Exclude certain pages from production build
-  excludeDefaultMomentLocales: true,
+  distDir: '.next',
 };
+
+module.exports = nextConfig;

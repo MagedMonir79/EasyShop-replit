@@ -3,54 +3,29 @@
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
+  "framework": "nextjs",
   "env": {
     "NODE_ENV": "production"
   },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
-  "regions": [
-    "iad1"
-  ],
-  "routes": [
+  "outputDirectory": ".next",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "source": "/cart-basic",
+      "destination": "/"
     },
     {
-      "src": "/cart-basic",
-      "status": 302,
-      "headers": {
-        "Location": "/"
-      }
+      "source": "/cart",
+      "destination": "/"
     },
     {
-      "src": "/cart",
-      "status": 302,
-      "headers": {
-        "Location": "/"
-      }
+      "source": "/auth/signup",
+      "destination": "/"
     },
     {
-      "src": "/auth/signup",
-      "status": 302,
-      "headers": {
-        "Location": "/"
-      }
-    },
-    {
-      "src": "/auth/login",
-      "status": 302,
-      "headers": {
-        "Location": "/"
-      }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1",
-      "continue": true
+      "source": "/auth/login",
+      "destination": "/"
     }
   ]
 }
