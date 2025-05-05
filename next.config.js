@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
@@ -33,6 +35,12 @@ const nextConfig = {
   // Very simple config for better compatibility
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
   distDir: '.next',
+  
+  // Add webpack configuration to support @ alias
+  webpack(config) {
+    config.resolve.alias['@'] = path.resolve(__dirname, 'src');
+    return config;
+  }
 };
 
 module.exports = nextConfig;
