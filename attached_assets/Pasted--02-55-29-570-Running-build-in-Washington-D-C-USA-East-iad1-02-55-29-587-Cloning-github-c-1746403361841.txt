@@ -1,0 +1,76 @@
+[02:55:29.570] Running build in Washington, D.C., USA (East) – iad1
+[02:55:29.587] Cloning github.com/MagedMonir79/EasyShop (Branch: main, Commit: eabde55)
+[02:55:29.609] Skipping build cache, deployment was triggered without cache.
+[02:55:30.945] Cloning completed: 1.358s
+[02:55:30.985] Found .vercelignore
+[02:55:30.989] Removed 12 ignored files defined in .vercelignore
+[02:55:31.302] Running "vercel build"
+[02:55:31.778] Vercel CLI 41.7.0
+[02:55:32.075] Running "install" command: `npm install`...
+[02:55:37.205] npm warn deprecated @supabase/auth-helpers-shared@0.7.0: This package is now deprecated - please use the @supabase/ssr package instead.
+[02:55:37.314] npm warn deprecated @supabase/auth-helpers-react@0.5.0: This package is now deprecated - please use the @supabase/ssr package instead.
+[02:55:37.876] npm warn deprecated @supabase/auth-helpers-nextjs@0.10.0: This package is now deprecated - please use the @supabase/ssr package instead.
+[02:55:37.956] npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+[02:55:37.990] npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+[02:55:51.079] 
+[02:55:51.079] added 632 packages, and audited 633 packages in 19s
+[02:55:51.079] 
+[02:55:51.080] 176 packages are looking for funding
+[02:55:51.080]   run `npm fund` for details
+[02:55:51.118] 
+[02:55:51.118] 4 moderate severity vulnerabilities
+[02:55:51.118] 
+[02:55:51.119] To address all issues (including breaking changes), run:
+[02:55:51.119]   npm audit fix --force
+[02:55:51.119] 
+[02:55:51.119] Run `npm audit` for details.
+[02:55:51.363] Detected Next.js version: 15.3.1
+[02:55:51.367] Running "npm run build"
+[02:55:51.598] 
+[02:55:51.598] > workspace@1.0.0 build
+[02:55:51.598] > next build
+[02:55:51.598] 
+[02:55:52.750] Attention: Next.js now collects completely anonymous telemetry regarding usage.
+[02:55:52.750] This information is used to shape Next.js' roadmap and prioritize features.
+[02:55:52.750] You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+[02:55:52.750] https://nextjs.org/telemetry
+[02:55:52.750] 
+[02:55:52.803]    ▲ Next.js 15.3.1
+[02:55:52.804] 
+[02:55:52.844]    Skipping validation of types
+[02:55:52.845]    Skipping linting
+[02:55:53.097] 
+[02:55:53.098]    We detected TypeScript in your project and created a tsconfig.json file for you.
+[02:55:53.121]    Creating an optimized production build ...
+[02:55:56.211] Failed to compile.
+[02:55:56.211] 
+[02:55:56.211] ./src/pages/api/categories.ts
+[02:55:56.212] Module not found: Can't resolve '@/server/db'
+[02:55:56.212] 
+[02:55:56.212] https://nextjs.org/docs/messages/module-not-found
+[02:55:56.212] 
+[02:55:56.212] ./src/pages/api/categories.ts
+[02:55:56.212] Module not found: Can't resolve '@/shared/schema'
+[02:55:56.212] 
+[02:55:56.212] https://nextjs.org/docs/messages/module-not-found
+[02:55:56.212] 
+[02:55:56.212] ./src/pages/api/products.ts
+[02:55:56.212] Module not found: Can't resolve '@/utils/supabaseClient'
+[02:55:56.212] 
+[02:55:56.212] https://nextjs.org/docs/messages/module-not-found
+[02:55:56.212] 
+[02:55:56.212] ./src/pages/api/products.ts
+[02:55:56.212] Module not found: Can't resolve '@/shared/schema'
+[02:55:56.212] 
+[02:55:56.212] https://nextjs.org/docs/messages/module-not-found
+[02:55:56.212] 
+[02:55:56.212] ./src/pages/api/products/[id].ts
+[02:55:56.212] Module not found: Can't resolve '@/utils/supabaseClient'
+[02:55:56.212] 
+[02:55:56.212] https://nextjs.org/docs/messages/module-not-found
+[02:55:56.212] 
+[02:55:56.223] 
+[02:55:56.223] > Build failed because of webpack errors
+[02:55:56.251] Error: Command "npm run build" exited with 1
+[02:55:56.579] 
+[02:55:59.505] Exiting build container
