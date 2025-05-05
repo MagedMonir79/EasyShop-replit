@@ -151,12 +151,20 @@ const Navbar: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <Link
-                href="/auth/login"
-                className="text-sm font-medium px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
-              >
-                {language === 'en' ? 'Sign in' : 'تسجيل الدخول'}
-              </Link>
+              <div className="flex space-x-2 rtl:space-x-reverse">
+                <Link
+                  href="/auth/login"
+                  className="text-sm font-medium px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
+                >
+                  {language === 'en' ? 'Sign in' : 'تسجيل الدخول'}
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="text-sm font-medium px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-50 transition-colors"
+                >
+                  {language === 'en' ? 'Create Account' : 'إنشاء حساب'}
+                </Link>
+              </div>
             )}
           </div>
 
@@ -286,13 +294,22 @@ const Navbar: React.FC = () => {
               </button>
             </>
           ) : (
-            <Link
-              href="/auth/login"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {language === 'en' ? 'Sign in' : 'تسجيل الدخول'}
-            </Link>
+            <>
+              <Link
+                href="/auth/login"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {language === 'en' ? 'Sign in' : 'تسجيل الدخول'}
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {language === 'en' ? 'Create Account' : 'إنشاء حساب'}
+              </Link>
+            </>
           )}
         </div>
       </div>
