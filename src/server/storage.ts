@@ -65,12 +65,26 @@ export class DatabaseStorage implements IStorage {
         .where(eq(categories.slug, category));
         
       if (foundCategory) {
-        query = query.where(eq(products.category_id, foundCategory.id));
+        // Make a new query to avoid TypeScript errors
+        const newQuery = db
+          .select()
+          .from(products)
+          .where(eq(products.category_id, foundCategory.id));
+        
+        // Use the new query
+        query = newQuery;
       }
     }
     
     if (search) {
-      query = query.where(like(products.name, `%${search}%`));
+      // Create a completely new query for the search
+      const searchQuery = db
+        .select()
+        .from(products)
+        .where(like(products.name, `%${search}%`));
+      
+      // Use the new query
+      query = searchQuery;
     }
     
     return await query.orderBy(products.created_at);
