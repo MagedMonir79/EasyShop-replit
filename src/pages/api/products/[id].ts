@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getProductById } from '@/utils/supabaseClient';
-import { db } from '@/server/db';
-import { products as productsTable } from '@/shared/schema';
+import { getProductById } from '../../../utils/supabaseClient';
+import { db } from '../../../server/db';
+import { products as productsTable } from '../../../shared/schema';
 import { eq } from 'drizzle-orm';
 
 // Sample product data as fallback

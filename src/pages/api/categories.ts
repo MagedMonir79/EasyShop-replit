@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { db } from '@/server/db';
-import { categories } from '@/shared/schema';
+import { db } from '../../server/db';
+import { categories } from '../../shared/schema';
 
 // وهمية مؤقتة لمنع أخطاء البناء
 const categoriesData = [

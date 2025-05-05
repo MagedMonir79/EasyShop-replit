@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getProducts } from '@/utils/supabaseClient';
-import { db } from '@/server/db';
-import { products as productsTable } from '@/shared/schema';
+import { getProducts } from '../../utils/supabaseClient';
+import { db } from '../../server/db';
+import { products as productsTable } from '../../shared/schema';
 import { ilike, eq, and, or } from 'drizzle-orm';
 
 // Sample product data for API as fallback in case of connection errors
