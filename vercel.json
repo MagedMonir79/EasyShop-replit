@@ -12,6 +12,10 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/auth/callback",
+      "destination": "/"
+    },
+    {
       "source": "/cart-basic",
       "destination": "/"
     },
@@ -26,6 +30,12 @@
     {
       "source": "/auth/login",
       "destination": "/"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     }
   ]
 }

@@ -13,6 +13,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/auth/callback',
+        destination: '/',
+        permanent: false,
+      },
+      {
         source: '/cart-basic',
         destination: '/',
         permanent: false,

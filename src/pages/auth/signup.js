@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
-// This is a placeholder component that redirects to home page
 export default function SignupPage() {
   const router = useRouter();
   
@@ -9,5 +8,5 @@ export default function SignupPage() {
     router.replace('/');
   }, [router]);
   
-  return <div>Redirecting to homepage...</div>;
+  return <div>Redirecting from signup page...</div>;
 }
