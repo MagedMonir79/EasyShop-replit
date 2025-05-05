@@ -41,9 +41,11 @@ const nextConfig = {
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
   distDir: '.next',
   
-  // Add webpack configuration to support @ alias
-  webpack(config) {
-    config.resolve.alias['@'] = path.resolve(__dirname, 'src');
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, './src')
+    };
     return config;
   }
 };
