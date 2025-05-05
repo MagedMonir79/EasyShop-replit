@@ -1,14 +1,4 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-
-// Simple placeholder to avoid build errors - will redirect to home page
+// Absolute minimal placeholder with no dependencies
 export default function CartPage() {
-  const router = useRouter();
-  
-  useEffect(() => {
-    // Redirect to homepage
-    router.push('/');
-  }, [router]);
-  
   return null;
 }
