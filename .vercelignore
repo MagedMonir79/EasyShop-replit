@@ -12,15 +12,15 @@ drizzle/
 .env.local
 
 # Explicitly ignore problematic pages
-# src/pages/cart-basic.tsx
+# # src/pages/cart-basic.tsx
 src/pages/cart-basic.js
-# src/pages/cart.tsx
+# # src/pages/cart.tsx
 src/pages/cart.js
 src/pages/auth/callback.tsx
 src/pages/auth/callback.js 
-# src/pages/auth/signup.tsx
+# # src/pages/auth/signup.tsx
 src/pages/auth/signup.js
-# src/pages/auth/login.tsx
+# # src/pages/auth/login.tsx
 src/pages/auth/login.js
 
 # Ignore miscellaneous files
