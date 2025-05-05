@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import Layout from '../../components/Layout';
 import ProductCard from '../../components/ProductCard';
 import { useProducts } from '../../hooks/useProducts';
@@ -510,39 +510,18 @@ const ProductsPage: React.FC<ProductsPageProps> = ({
 };
 
 // تحميل البيانات الأولية على الخادم
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { category, search } = context.query;
-  
-  let filteredProducts = [...MOCK_PRODUCTS];
-  
-  // تطبيق فلترة الفئة
-  if (category && typeof category === 'string') {
-    const categoryObj = MOCK_CATEGORIES.find(cat => cat.slug === category);
-    
-    if (categoryObj) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.category_id === categoryObj.id || 
-        (product.category && product.category.slug === categoryObj.slug)
-      );
-    }
-  }
-  
-  // تطبيق فلترة البحث
-  if (search && typeof search === 'string') {
-    const searchTerm = search.toLowerCase();
-    filteredProducts = filteredProducts.filter(product => 
-      product.name.toLowerCase().includes(searchTerm) || 
-      (product.description && product.description.toLowerCase().includes(searchTerm))
-    );
-  }
-  
+export const getStaticProps: GetStaticProps = async () => {
+  // Use static data for the build to prevent database access
+  // We'll handle filtering on the client side
   return {
     props: {
-      initialProducts: filteredProducts,
+      initialProducts: MOCK_PRODUCTS,
       initialCategories: MOCK_CATEGORIES,
-      initialSearchQuery: search || '',
-      initialCategory: category || null
-    }
+      initialSearchQuery: '',
+      initialCategory: null
+    },
+    // Ensure the page is regenerated at most once every 10 seconds
+    revalidate: 10
   };
 };
 
