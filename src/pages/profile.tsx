@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import Layout from '../components/Layout';
-import { Input } from '../components/ui/Input';
-import { Button } from '../components/ui/Button';
-import { useAuth } from '../hooks/useAuth';
+import Layout from '@/components/Layout';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { useAuth } from '@/hooks/useAuth';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
-import { supabase } from '../utils/supabase';
+import { supabase } from '@/utils/supabase';
 import toast from 'react-hot-toast';
 
 type ProfileFormData = {

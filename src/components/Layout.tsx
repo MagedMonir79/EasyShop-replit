@@ -1,11 +1,11 @@
 import React, { ReactNode, useEffect } from 'react';
 import Head from 'next/head';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import { useAuth } from '../hooks/useAuth';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/router';
-import { useLanguageStore } from '../store/languageStore';
-import NoSSR from './NoSSR';
+import { useLanguageStore } from '@/store/languageStore';
+import NoSSR from '@/components/NoSSR';
 
 type LayoutProps = {
   children: ReactNode;
