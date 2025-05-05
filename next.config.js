@@ -44,7 +44,9 @@ const nextConfig = {
       '@': path.resolve(__dirname, './src'),
       '@/server': path.resolve(__dirname, './src/server'),
       '@/shared': path.resolve(__dirname, './src/shared'),
-      '@/utils': path.resolve(__dirname, './src/utils')
+      '@/utils': path.resolve(__dirname, './src/utils'),
+      '@/components': path.resolve(__dirname, './src/components'),
+      '@/pages': path.resolve(__dirname, './src/pages')
     };
     return config;
   }
