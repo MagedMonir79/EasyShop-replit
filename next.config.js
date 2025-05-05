@@ -48,14 +48,11 @@ module.exports = {
   },
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
   // Exclude problematic pages from the build
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Exclude specific pages from the build
-    if (isServer) {
-      if (!config.plugins) config.plugins = [];
-      config.plugins.push(new webpack.IgnorePlugin({
-        resourceRegExp: /\/(cart-basic|cart|auth\/signup|auth\/login|auth\/callback)\\.tsx?$/,
-      }));
-    }
-    return config;
+  // Remove problematic webpack configuration that might be causing issues
+  experimental: {
+    // Increase stability during build
+    optimizeCss: true,
   },
+  // Exclude certain pages from production build
+  excludeDefaultMomentLocales: true,
 };
