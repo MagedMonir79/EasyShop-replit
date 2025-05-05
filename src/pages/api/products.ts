@@ -87,45 +87,45 @@ export default async function handler(
   try {
     if (req.method === 'GET') {
       const { category, search, limit } = req.query;
-      
+
       // ضبط خيارات البحث
       const options: {
         category?: string;
         search?: string;
         limit?: number;
       } = {};
-      
+
       if (category && typeof category === 'string') {
         options.category = category;
       }
-      
+
       if (search && typeof search === 'string') {
         options.search = search;
       }
-      
+
       if (limit && typeof limit === 'string') {
         const parsedLimit = parseInt(limit, 10);
         if (!isNaN(parsedLimit) && parsedLimit > 0) {
           options.limit = parsedLimit;
         }
       }
-      
+
       try {
         console.log("Fetching products...");
-        
+
         // Try to get products from the database first
         try {
           let query = db.select().from(productsTable);
-          
+
           // Add where clauses based on options
           const whereConditions = [];
-          
+
           if (options.category) {
             // This assumes you're joining with categories or have a category field
             // Adjust as needed based on your schema
             whereConditions.push(eq(productsTable.category_id, parseInt(options.category, 10)));
           }
-          
+
           if (options.search) {
             whereConditions.push(
               or(
@@ -134,25 +134,25 @@ export default async function handler(
               )
             );
           }
-          
+
           if (whereConditions.length > 0) {
             query = query.where(and(...whereConditions));
           }
-          
+
           // Apply limit if specified
           if (options.limit) {
             query = query.limit(options.limit);
           }
-          
+
           const dbProducts = await query;
-          
+
           if (dbProducts && dbProducts.length > 0) {
             return res.status(200).json({ products: dbProducts });
           }
         } catch (dbError) {
           console.error("Database error:", dbError);
         }
-        
+
         // If database query fails or returns empty results, try Supabase
         try {
           const supabaseProducts = await getProducts(options);
@@ -162,15 +162,15 @@ export default async function handler(
         } catch (supabaseError) {
           console.error("Supabase error:", supabaseError);
         }
-        
+
         // Fallback to mock data if both database and Supabase fail
         // Apply filtering manually
         let filteredProducts = [...MOCK_PRODUCTS];
-        
+
         if (options.category) {
           filteredProducts = filteredProducts.filter(p => p.category === options.category);
         }
-        
+
         if (options.search) {
           const searchTerm = options.search.toLowerCase();
           filteredProducts = filteredProducts.filter(p => 
@@ -178,19 +178,19 @@ export default async function handler(
             (p.description && p.description.toLowerCase().includes(searchTerm))
           );
         }
-        
+
         // Apply limit
         if (options.limit && options.limit > 0) {
           filteredProducts = filteredProducts.slice(0, options.limit);
         }
-        
+
         return res.status(200).json({ products: filteredProducts });
       } catch (error) {
         console.log("Error in products API:", error);
         return res.status(200).json({ products: MOCK_PRODUCTS });
       }
     }
-    
+
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (error) {
     console.error('Error in products API:', error);

@@ -88,15 +88,15 @@ export default async function handler(
     // الحصول على معرف المنتج من المسار
     const { id } = req.query;
     const productId = parseInt(id as string, 10);
-    
+
     if (isNaN(productId)) {
       return res.status(400).json({ error: 'معرف المنتج غير صالح' });
     }
-    
+
     if (req.method === 'GET') {
       try {
         console.log(`Fetching product details for ID: ${productId}`);
-        
+
         // Try to get the product from the database first
         try {
           const [product] = await db
@@ -104,14 +104,14 @@ export default async function handler(
             .from(productsTable)
             .where(eq(productsTable.id, productId))
             .limit(1);
-          
+
           if (product) {
             return res.status(200).json({ product });
           }
         } catch (dbError) {
           console.error("Database error:", dbError);
         }
-        
+
         // If database query fails, try Supabase
         try {
           const supabaseProduct = await getProductById(productId);
@@ -121,10 +121,10 @@ export default async function handler(
         } catch (supabaseError) {
           console.error("Supabase error:", supabaseError);
         }
-        
+
         // Fallback to mock data if both database and Supabase fail
         const mockProduct = MOCK_PRODUCTS.find(p => p.id === productId);
-        
+
         if (mockProduct) {
           return res.status(200).json({ product: mockProduct });
         } else {
@@ -135,14 +135,14 @@ export default async function handler(
         return res.status(404).json({ error: 'Product not found' });
       }
     }
-    
+
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (error) {
     console.error('Error in product detail API:', error);
-    
+
     // في حالة حدوث أي خطأ، نحاول الوصول إلى المنتج من البيانات المحلية
     const mockProduct = MOCK_PRODUCTS.find(p => p.id === parseInt(req.query.id as string, 10));
-    
+
     if (mockProduct) {
       return res.status(200).json({ product: mockProduct });
     } else {

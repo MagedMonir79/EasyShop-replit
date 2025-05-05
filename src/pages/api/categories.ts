@@ -23,7 +23,7 @@ export default async function handler(
         return res.status(200).json({ categories: categoriesData });
       }
     }
-    
+
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (error) {
     console.error('Error in categories API:', error);
