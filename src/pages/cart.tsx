@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import { useCartStore } from '../store/cartStore';
 import { useLanguageStore } from '../store/languageStore';
-import Layout from '@/components/Layout';
+import Layout from '../components/Layout';
 
 const CartPage: NextPage = () => {
   const { language } = useLanguageStore();
