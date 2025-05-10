@@ -1,10 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-// Mock function returning success for build purposes
-const mockSendWelcomeEmail = async (email: string, firstName: string): Promise<boolean> => {
-  console.log(`[Mock] Sending welcome email to ${email} for ${firstName}`);
-  return true;
-};
+import { sendWelcomeEmail } from '../../utils/emailService';
 
 type ResponseData = {
   success: boolean;
@@ -39,8 +34,8 @@ export default async function handler(
       });
     }
 
-    // Send welcome email - use mock during build
-    const success = await mockSendWelcomeEmail(email, firstName);
+    // Send welcome email using SendGrid
+    const success = await sendWelcomeEmail(email, firstName);
 
     if (success) {
       return res.status(200).json({ 
@@ -50,7 +45,9 @@ export default async function handler(
     } else {
       return res.status(500).json({ 
         success: false, 
-        message: 'Failed to send welcome email. Please try again later.'
+        message: process.env.SENDGRID_API_KEY 
+          ? 'Failed to send welcome email. Please try again later.' 
+          : 'SendGrid API key not configured. Email service is unavailable.'
       });
     }
   } catch (error) {

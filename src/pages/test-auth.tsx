@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/useAuth';
-import { useLanguageStore } from '@/store/languageStore';
+import { useAuth } from '../hooks/useAuth';
+import { useLanguageStore } from '../store/languageStore';
 
 export default function TestAuthPage() {
   const { user, isLoading } = useAuth();
