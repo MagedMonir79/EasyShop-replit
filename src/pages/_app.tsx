@@ -8,13 +8,18 @@ import Head from 'next/head';
 
 import '../styles/globals.css';
 import '../styles/animations.css';
-import { Database } from '@/utils/types';
-import { initializeLanguageStore, useLanguageStore } from '@/store/languageStore';
-import NoSSR from '@/components/NoSSR';
+import { Database } from '../utils/types';
+import { initializeLanguageStore, useLanguageStore } from '../store/languageStore';
+import NoSSR from '../components/NoSSR';
 
-// استخدام الأسرار البيئية إذا كانت موجودة
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YW1wbGUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTYxMzA5ODI0MCwiZXhwIjoxOTM4MTU0MjQwfQ.S-MJF5spP6aRhVCUAzMSH9KK9gLyCaOBaYDA_bJyHm8';
+// Using Supabase environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+// Log warning if environment variables are missing
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn('Supabase environment variables are missing. Authentication functionality will not work correctly.');
+}
 
 // إنشاء عميل Supabase
 const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
