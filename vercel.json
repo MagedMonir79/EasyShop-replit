@@ -12,7 +12,23 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/auth/callback",
+      "destination": "/"
+    },
+    {
       "source": "/cart-basic",
+      "destination": "/"
+    },
+    {
+      "source": "/cart",
+      "destination": "/"
+    },
+    {
+      "source": "/auth/signup",
+      "destination": "/"
+    },
+    {
+      "source": "/auth/login",
       "destination": "/"
     }
   ],
