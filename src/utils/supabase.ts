@@ -1,9 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 import { Database } from './types';
 
-// استخدام نفس إعدادات Supabase التي تستخدمها صفحات HTML المستقلة
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://rkxqcnyujnxjjpnanojp.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJreHFjbnl1am54ampwbmFub2pwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQ5MTM5MDEsImV4cCI6MjAzMDQ4OTkwMX0.IZFUgsjZIyVcGZOH7D9KUw_QMWpYYQA0U-LwndTlkHw';
+// Using Supabase settings from environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+// Verifying environment variables
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error("Supabase URL or Anon Key is missing. Make sure to set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.");
+}
 
 // تكوين مباشر لعميل Supabase
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
