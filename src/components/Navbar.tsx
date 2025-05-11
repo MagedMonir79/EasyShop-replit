@@ -41,6 +41,23 @@ const Navbar: React.FC = () => {
     >
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
+          <div className="flex items-center gap-4 ml-auto">
+            {!user && (
+              <Link
+                href="/auth/login"
+                className="text-sm font-medium text-gray-700 hover:text-primary"
+              >
+                {language === 'en' ? 'Login' : 'تسجيل الدخول'}
+              </Link>
+            )}
+            <button
+              onClick={toggleLanguage}
+              className="text-sm text-gray-500 hover:text-primary focus:outline-none"
+            >
+              {language === 'en' ? 'ع' : 'EN'}
+            </button>
+          </div>
+
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <span className="text-2xl font-bold text-primary">EasyShop</span>
@@ -66,18 +83,15 @@ const Navbar: React.FC = () => {
           {/* Desktop Right Side */}
           <div className="hidden md:flex items-center space-x-4 rtl:space-x-reverse">
             {/* Language Toggle Button */}
-            <button 
+            <button
               onClick={toggleLanguage}
               className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-xs font-bold transition-colors"
               aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
             >
               {language === 'en' ? 'AR' : 'EN'}
             </button>
-            
-            <Link
-              href="/cart"
-              className="relative p-2 text-gray-700 hover:text-primary"
-            >
+
+            <Link href="/cart" className="relative p-2 text-gray-700 hover:text-primary">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -107,7 +121,11 @@ const Navbar: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-blue-100 overflow-hidden">
                       {user.avatar_url ? (
-                        <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                        <img
+                          src={user.avatar_url}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                        />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-blue-500 text-white font-bold">
                           {user.first_name?.charAt(0) || user.email?.charAt(0) || 'U'}
@@ -115,8 +133,8 @@ const Navbar: React.FC = () => {
                       )}
                     </div>
                     <span className="text-primary">
-                      {language === 'en' 
-                        ? `Hi, ${user.first_name || 'User'}` 
+                      {language === 'en'
+                        ? `Hi, ${user.first_name || 'User'}`
                         : `مرحبًا، ${user.first_name || 'المستخدم'}`}
                     </span>
                     <svg
@@ -170,10 +188,7 @@ const Navbar: React.FC = () => {
 
           {/* Mobile menu button */}
           <div className="flex md:hidden">
-            <Link
-              href="/cart"
-              className="relative p-2 mr-2 text-gray-700 hover:text-primary"
-            >
+            <Link href="/cart" className="relative p-2 mr-2 text-gray-700 hover:text-primary">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -250,9 +265,9 @@ const Navbar: React.FC = () => {
             >
               {language === 'en' ? 'Products' : 'المنتجات'}
             </Link>
-            
+
             {/* Language Toggle Button (Mobile) */}
-            <button 
+            <button
               onClick={toggleLanguage}
               className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-xs font-bold transition-colors"
               aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
@@ -266,7 +281,11 @@ const Navbar: React.FC = () => {
               <div className="flex items-center gap-2 px-3 py-2 text-primary font-medium">
                 <div className="w-8 h-8 rounded-full bg-blue-100 overflow-hidden">
                   {user.avatar_url ? (
-                    <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                    <img
+                      src={user.avatar_url}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-blue-500 text-white font-bold">
                       {user.first_name?.charAt(0) || user.email?.charAt(0) || 'U'}
@@ -274,8 +293,8 @@ const Navbar: React.FC = () => {
                   )}
                 </div>
                 <span>
-                  {language === 'en' 
-                    ? `Hi, ${user.first_name || 'User'}` 
+                  {language === 'en'
+                    ? `Hi, ${user.first_name || 'User'}`
                     : `مرحبًا، ${user.first_name || 'المستخدم'}`}
                 </span>
               </div>
