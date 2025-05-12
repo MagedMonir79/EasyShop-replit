@@ -41,23 +41,6 @@ const Navbar: React.FC = () => {
     >
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-4 ml-auto">
-            {!user && (
-              <Link
-                href="/auth/login"
-                className="text-sm font-medium text-gray-700 hover:text-primary"
-              >
-                {language === 'en' ? 'Login' : 'تسجيل الدخول'}
-              </Link>
-            )}
-            <button
-              onClick={toggleLanguage}
-              className="text-sm text-gray-500 hover:text-primary focus:outline-none"
-            >
-              {language === 'en' ? 'ع' : 'EN'}
-            </button>
-          </div>
-
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <span className="text-2xl font-bold text-primary">EasyShop</span>
