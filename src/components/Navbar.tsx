@@ -8,6 +8,7 @@ import SearchBar from './SearchBar';
 
 const Navbar: React.FC = () => {
   const { user, signOut } = useAuth();
+  console.log('🧪 Logged in user:', user);
   const getTotalItems = useCartStore((state) => state.getTotalItems);
   const { language, toggleLanguage } = useLanguageStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
