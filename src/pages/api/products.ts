@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getProducts } from '../../utils/supabaseClient';
+import { getProducts } from '@/utils/supabaseClient';
 import { db } from '../../server/db';
 import { products as productsTable } from '../../shared/schema';
 import { ilike, eq, and, or } from 'drizzle-orm';
@@ -8,82 +8,79 @@ import { ilike, eq, and, or } from 'drizzle-orm';
 const MOCK_PRODUCTS = [
   {
     id: 1,
-    name: "هاتف ذكي متطور",
-    description: "هاتف ذكي بأحدث المواصفات التقنية وكاميرا متطورة",
+    name: 'هاتف ذكي متطور',
+    description: 'هاتف ذكي بأحدث المواصفات التقنية وكاميرا متطورة',
     price: 699.99,
-    image_url: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500",
+    image_url: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500',
     category_id: 1,
-    category: "إلكترونيات",
+    category: 'إلكترونيات',
     stock: 15,
     is_featured: true,
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
   },
   {
     id: 2,
-    name: "حاسوب محمول للمحترفين",
-    description: "حاسوب محمول بمعالج قوي ومساحة تخزين كبيرة مناسب للأعمال والألعاب",
+    name: 'حاسوب محمول للمحترفين',
+    description: 'حاسوب محمول بمعالج قوي ومساحة تخزين كبيرة مناسب للأعمال والألعاب',
     price: 1299.99,
-    image_url: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500",
+    image_url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500',
     category_id: 1,
-    category: "إلكترونيات",
+    category: 'إلكترونيات',
     stock: 8,
     is_featured: true,
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
   },
   {
     id: 3,
-    name: "سماعات رأس لاسلكية",
-    description: "سماعات رأس لاسلكية مع خاصية إلغاء الضوضاء وجودة صوت عالية",
+    name: 'سماعات رأس لاسلكية',
+    description: 'سماعات رأس لاسلكية مع خاصية إلغاء الضوضاء وجودة صوت عالية',
     price: 199.99,
-    image_url: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500",
+    image_url: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500',
     category_id: 1,
-    category: "إلكترونيات",
+    category: 'إلكترونيات',
     stock: 20,
     is_featured: true,
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
   },
   {
     id: 4,
-    name: "كاميرا احترافية",
-    description: "كاميرا رقمية احترافية لالتقاط أفضل الصور واللحظات",
+    name: 'كاميرا احترافية',
+    description: 'كاميرا رقمية احترافية لالتقاط أفضل الصور واللحظات',
     price: 899.99,
-    image_url: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500",
+    image_url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500',
     category_id: 1,
-    category: "إلكترونيات",
+    category: 'إلكترونيات',
     stock: 5,
     is_featured: true,
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
   },
   {
     id: 5,
-    name: "طاولة قهوة خشبية",
-    description: "طاولة قهوة أنيقة مصنوعة من الخشب الطبيعي بتصميم عصري",
+    name: 'طاولة قهوة خشبية',
+    description: 'طاولة قهوة أنيقة مصنوعة من الخشب الطبيعي بتصميم عصري',
     price: 249.99,
-    image_url: "https://images.unsplash.com/photo-1499933374294-4584851497cc?w=500",
+    image_url: 'https://images.unsplash.com/photo-1499933374294-4584851497cc?w=500',
     category_id: 2,
-    category: "أثاث",
+    category: 'أثاث',
     stock: 12,
     is_featured: false,
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
   },
   {
     id: 6,
-    name: "ساعة ذكية متطورة",
-    description: "ساعة ذكية متعددة الاستخدامات لتتبع اللياقة البدنية والإشعارات",
+    name: 'ساعة ذكية متطورة',
+    description: 'ساعة ذكية متعددة الاستخدامات لتتبع اللياقة البدنية والإشعارات',
     price: 299.99,
-    image_url: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500",
+    image_url: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500',
     category_id: 1,
-    category: "إلكترونيات",
+    category: 'إلكترونيات',
     stock: 18,
     is_featured: true,
-    created_at: new Date().toISOString()
-  }
+    created_at: new Date().toISOString(),
+  },
 ];
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'GET') {
       const { category, search, limit } = req.query;
@@ -111,7 +108,7 @@ export default async function handler(
       }
 
       try {
-        console.log("Fetching products...");
+        console.log('Fetching products...');
 
         // Try to get products from the database first
         try {
@@ -150,7 +147,7 @@ export default async function handler(
             return res.status(200).json({ products: dbProducts });
           }
         } catch (dbError) {
-          console.error("Database error:", dbError);
+          console.error('Database error:', dbError);
         }
 
         // If database query fails or returns empty results, try Supabase
@@ -160,7 +157,7 @@ export default async function handler(
             return res.status(200).json({ products: supabaseProducts });
           }
         } catch (supabaseError) {
-          console.error("Supabase error:", supabaseError);
+          console.error('Supabase error:', supabaseError);
         }
 
         // Fallback to mock data if both database and Supabase fail
@@ -168,14 +165,15 @@ export default async function handler(
         let filteredProducts = [...MOCK_PRODUCTS];
 
         if (options.category) {
-          filteredProducts = filteredProducts.filter(p => p.category === options.category);
+          filteredProducts = filteredProducts.filter((p) => p.category === options.category);
         }
 
         if (options.search) {
           const searchTerm = options.search.toLowerCase();
-          filteredProducts = filteredProducts.filter(p => 
-            p.name.toLowerCase().includes(searchTerm) || 
-            (p.description && p.description.toLowerCase().includes(searchTerm))
+          filteredProducts = filteredProducts.filter(
+            (p) =>
+              p.name.toLowerCase().includes(searchTerm) ||
+              (p.description && p.description.toLowerCase().includes(searchTerm))
           );
         }
 
@@ -186,7 +184,7 @@ export default async function handler(
 
         return res.status(200).json({ products: filteredProducts });
       } catch (error) {
-        console.log("Error in products API:", error);
+        console.log('Error in products API:', error);
         return res.status(200).json({ products: MOCK_PRODUCTS });
       }
     }
