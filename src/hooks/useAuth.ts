@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useUserStore } from '../store/userStore';
 import { User } from '../utils/types';
-import { supabase } from '../utils/supabase';
+import { supabase } from '@/utils/supabaseClient';
 
 // مستخدم وهمي للتطوير فقط
 const mockUser: User = {
@@ -16,13 +16,13 @@ const mockUser: User = {
 export const useAuth = () => {
   const router = useRouter();
   const { user, setUser, isLoading, setLoading } = useUserStore();
-  
+
   // Helper function to get language-aware messages
   const getLocalizedMessage = (enMessage: string, arMessage: string) => {
     if (typeof window === 'undefined') {
       return enMessage; // Default to English for SSR
     }
-    
+
     try {
       const storedLanguage = localStorage.getItem('language-storage');
       if (storedLanguage) {
@@ -34,7 +34,7 @@ export const useAuth = () => {
     } catch (e) {
       console.error('Error getting language preference:', e);
     }
-    
+
     return enMessage; // Default to English
   };
 
@@ -44,27 +44,31 @@ export const useAuth = () => {
       try {
         if (typeof window !== 'undefined') {
           // Get the current session from Supabase
-          const { data: { session }, error } = await supabase.auth.getSession();
-          
+          const {
+            data: { session },
+            error,
+          } = await supabase.auth.getSession();
+
           if (error) {
             console.error('Error getting session:', error.message);
             setUser(null);
             return;
           }
-          
+
           if (session?.user) {
             // We have a logged-in user
             console.log('Found authenticated session for user:', session.user.id);
-            
+
             // Create user object from Supabase user data
             const userData: User = {
               id: session.user.id,
               email: session.user.email || '',
-              first_name: session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || '',
+              first_name:
+                session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || '',
               last_name: session.user.user_metadata?.last_name || '',
               avatar_url: session.user.user_metadata?.avatar_url || '',
             };
-            
+
             // Update user state
             setUser(userData);
           } else {
@@ -86,41 +90,42 @@ export const useAuth = () => {
     // Set up auth state listener for real-time updates
     const setupAuthListener = () => {
       if (typeof window !== 'undefined') {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-          (_event, session) => {
-            if (session?.user) {
-              // Update user state when auth state changes
-              const userData: User = {
-                id: session.user.id,
-                email: session.user.email || '',
-                first_name: session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || '',
-                last_name: session.user.user_metadata?.last_name || '',
-                avatar_url: session.user.user_metadata?.avatar_url || '',
-              };
-              
-              setUser(userData);
-            } else {
-              setUser(null);
-            }
-            
-            setLoading(false);
+        const {
+          data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (session?.user) {
+            // Update user state when auth state changes
+            const userData: User = {
+              id: session.user.id,
+              email: session.user.email || '',
+              first_name:
+                session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || '',
+              last_name: session.user.user_metadata?.last_name || '',
+              avatar_url: session.user.user_metadata?.avatar_url || '',
+            };
+
+            setUser(userData);
+          } else {
+            setUser(null);
           }
-        );
-        
+
+          setLoading(false);
+        });
+
         // Cleanup function to remove the listener
         return () => {
           subscription.unsubscribe();
         };
       }
-      
+
       return undefined;
     };
 
     const authCleanup = setupAuthListener();
-    
+
     // Call the function immediately to check session
     checkUserSession();
-    
+
     return authCleanup;
   }, []);
 
@@ -129,19 +134,16 @@ export const useAuth = () => {
       // Use Supabase for authentication
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       });
-      
+
       if (error) {
         // Get localized error message based on error code
         let errorMessage: string;
-        
+
         switch (error.message) {
           case 'Invalid login credentials':
-            errorMessage = getLocalizedMessage(
-              'Invalid credentials',
-              'بيانات الاعتماد غير صحيحة'
-            );
+            errorMessage = getLocalizedMessage('Invalid credentials', 'بيانات الاعتماد غير صحيحة');
             break;
           case 'Email not confirmed':
             errorMessage = getLocalizedMessage(
@@ -152,14 +154,14 @@ export const useAuth = () => {
           default:
             errorMessage = error.message;
         }
-        
+
         throw new Error(errorMessage);
       }
-      
+
       // Handle successful login
       if (data?.user) {
         console.log('User logged in via Supabase:', data.user);
-        
+
         // Format user data from Supabase user object
         const loggedInUser: User = {
           id: data.user.id,
@@ -168,19 +170,21 @@ export const useAuth = () => {
           last_name: data.user.user_metadata?.last_name || '',
           avatar_url: data.user.user_metadata?.avatar_url || '',
         };
-        
+
         // Update state with the logged-in user
         setUser(loggedInUser);
-        
+
         // Redirect to home page
         router.push('/');
         return { success: true };
       } else {
         // This shouldn't happen if there's no error, but handle it just in case
-        throw new Error(getLocalizedMessage(
-          'Login successful but user data is missing',
-          'تم تسجيل الدخول بنجاح ولكن بيانات المستخدم مفقودة'
-        ));
+        throw new Error(
+          getLocalizedMessage(
+            'Login successful but user data is missing',
+            'تم تسجيل الدخول بنجاح ولكن بيانات المستخدم مفقودة'
+          )
+        );
       }
     } catch (error: any) {
       console.error('Login error:', error);
@@ -198,33 +202,34 @@ export const useAuth = () => {
           // Store the user's first and last name as metadata
           data: {
             first_name: firstName,
-            last_name: lastName
+            last_name: lastName,
           },
           // Use the callback route for email confirmation
-          emailRedirectTo: `${window.location.origin}/auth/callback`
-        }
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
-      
+
       if (error) {
         throw error;
       }
-      
+
       // Check if the sign-up was successful
       if (data?.user) {
         console.log('User created in Supabase:', data.user);
-        
+
         // Create a User object from the Supabase data
         const newUser: User = {
           id: data.user.id,
           email: data.user.email || email,
           first_name: firstName,
           last_name: lastName,
-          avatar_url: data.user.user_metadata?.avatar_url || 'https://randomuser.me/api/portraits/lego/1.jpg',
+          avatar_url:
+            data.user.user_metadata?.avatar_url || 'https://randomuser.me/api/portraits/lego/1.jpg',
         };
-        
+
         // Update local state with the new user
         setUser(newUser);
-        
+
         // Send welcome email
         try {
           // Only run on client-side
@@ -236,10 +241,10 @@ export const useAuth = () => {
               },
               body: JSON.stringify({
                 email: newUser.email,
-                firstName: newUser.first_name
+                firstName: newUser.first_name,
               }),
             });
-            
+
             const emailResult = await response.json();
             if (!emailResult.success) {
               console.warn('Welcome email could not be sent:', emailResult.message);
@@ -251,24 +256,21 @@ export const useAuth = () => {
           // Don't fail registration if email sending fails
           console.error('Error sending welcome email:', emailError);
         }
-        
+
         // Don't redirect here - let the auth callback handle it
         // This fixes the issue where user appears in the UI but wasn't created in Supabase
-        
+
         return { success: true };
       } else {
         // Get localized error message
-        const errorMessage = getLocalizedMessage(
-          'User creation failed',
-          'فشل إنشاء المستخدم'
-        );
+        const errorMessage = getLocalizedMessage('User creation failed', 'فشل إنشاء المستخدم');
         throw new Error(errorMessage);
       }
     } catch (error: any) {
       console.error('Signup error:', error);
-      return { 
-        success: false, 
-        error: error.message || 'An error occurred during signup' 
+      return {
+        success: false,
+        error: error.message || 'An error occurred during signup',
       };
     }
   };
@@ -277,37 +279,33 @@ export const useAuth = () => {
     try {
       // Sign out using Supabase
       const { error } = await supabase.auth.signOut();
-      
+
       if (error) {
         throw error;
       }
-      
+
       // Clear user state
       setUser(null);
-      
+
       // Redirect to home page
       router.push('/');
     } catch (error: any) {
       // Get localized error message
-      const errorMessage = getLocalizedMessage(
-        'Error during sign out',
-        'خطأ في تسجيل الخروج'
-      );
+      const errorMessage = getLocalizedMessage('Error during sign out', 'خطأ في تسجيل الخروج');
       console.error(`${errorMessage}:`, error.message);
     }
   };
 
-  const updateProfile = async (
-    updates: { first_name?: string; last_name?: string; avatar_url?: string }
-  ) => {
+  const updateProfile = async (updates: {
+    first_name?: string;
+    last_name?: string;
+    avatar_url?: string;
+  }) => {
     try {
       // Check if user is authenticated
       if (!user) {
         // Get localized error message
-        const errorMessage = getLocalizedMessage(
-          'User is not authenticated',
-          'المستخدم غير مصادق'
-        );
+        const errorMessage = getLocalizedMessage('User is not authenticated', 'المستخدم غير مصادق');
         throw new Error(errorMessage);
       }
 
@@ -316,30 +314,32 @@ export const useAuth = () => {
         data: {
           first_name: updates.first_name || user.first_name,
           last_name: updates.last_name || user.last_name,
-          avatar_url: updates.avatar_url || user.avatar_url
-        }
+          avatar_url: updates.avatar_url || user.avatar_url,
+        },
       });
-      
+
       if (error) {
         throw error;
       }
-      
+
       if (data?.user) {
         // Create updated user object
         const updatedUser = {
           ...user,
           ...updates,
         };
-        
+
         // Update local state
         setUser(updatedUser);
-        
+
         return { success: true };
       } else {
-        throw new Error(getLocalizedMessage(
-          'Profile update successful but data is missing',
-          'تم تحديث الملف الشخصي بنجاح ولكن البيانات مفقودة'
-        ));
+        throw new Error(
+          getLocalizedMessage(
+            'Profile update successful but data is missing',
+            'تم تحديث الملف الشخصي بنجاح ولكن البيانات مفقودة'
+          )
+        );
       }
     } catch (error: any) {
       console.error('Profile update error:', error);
@@ -352,9 +352,12 @@ export const useAuth = () => {
     try {
       // Check if we're in a browser environment
       if (typeof window === 'undefined') {
-        return { success: false, error: 'Google sign-in is not available during server-side rendering' };
+        return {
+          success: false,
+          error: 'Google sign-in is not available during server-side rendering',
+        };
       }
-      
+
       // Use Supabase for Google authentication
       // Note: This function redirects the user to the Google sign-in page
       // The user will be redirected back to the app after successful sign-in
@@ -366,16 +369,16 @@ export const useAuth = () => {
             access_type: 'offline',
             prompt: 'consent',
           },
-        }
+        },
       });
-      
+
       if (error) {
         throw error;
       }
-      
-      // This point won't normally be reached as the browser 
+
+      // This point won't normally be reached as the browser
       // will be redirected before this code executes
-      return { 
+      return {
         success: true,
       };
     } catch (error: any) {
@@ -384,14 +387,14 @@ export const useAuth = () => {
         'Error during Google sign-in',
         'حدث خطأ أثناء تسجيل الدخول باستخدام Google'
       );
-      
+
       if (error.message) {
         customError = error.message;
       }
-      
-      return { 
-        success: false, 
-        error: customError 
+
+      return {
+        success: false,
+        error: customError,
       };
     }
   };
@@ -403,6 +406,6 @@ export const useAuth = () => {
     signUp,
     signOut,
     updateProfile,
-    signInWithGoogle
+    signInWithGoogle,
   };
 };
