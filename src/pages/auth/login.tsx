@@ -24,7 +24,8 @@ export default function LoginPage() {
   } = useForm<LoginFormData>();
 
   useEffect(() => {
-    if (user) router.push('/');
+    // لا تعمل redirect تلقائيًا إلا إذا كان المستخدم مسجل دخول فعليًا (email موجود)
+    if (user?.email) router.push('/');
   }, [user]);
 
   const onSubmit = async (data: LoginFormData) => {
