@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../../hooks/useAuth';
+import { supabase } from '@/utils/supabaseBrowser';
 import { useLanguageStore } from '../../store/languageStore';
 
 type LoginFormData = {
@@ -13,7 +13,15 @@ type LoginFormData = {
 export default function LoginPage() {
   const router = useRouter();
   const { language } = useLanguageStore();
-  const { user, isLoading, signIn, signInWithGoogle } = useAuth();
+  const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data?.user ?? null);
+      setIsLoading(false);
+    });
+  }, []);
   const [error, setError] = useState<string | null>(null);
   const [loginLoading, setLoginLoading] = useState(false);
 
@@ -35,7 +43,7 @@ export default function LoginPage() {
       setError(null);
       setLoginLoading(true);
       const result = await signIn(data.email, data.password);
-      
+
       if (!result.success) {
         setError(result.error);
       }
@@ -49,7 +57,13 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     try {
       setError(null);
-      await signInWithGoogle();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+      });
+
+      if (error) {
+        setError(error.message);
+      }
       // No need to handle redirect here, as signInWithGoogle will redirect to Google
     } catch (error: any) {
       setError(error.message);
@@ -90,18 +104,13 @@ export default function LoginPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-md text-sm">
-              {error}
-            </div>
+            <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-md text-sm">{error}</div>
           )}
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
             {/* Email field */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 {language === 'en' ? 'Email address' : 'البريد الإلكتروني'}
               </label>
               <div className="mt-1">
@@ -116,7 +125,10 @@ export default function LoginPage() {
                     required: language === 'en' ? 'Email is required' : 'البريد الإلكتروني مطلوب',
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: language === 'en' ? 'Invalid email address' : 'عنوان بريد إلكتروني غير صالح',
+                      message:
+                        language === 'en'
+                          ? 'Invalid email address'
+                          : 'عنوان بريد إلكتروني غير صالح',
                     },
                   })}
                 />
@@ -128,10 +140,7 @@ export default function LoginPage() {
 
             {/* Password field */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 {language === 'en' ? 'Password' : 'كلمة المرور'}
               </label>
               <div className="mt-1">
@@ -146,9 +155,10 @@ export default function LoginPage() {
                     required: language === 'en' ? 'Password is required' : 'كلمة المرور مطلوبة',
                     minLength: {
                       value: 6,
-                      message: language === 'en' 
-                        ? 'Password must be at least 6 characters' 
-                        : 'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
+                      message:
+                        language === 'en'
+                          ? 'Password must be at least 6 characters'
+                          : 'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
                     },
                   })}
                 />
@@ -212,8 +222,10 @@ export default function LoginPage() {
                     </span>
                     {language === 'en' ? 'Signing in...' : 'جاري تسجيل الدخول...'}
                   </>
+                ) : language === 'en' ? (
+                  'Sign in'
                 ) : (
-                  language === 'en' ? 'Sign in' : 'تسجيل الدخول'
+                  'تسجيل الدخول'
                 )}
               </button>
             </div>
@@ -258,9 +270,7 @@ export default function LoginPage() {
       <div className="hidden md:flex md:w-1/2 bg-blue-600">
         <div className="flex flex-col justify-center items-center px-8 py-12 text-white">
           <h2 className="text-3xl font-bold mb-6 text-center">
-            {language === 'en' 
-              ? 'Welcome to EasyShop' 
-              : 'مرحبًا بك في إيزي شوب'}
+            {language === 'en' ? 'Welcome to EasyShop' : 'مرحبًا بك في إيزي شوب'}
           </h2>
           <p className="text-lg text-center mb-8 max-w-md">
             {language === 'en'
