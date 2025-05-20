@@ -20,6 +20,10 @@
       "destination": "/"
     },
     {
+      "source": "/cart",
+      "destination": "/"
+    },
+    {
       "source": "/auth/signup",
       "destination": "/"
     },
