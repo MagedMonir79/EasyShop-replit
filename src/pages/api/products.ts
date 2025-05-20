@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getProducts } from '@/utils/supabaseClient';
 import { db } from '../../server/db';
 import { products as productsTable } from '../../shared/schema';
 import { ilike, eq, and, or } from 'drizzle-orm';
@@ -150,15 +149,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.error('Database error:', dbError);
         }
 
-        // If database query fails or returns empty results, try Supabase
-        try {
-          const supabaseProducts = await getProducts(options);
-          if (supabaseProducts && supabaseProducts.length > 0) {
-            return res.status(200).json({ products: supabaseProducts });
-          }
-        } catch (supabaseError) {
-          console.error('Supabase error:', supabaseError);
-        }
+        // If database query fails or returns empty results, use mock data
+        console.log('Database query failed, using mock data');
 
         // Fallback to mock data if both database and Supabase fail
         // Apply filtering manually
