@@ -4,7 +4,7 @@ temp/cart-basic.js
 temp/cart.js
 
 # Prevent these files from being included
-src/pages/cart-basic.*
+# Removed 'src/pages/cart-basic.*' to fix the build
 src/pages/auth/callback.*
 src/pages/auth/signup.*
 src/pages/auth/login.*
