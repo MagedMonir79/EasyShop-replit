@@ -1,62 +1,107 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { supabase } from '../../utils/supabase';
-import { useUserStore } from '../../store/userStore';
-import { User } from '../../utils/types';
+import Head from 'next/head';
+import { supabase } from '../../lib/auth';
+import { useLanguageStore } from '../../store/languageStore';
 
-export default function AuthCallback() {
+export default function AuthCallbackPage() {
   const router = useRouter();
-  const { setUser } = useUserStore();
-
+  const { language } = useLanguageStore();
+  const [error, setError] = useState<string | null>(null);
+  
   useEffect(() => {
-    // Handle the OAuth callback by checking for the code in the URL
-    const handleAuthCallback = async () => {
+    // Process the callback when the component mounts
+    const handleCallback = async () => {
       try {
-        // Get the session data from the current auth state
-        const { data: { session }, error } = await supabase.auth.getSession();
+        // Check if we have a session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
-        if (error) {
-          console.error('Error getting auth session:', error.message);
-          router.push('/auth/login?error=callback-failed');
+        if (sessionError) {
+          console.error('Error getting session:', sessionError.message);
+          setError(sessionError.message);
           return;
         }
-
-        if (session?.user) {
-          // We have a user, create the user object
-          const userData: User = {
-            id: session.user.id,
-            email: session.user.email || '',
-            first_name: session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || '',
-            last_name: session.user.user_metadata?.last_name || '',
-            avatar_url: session.user.user_metadata?.avatar_url || '',
-          };
-          
-          // Update the user state
-          setUser(userData);
-          
-          // Redirect to home page or a specified redirect URL
+        
+        if (session) {
+          // Session exists, redirect to home page or stored redirect URL
           const redirectTo = localStorage.getItem('authRedirectTo') || '/';
-          localStorage.removeItem('authRedirectTo'); // Clear the stored redirect
-          router.push(redirectTo);
+          localStorage.removeItem('authRedirectTo'); // Clean up
+          
+          // Delay slightly to ensure session is fully processed
+          setTimeout(() => {
+            router.push(redirectTo);
+          }, 500);
+          
         } else {
-          // No session found, redirect back to login
-          router.push('/auth/login?error=no-session');
+          // No session found, might be an error or user canceled
+          console.warn('No session found during auth callback');
+          setError(language === 'en' 
+            ? 'Authentication failed or was canceled' 
+            : 'فشلت المصادقة أو تم إلغاؤها');
+          
+          // Redirect to login after a delay
+          setTimeout(() => {
+            router.push('/auth/login');
+          }, 3000);
         }
       } catch (err) {
         console.error('Auth callback error:', err);
-        router.push('/auth/login?error=unknown');
+        setError(language === 'en' 
+          ? 'An unexpected error occurred' 
+          : 'حدث خطأ غير متوقع');
+          
+        // Redirect to login after a delay
+        setTimeout(() => {
+          router.push('/auth/login');
+        }, 3000);
       }
     };
-
-    // Run the auth callback handler
-    handleAuthCallback();
-  }, [router, setUser]);
-
-  // Show a loading state while handling the callback
+    
+    // Only run the callback handler if URL contains code or error params
+    if (router.isReady && (router.query.code || router.query.error)) {
+      handleCallback();
+    } else if (router.isReady) {
+      // If URL doesn't have required params, redirect to login
+      router.push('/auth/login');
+    }
+  }, [router, language]);
+  
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-      <p className="mt-4 text-gray-600">Finalizing authentication...</p>
-    </div>
+    <>
+      <Head>
+        <title>{language === 'en' ? 'Processing Authentication | EasyShop' : 'معالجة المصادقة | إيزي شوب'}</title>
+      </Head>
+      
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+        {error ? (
+          <div className="bg-white p-8 rounded shadow-md w-full max-w-md text-center">
+            <div className="text-red-500 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold mb-2">
+              {language === 'en' ? 'Authentication Error' : 'خطأ في المصادقة'}
+            </h2>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <p className="text-sm text-gray-500">
+              {language === 'en' ? 'Redirecting to login...' : 'جاري إعادة التوجيه إلى صفحة تسجيل الدخول...'}
+            </p>
+          </div>
+        ) : (
+          <div className="bg-white p-8 rounded shadow-md w-full max-w-md text-center">
+            <div className="w-16 h-16 border-t-4 border-primary border-solid rounded-full animate-spin mx-auto mb-4"></div>
+            <h2 className="text-xl font-semibold mb-2">
+              {language === 'en' ? 'Processing Authentication' : 'جاري معالجة المصادقة'}
+            </h2>
+            <p className="text-gray-600">
+              {language === 'en' 
+                ? 'Please wait while we complete your authentication...' 
+                : 'يرجى الانتظار بينما نكمل عملية المصادقة الخاصة بك...'}
+            </p>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
