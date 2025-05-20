@@ -23,15 +23,15 @@ export default function ProductsPage() {
     async function fetchProducts() {
       try {
         setLoading(true);
-
+        
         // Fetch from our API route
         const queryParams = new URLSearchParams();
         if (category) queryParams.append('category', category.toString());
         if (search) queryParams.append('search', search.toString());
-
+        
         const response = await fetch(`/api/products?${queryParams.toString()}`);
         if (!response.ok) throw new Error('Failed to fetch products');
-
+        
         const data = await response.json();
         setProductList(data);
       } catch (error) {
@@ -47,7 +47,7 @@ export default function ProductsPage() {
       try {
         const response = await fetch('/api/categories');
         if (!response.ok) throw new Error('Failed to fetch categories');
-
+        
         const data = await response.json();
         setCategoryList(data);
       } catch (error) {
@@ -63,14 +63,14 @@ export default function ProductsPage() {
   // Update URL when category changes
   const handleCategoryChange = (categorySlug: string | null) => {
     setSelectedCategory(categorySlug);
-
+    
     const query: { category?: string; search?: string } = {};
     if (categorySlug) query.category = categorySlug;
     if (search) query.search = search.toString();
-
+    
     router.push({
       pathname: '/products',
-      query,
+      query
     });
   };
 
@@ -80,7 +80,9 @@ export default function ProductsPage() {
       description={language === 'en' ? 'Browse our products' : 'تصفح منتجاتنا'}
     >
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">{language === 'en' ? 'Products' : 'المنتجات'}</h1>
+        <h1 className="text-3xl font-bold mb-8">
+          {language === 'en' ? 'Products' : 'المنتجات'}
+        </h1>
 
         {/* Category filters */}
         <div className="mb-8">
@@ -98,7 +100,7 @@ export default function ProductsPage() {
             >
               {language === 'en' ? 'All' : 'الكل'}
             </button>
-
+            
             {categoryList.map((cat) => (
               <button
                 key={cat.id}
@@ -119,7 +121,9 @@ export default function ProductsPage() {
         {search && (
           <div className="mb-6 p-4 bg-gray-50 rounded-lg">
             <p>
-              {language === 'en' ? `Search results for "${search}"` : `نتائج البحث عن "${search}"`}
+              {language === 'en'
+                ? `Search results for "${search}"`
+                : `نتائج البحث عن "${search}"`}
             </p>
             <button
               onClick={() => router.push('/products')}
