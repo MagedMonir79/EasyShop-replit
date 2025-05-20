@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { supabase } from '@/utils/supabaseBrowser';
+import { useAuth } from '@/hooks/useAuth';
 import { useLanguageStore } from '@/store/languageStore';
 
 interface LoginFormData {
@@ -13,7 +14,7 @@ interface LoginFormData {
 export default function LoginPage() {
   const router = useRouter();
   const { language } = useLanguageStore();
-  const [user, setUser] = useState<any>(null);
+  const { user, isLoading, signIn, signInWithGoogle } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -24,24 +25,19 @@ export default function LoginPage() {
   } = useForm<LoginFormData>();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data?.user ?? null);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (user?.email) router.push('/');
-  }, [user]);
+    if (user) {
+      router.push('/');
+    }
+  }, [user, router]);
 
   const onSubmit = async (data: LoginFormData) => {
     try {
       setError(null);
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      });
-      if (error) setError(error.message);
+      const result = await signIn(data.email, data.password);
+      if (!result.success) {
+        setError(result.error);
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -52,10 +48,15 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     try {
       setError(null);
-      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
-      if (error) setError(error.message);
+      setLoading(true);
+      const result = await signInWithGoogle();
+      if (!result.success) {
+        setError(result.error);
+      }
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,6 +120,7 @@ export default function LoginPage() {
         <div className="mt-4 text-center">
           <button
             onClick={handleGoogleSignIn}
+            disabled={loading}
             className="w-full py-2 px-4 border rounded text-sm hover:bg-gray-50"
           >
             {language === 'en' ? 'Continue with Google' : 'الدخول باستخدام جوجل'}
