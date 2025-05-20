@@ -110,11 +110,7 @@ function fixVercelJson() {
       "cleanUrls": true,
       "trailingSlash": false,
       "redirects": [
-        { "source": "/auth/callback", "destination": "/" },
-        { "source": "/cart-basic", "destination": "/" },
-        { "source": "/cart", "destination": "/" },
-        { "source": "/auth/signup", "destination": "/" },
-        { "source": "/auth/login", "destination": "/" }
+        { "source": "/cart-basic", "destination": "/" }
       ],
       "rewrites": [
         { "source": "/api/:path*", "destination": "/api/:path*" }
