@@ -12,14 +12,18 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Create a single instance of the Supabase client to use throughout the app
-export const supabase = createClient<Database>(supabaseUrl || '', supabaseAnonKey || '', {
-  auth: {
-    persistSession: true,
-    storageKey: 'easyshop-auth-storage',
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-  },
-});
+export const supabase = createClient<Database>(
+  supabaseUrl || '',
+  supabaseAnonKey || '',
+  {
+    auth: {
+      persistSession: true,
+      storageKey: 'easyshop-auth-storage',
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  }
+);
 
 // Define a user profile type that includes metadata
 export type UserProfile = {
@@ -50,13 +54,13 @@ export async function signInWithEmail(email: string, password: string) {
     });
 
     if (error) throw error;
-
+    
     return { success: true, data };
   } catch (error: any) {
     console.error('Login error:', error.message);
-    return {
-      success: false,
-      error: error.message,
+    return { 
+      success: false, 
+      error: error.message 
     };
   }
 }
@@ -68,26 +72,29 @@ export async function signInWithGoogle() {
       provider: 'google',
       options: {
         redirectTo: window.location.origin + '/auth/callback',
-      },
+      }
     });
 
     if (error) throw error;
-
+    
     return { success: true, data };
   } catch (error: any) {
     console.error('Google login error:', error.message);
-    return {
-      success: false,
-      error: error.message,
+    return { 
+      success: false, 
+      error: error.message 
     };
   }
 }
 
 // Register a new user
-export async function signUp(email: string, password: string, firstName: string, lastName: string) {
+export async function signUp(
+  email: string, 
+  password: string, 
+  firstName: string, 
+  lastName: string
+) {
   try {
-    console.log('[SIGNUP] Attempting to register:', { email, firstName, lastName });
-
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -97,19 +104,17 @@ export async function signUp(email: string, password: string, firstName: string,
           last_name: lastName,
         },
         emailRedirectTo: window.location.origin + '/auth/callback',
-      },
+      }
     });
 
-    console.log('[SIGNUP] Supabase response:', { data, error });
-
     if (error) throw error;
-
+    
     return { success: true, data };
   } catch (error: any) {
-    console.error('[SIGNUP] Registration error:', error.message);
-    return {
-      success: false,
-      error: error.message,
+    console.error('Registration error:', error.message);
+    return { 
+      success: false, 
+      error: error.message 
     };
   }
 }
@@ -118,31 +123,28 @@ export async function signUp(email: string, password: string, firstName: string,
 export async function signOut() {
   try {
     const { error } = await supabase.auth.signOut();
-
+    
     if (error) throw error;
-
+    
     return { success: true };
   } catch (error: any) {
     console.error('Logout error:', error.message);
-    return {
-      success: false,
-      error: error.message,
+    return { 
+      success: false, 
+      error: error.message 
     };
   }
 }
 
 // Get the current session
-export async function getSession(): Promise<{ session: Session | null; user: UserProfile | null }> {
+export async function getSession(): Promise<{ session: Session | null, user: UserProfile | null }> {
   try {
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.getSession();
-
+    const { data: { session }, error } = await supabase.auth.getSession();
+    
     if (error) throw error;
-
+    
     const user = session?.user ? mapUserToProfile(session.user) : null;
-
+    
     return { session, user };
   } catch (error) {
     console.error('Get session error:', error);
