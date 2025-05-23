@@ -12,8 +12,10 @@ export default function LoginPage() {
   // ✅ نتأكد من وجود جلسة تسجيل دخول حقيقية قبل التحويل
   useEffect(() => {
     const checkUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (data?.user?.email) {
+      const { data, error } = await supabase.auth.getSession();
+      console.log('✅ Supabase session check:', { session: data?.session, error });
+
+      if (data?.session?.user?.email) {
         router.push('/');
       }
     };
