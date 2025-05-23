@@ -27,7 +27,7 @@ const Navbar: React.FC = () => {
 
   const handleSignOut = async (e: React.MouseEvent) => {
     e.preventDefault();
-    await signOut();
+    await signOut(); router.reload();
     setIsMobileMenuOpen(false);
   };
 
@@ -282,21 +282,11 @@ const Navbar: React.FC = () => {
                     </div>
                   )}
                 </div>
-               <div className="flex items-center gap-1">
-  <span className="text-primary text-sm font-medium">
-    {language === 'en'
-      ? `Hi, ${user.first_name || 'User'}`
-      : `مرحبًا، ${user.first_name || 'المستخدم'}`}
-  </span>
-  <button
-    onClick={handleSignOut}
-    title={language === 'en' ? 'Logout' : 'تسجيل الخروج'}
-    className="text-xs bg-gray-100 hover:bg-red-500 hover:text-white px-2 py-1 rounded transition-colors"
-  >
-    {language === 'en' ? 'Logout' : 'خروج'}
-  </button>
-</div>
-
+                <span>
+                  {language === 'en'
+                    ? `Hi, ${user.first_name || 'User'}`
+                    : `مرحبًا، ${user.first_name || 'المستخدم'}`}
+                </span>
               </div>
               <Link
                 href="/profile"
