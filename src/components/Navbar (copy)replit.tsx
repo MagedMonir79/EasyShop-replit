@@ -14,7 +14,6 @@ const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,11 +100,7 @@ const Navbar: React.FC = () => {
             </Link>
 
             {user ? (
-<div
-  className="relative"
-  onMouseEnter={() => setDropdownOpen(true)}
-  onMouseLeave={() => setDropdownOpen(false)}
->
+              <div className="relative group">
                 <button className="flex items-center space-x-1 rtl:space-x-reverse text-sm font-medium focus:outline-none">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-blue-100 overflow-hidden">
@@ -142,8 +137,7 @@ const Navbar: React.FC = () => {
                     </svg>
                   </div>
                 </button>
-{dropdownOpen && (
-  <div className="absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                <div className="absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
                   <Link
                     href="/profile"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
