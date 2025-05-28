@@ -35,15 +35,22 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <header
-      className={`sticky top-0 z-50 w-full transition-all duration-200 ${isScrolled ? 'bg-white shadow-md' : 'bg-white'}`}
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <span className="text-2xl font-bold text-primary">EasyShop</span>
-          </Link>
-          {/* الباقي من عناصر الـ Navbar ... */}
+    <header className="bg-white shadow-md sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
+        <Link href="/">
+          <span className="text-2xl font-bold text-primary">EasyShop</span>
+        </Link>
+
+        <div>
+          {user ? (
+            <button onClick={handleSignOut} className="text-sm text-red-600 hover:underline">
+              Logout
+            </button>
+          ) : (
+            <Link href="/auth/login" className="text-sm text-blue-600 hover:underline">
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </header>
