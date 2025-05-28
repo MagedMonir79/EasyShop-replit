@@ -28,6 +28,7 @@ const Navbar: React.FC = () => {
     e.preventDefault();
     await signOut();
     setIsMobileMenuOpen(false);
+    router.push('/auth/login');
   };
 
   const toggleMobileMenu = () => {
