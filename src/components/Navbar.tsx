@@ -25,11 +25,12 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleSignOut = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    await signOut(); router.reload();
-    setIsMobileMenuOpen(false);
-  };
+const handleSignOut = async (e: React.MouseEvent) => {
+  e.preventDefault();
+  await signOut();
+  router.push('/auth/login'); // ← إعادة التوجيه للصفحة الصح
+  setIsMobileMenuOpen(false);
+};
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
