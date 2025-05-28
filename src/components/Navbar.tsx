@@ -40,7 +40,6 @@ const Navbar: React.FC = () => {
         isScrolled ? 'bg-white shadow-md' : 'bg-white'
       }`}
     >
-
           </Link>
 
           {/* Desktop Navigation */}
